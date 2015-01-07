@@ -26,18 +26,21 @@
         "willdurand/hateoas-bundle": "1.0.*@dev",
         "hautelook/templated-uri-bundle": "~2.0",
         "willdurand/rest-extra-bundle": "~1.0",
-	      "php-ews/php-ews": "dev-master"
+        "php-ews/php-ews": "dev-master",
+        "incenteev/composer-parameter-handler": "~2.0"
     },
     "conflict": {
         "symfony/routing": "2.4.1"
     },
     "scripts": {
         "post-install-cmd": [
+	    "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
         ],
         "post-update-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
@@ -52,12 +55,15 @@
         "symfony-web-dir": "web",
         "branch-alias": {
             "dev-master": "2.3-dev"
+        },
+        "incenteev-parameters": {
+            "file": "app/config/parameters.yml"
         }
     },
     "repositories": [
         {
-	          "type": "git",
-	          "url": "https://github.com/beraneck/php-ews.git"
-	      }
+	    "type": "git",
+	    "url": "https://github.com/beraneck/php-ews.git"
+	}
     ]
 }
