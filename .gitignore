@@ -1,0 +1,16 @@
+/web/bundles/
+/app/cache/*
+/app/logs/*
+/build/
+/vendor/
+/bin/
+/composer.phar
+/web/config.rb
+/web/config.codekit
+/app/config/parameters.yml
+/.idea/
+.DS_Store
+.sass-cache/
+config.codekit
+/web/uploads/
+/bin
