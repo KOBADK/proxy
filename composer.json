@@ -26,7 +26,7 @@
         "willdurand/hateoas-bundle": "1.0.*@dev",
         "hautelook/templated-uri-bundle": "~2.0",
         "willdurand/rest-extra-bundle": "~1.0",
-	"php-ews/php-ews": "dev-master"
+	      "php-ews/php-ews": "dev-master"
     },
     "conflict": {
         "symfony/routing": "2.4.1"
@@ -56,8 +56,8 @@
     },
     "repositories": [
         {
-	    "type": "git",
-	    "url": "https://github.com/beraneck/php-ews.git"
-	}
+	          "type": "git",
+	          "url": "https://github.com/beraneck/php-ews.git"
+	      }
     ]
 }
