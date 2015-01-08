@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fd8b1c16595be6c6412b12ce2c84217b",
+    "hash": "a18af5960b0c115d3789e3fe2c7460f9",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1208,6 +1208,54 @@
             "time": "2013-12-07 10:10:39"
         },
         {
+            "name": "jamesiarmes/php-ews",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/beraneck/php-ews.git",
+                "reference": "3eb7b3204d9ec94baae03be46f36aae30ae80277"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/beraneck/php-ews/zipball/3eb7b3204d9ec94baae03be46f36aae30ae80277",
+                "reference": "3eb7b3204d9ec94baae03be46f36aae30ae80277",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PhpEws": ""
+                }
+            },
+            "license": [
+                "n.a."
+            ],
+            "authors": [
+                {
+                    "name": "Jame Iarmes",
+                    "email": ""
+                },
+                {
+                    "name": "GitHub Contributors",
+                    "homepage": "https://github.com/jamesiarmes/php-ews/graphs/contributors"
+                }
+            ],
+            "description": "PHP Exchange Web Services",
+            "homepage": "https://github.com/jamesiarmes/php-ews/wiki",
+            "keywords": [
+                "exchange",
+                "php"
+            ],
+            "support": {
+                "source": "https://github.com/beraneck/php-ews/tree/master",
+                "issues": "https://github.com/beraneck/php-ews/issues"
+            },
+            "time": "2013-01-04 19:40:29"
+        },
+        {
             "name": "jdorn/sql-formatter",
             "version": "v1.2.17",
             "source": {
@@ -1750,46 +1798,6 @@
                 "rest"
             ],
             "time": "2014-07-30 09:11:08"
-        },
-        {
-            "name": "php-ews/php-ews",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/adamelso/php-ews.git",
-                "reference": "2ab3137bca6d8cc9690d6d4d46b53e75111457cb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/adamelso/php-ews/zipball/2ab3137bca6d8cc9690d6d4d46b53e75111457cb",
-                "reference": "2ab3137bca6d8cc9690d6d4d46b53e75111457cb",
-                "shasum": ""
-            },
-            "require": {
-                "php": "~5.4"
-            },
-            "require-dev": {
-                "phpspec/phpspec": "~2",
-                "symfony/console": "~2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Adam Elsodaney",
-                    "email": "adam.elso@gmail.com"
-                }
-            ],
-            "description": "The PHP Exchange Web Services library (php-ews) is intended to make communication with Microsoft Exchange servers using Exchange Web Services easier. It handles the NTLM authentication required to use the SOAP services and provides an object-oriented interface to the complex types required to form a request.",
-            "time": "2014-08-12 12:29:52"
         },
         {
             "name": "phpcollection/phpcollection",
@@ -2353,23 +2361,23 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.6.1",
+            "version": "v2.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "d805dfd67950848ec0338b4acd75777b340977b7"
+                "reference": "c34ef418015793a4653f2670afb69dd167ebf578"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/d805dfd67950848ec0338b4acd75777b340977b7",
-                "reference": "d805dfd67950848ec0338b4acd75777b340977b7",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/c34ef418015793a4653f2670afb69dd167ebf578",
+                "reference": "c34ef418015793a4653f2670afb69dd167ebf578",
                 "shasum": ""
             },
             "require": {
-                "doctrine/common": "~2.2",
+                "doctrine/common": "~2.3",
                 "php": ">=5.3.3",
                 "psr/log": "~1.0",
-                "twig/twig": "~1.12"
+                "twig/twig": "~1.12,>=1.12.3"
             },
             "replace": {
                 "symfony/browser-kit": "self.version",
@@ -2425,7 +2433,7 @@
                 "egulias/email-validator": "~1.2",
                 "ircmaxell/password-compat": "~1.0",
                 "monolog/monolog": "~1.11",
-                "ocramius/proxy-manager": ">=0.3.1,<0.6-dev",
+                "ocramius/proxy-manager": "~0.4|~1.0",
                 "propel/propel1": "~1.6"
             },
             "type": "library",
@@ -2465,7 +2473,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2014-12-03 16:40:43"
+            "time": "2015-01-07 14:47:29"
         },
         {
             "name": "twig/extensions",
@@ -2836,7 +2844,7 @@
     "stability-flags": {
         "jms/serializer-bundle": 20,
         "willdurand/hateoas-bundle": 20,
-        "php-ews/php-ews": 20
+        "jamesiarmes/php-ews": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
