@@ -26,7 +26,7 @@
         "willdurand/hateoas-bundle": "1.0.*@dev",
         "hautelook/templated-uri-bundle": "~2.0",
         "willdurand/rest-extra-bundle": "~1.0",
-        "php-ews/php-ews": "dev-master",
+        "jamesiarmes/php-ews": "dev-master",
         "incenteev/composer-parameter-handler": "~2.0"
     },
     "conflict": {
@@ -62,8 +62,8 @@
     },
     "repositories": [
         {
-	    "type": "git",
-	    "url": "https://github.com/beraneck/php-ews.git"
+	    "type": "vcs",
+	    "url": "https://github.com/beraneck/php-ews"
 	}
     ]
 }
