@@ -1,7 +1,22 @@
 parameters:
-#    itk_api.example.class: Itk\ApiBundle\Example
 
 services:
-#    itk_api.example:
-#        class: %itk_api.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+  koba.users_service:
+    class: Itk\ApiBundle\Services\UsersService
+    calls:
+      - [ setContainer,[ @service_container ] ]
+
+  koba.roles_service:
+    class: Itk\ApiBundle\Services\RolesService
+    calls:
+      - [ setContainer,[ @service_container ] ]
+
+  koba.resources_service:
+    class: Itk\ApiBundle\Services\ResourcesService
+    calls:
+      - [ setContainer,[ @service_container ] ]
+
+  koba.bookings_service:
+    class: Itk\ApiBundle\Services\BookingsService
+    calls:
+      - [ setContainer,[ @service_container ] ]
