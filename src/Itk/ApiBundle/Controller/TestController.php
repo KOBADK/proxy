@@ -26,8 +26,8 @@ class TestController extends FOSRestController {
   public function userAction() {
     $user = new User();
     $user->setUuid("1234");
-    $user->setName("AJFH");
-    $user->setMail("test@test.tt");
+    $user->setName("Name");
+    $user->setMail("test@test.test");
     $user->setStatus("active");
 
     $view = $this->view($user, 200)

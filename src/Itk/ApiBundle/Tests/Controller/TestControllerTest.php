@@ -33,17 +33,17 @@ class TestControllerTest extends WebTestCase {
     $client = static::createClient();
 
     // Assert valid XML response.
-    $crawler = $client->request('GET', '/api/test/user?_format=xml');
+    $client->request('GET', '/api/test/user?_format=xml');
     $response = $client->getResponse();
     $this->assertXmlResponse($response, 200);
 
     // Assert valid json response.
-    $crawler = $client->request('GET', '/api/test/user?_format=json');
+    $client->request('GET', '/api/test/user?_format=json');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 200);
 
     // Assert valid json response.
-    $crawler = $client->request('GET', '/api/test/user');
+    $client->request('GET', '/api/test/user');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 200);
   }
