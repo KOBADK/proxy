@@ -17,6 +17,7 @@ class Booking {
   protected $id;
 
   /**
+   * Exchange event id
    * @ORM\Column(type="string")
    */
   protected $eid;
@@ -32,8 +33,7 @@ class Booking {
    *
    * @return integer
    */
-  public function getId()
-  {
+  public function getId() {
     return $this->id;
   }
 
@@ -43,8 +43,7 @@ class Booking {
    * @param string $eid
    * @return Booking
    */
-  public function setEid($eid)
-  {
+  public function setEid($eid) {
     $this->eid = $eid;
 
     return $this;
@@ -55,8 +54,7 @@ class Booking {
    *
    * @return string
    */
-  public function getEid()
-  {
+  public function getEid() {
     return $this->eid;
   }
 
@@ -66,8 +64,7 @@ class Booking {
    * @param \Itk\ApiBundle\Entity\User $user
    * @return Booking
    */
-  public function setUser(\Itk\ApiBundle\Entity\User $user = null)
-  {
+  public function setUser(\Itk\ApiBundle\Entity\User $user = null) {
     $this->user = $user;
 
     return $this;
@@ -78,8 +75,7 @@ class Booking {
    *
    * @return \Itk\ApiBundle\Entity\User
    */
-  public function getUser()
-  {
+  public function getUser() {
     return $this->user;
   }
 }

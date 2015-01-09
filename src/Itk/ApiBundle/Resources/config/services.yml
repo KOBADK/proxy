@@ -3,20 +3,16 @@ parameters:
 services:
   koba.users_service:
     class: Itk\ApiBundle\Services\UsersService
-    calls:
-      - [ setContainer,[ @service_container ] ]
+    arguments: [@service_container]
 
-  koba.roles_service:
-    class: Itk\ApiBundle\Services\RolesService
-    calls:
-      - [ setContainer,[ @service_container ] ]
+#  koba.roles_service:
+#    class: Itk\ApiBundle\Services\RolesService
+#    arguments: [@service_container]
 
-  koba.resources_service:
-    class: Itk\ApiBundle\Services\ResourcesService
-    calls:
-      - [ setContainer,[ @service_container ] ]
+#  koba.resources_service:
+#    class: Itk\ApiBundle\Services\ResourcesService
+#    arguments: [@service_container]
 
-  koba.bookings_service:
-    class: Itk\ApiBundle\Services\BookingsService
-    calls:
-      - [ setContainer,[ @service_container ] ]
+#  koba.bookings_service :
+#    class: Itk\ApiBundle\Services\BookingsService
+#    arguments: [@service_container]

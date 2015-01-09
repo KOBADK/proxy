@@ -38,7 +38,7 @@ class User {
   protected $mail;
 
   /**
-   * @ORM\Column(type="string")
+   * @ORM\Column(type="boolean")
    */
   protected $status;
 
@@ -50,8 +50,7 @@ class User {
   /**
    * Constructor
    */
-  public function __construct()
-  {
+  public function __construct() {
     $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
     $this->bookings = new \Doctrine\Common\Collections\ArrayCollection();
   }
@@ -61,8 +60,7 @@ class User {
    *
    * @return integer
    */
-  public function getId()
-  {
+  public function getId() {
     return $this->id;
   }
 
@@ -72,8 +70,7 @@ class User {
    * @param string $uuid
    * @return User
    */
-  public function setUuid($uuid)
-  {
+  public function setUuid($uuid) {
     $this->uuid = $uuid;
 
     return $this;
@@ -84,8 +81,7 @@ class User {
    *
    * @return string
    */
-  public function getUuid()
-  {
+  public function getUuid() {
     return $this->uuid;
   }
 
@@ -95,8 +91,7 @@ class User {
    * @param string $name
    * @return User
    */
-  public function setName($name)
-  {
+  public function setName($name) {
     $this->name = $name;
 
     return $this;
@@ -107,8 +102,7 @@ class User {
    *
    * @return string
    */
-  public function getName()
-  {
+  public function getName() {
     return $this->name;
   }
 
@@ -118,8 +112,7 @@ class User {
    * @param string $mail
    * @return User
    */
-  public function setMail($mail)
-  {
+  public function setMail($mail) {
     $this->mail = $mail;
 
     return $this;
@@ -130,19 +123,17 @@ class User {
    *
    * @return string
    */
-  public function getMail()
-  {
+  public function getMail() {
     return $this->mail;
   }
 
   /**
    * Set status
    *
-   * @param string $status
+   * @param boolean $status
    * @return User
    */
-  public function setStatus($status)
-  {
+  public function setStatus($status) {
     $this->status = $status;
 
     return $this;
@@ -151,34 +142,31 @@ class User {
   /**
    * Get status
    *
-   * @return string
+   * @return boolean
    */
-  public function getStatus()
-  {
+  public function getStatus() {
     return $this->status;
   }
 
   /**
-   * Add roles
+   * Add role
    *
-   * @param \Itk\ApiBundle\Entity\Role $roles
+   * @param \Itk\ApiBundle\Entity\Role $role
    * @return User
    */
-  public function addRole(\Itk\ApiBundle\Entity\Role $roles)
-  {
-    $this->roles[] = $roles;
+  public function addRole(\Itk\ApiBundle\Entity\Role $role) {
+    $this->roles[] = $role;
 
     return $this;
   }
 
   /**
-   * Remove roles
+   * Remove role
    *
-   * @param \Itk\ApiBundle\Entity\Role $roles
+   * @param \Itk\ApiBundle\Entity\Role $role
    */
-  public function removeRole(\Itk\ApiBundle\Entity\Role $roles)
-  {
-    $this->roles->removeElement($roles);
+  public function removeRole(\Itk\ApiBundle\Entity\Role $role) {
+    $this->roles->removeElement($role);
   }
 
   /**
@@ -186,32 +174,29 @@ class User {
    *
    * @return \Doctrine\Common\Collections\Collection
    */
-  public function getRoles()
-  {
+  public function getRoles() {
     return $this->roles;
   }
 
   /**
-   * Add bookings
+   * Add booking
    *
-   * @param \Itk\ApiBundle\Entity\Booking $bookings
+   * @param \Itk\ApiBundle\Entity\Booking $booking
    * @return User
    */
-  public function addBooking(\Itk\ApiBundle\Entity\Booking $bookings)
-  {
-    $this->bookings[] = $bookings;
+  public function addBooking(\Itk\ApiBundle\Entity\Booking $booking) {
+    $this->bookings[] = $booking;
 
     return $this;
   }
 
   /**
-   * Remove bookings
+   * Remove booking
    *
-   * @param \Itk\ApiBundle\Entity\Booking $bookings
+   * @param \Itk\ApiBundle\Entity\Booking $booking
    */
-  public function removeBooking(\Itk\ApiBundle\Entity\Booking $bookings)
-  {
-    $this->bookings->removeElement($bookings);
+  public function removeBooking(\Itk\ApiBundle\Entity\Booking $booking) {
+    $this->bookings->removeElement($booking);
   }
 
   /**
@@ -219,8 +204,7 @@ class User {
    *
    * @return \Doctrine\Common\Collections\Collection
    */
-  public function getBookings()
-  {
+  public function getBookings() {
     return $this->bookings;
   }
 }

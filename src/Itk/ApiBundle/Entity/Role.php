@@ -39,8 +39,7 @@ class Role {
   /**
    * Constructor
    */
-  public function __construct()
-  {
+  public function __construct() {
     $this->resources = new \Doctrine\Common\Collections\ArrayCollection();
     $this->users = new \Doctrine\Common\Collections\ArrayCollection();
   }
@@ -50,8 +49,7 @@ class Role {
    *
    * @return integer
    */
-  public function getId()
-  {
+  public function getId() {
     return $this->id;
   }
 
@@ -61,8 +59,7 @@ class Role {
    * @param string $title
    * @return Role
    */
-  public function setTitle($title)
-  {
+  public function setTitle($title) {
     $this->title = $title;
 
     return $this;
@@ -73,8 +70,7 @@ class Role {
    *
    * @return string
    */
-  public function getTitle()
-  {
+  public function getTitle() {
     return $this->title;
   }
 
@@ -84,8 +80,7 @@ class Role {
    * @param string $description
    * @return Role
    */
-  public function setDescription($description)
-  {
+  public function setDescription($description) {
     $this->description = $description;
 
     return $this;
@@ -96,32 +91,31 @@ class Role {
    *
    * @return string
    */
-  public function getDescription()
-  {
+  public function getDescription() {
     return $this->description;
   }
 
   /**
-   * Add resources
+   * Add resource
    *
-   * @param \Itk\ApiBundle\Entity\Resource $resources
+   * @param \Itk\ApiBundle\Entity\Resource $resource
    * @return Role
    */
-  public function addResource(\Itk\ApiBundle\Entity\Resource $resources)
-  {
-    $this->resources[] = $resources;
+  public function addResource(\Itk\ApiBundle\Entity\Resource $resource) {
+    $resource->addRole($this);
+    $this->resources[] = $resource;
 
     return $this;
   }
 
   /**
-   * Remove resources
+   * Remove resource
    *
-   * @param \Itk\ApiBundle\Entity\Resource $resources
+   * @param \Itk\ApiBundle\Entity\Resource $resource
    */
-  public function removeResource(\Itk\ApiBundle\Entity\Resource $resources)
-  {
-    $this->resources->removeElement($resources);
+  public function removeResource(\Itk\ApiBundle\Entity\Resource $resource) {
+    $resource->removeRole($this);
+    $this->resources->removeElement($resource);
   }
 
   /**
@@ -129,32 +123,31 @@ class Role {
    *
    * @return \Doctrine\Common\Collections\Collection
    */
-  public function getResources()
-  {
+  public function getResources() {
     return $this->resources;
   }
 
   /**
-   * Add users
+   * Add user
    *
-   * @param \Itk\ApiBundle\Entity\User $users
+   * @param \Itk\ApiBundle\Entity\User $user
    * @return Role
    */
-  public function addUser(\Itk\ApiBundle\Entity\User $users)
-  {
-    $this->users[] = $users;
+  public function addUser(\Itk\ApiBundle\Entity\User $user) {
+    $user->addRole($this);
+    $this->users[] = $user;
 
     return $this;
   }
 
   /**
-   * Remove users
+   * Remove user
    *
-   * @param \Itk\ApiBundle\Entity\User $users
+   * @param \Itk\ApiBundle\Entity\User $user
    */
-  public function removeUser(\Itk\ApiBundle\Entity\User $users)
-  {
-    $this->users->removeElement($users);
+  public function removeUser(\Itk\ApiBundle\Entity\User $user) {
+    $user->removeRole($this);
+    $this->users->removeElement($user);
   }
 
   /**
@@ -162,8 +155,7 @@ class Role {
    *
    * @return \Doctrine\Common\Collections\Collection
    */
-  public function getUsers()
-  {
+  public function getUsers() {
     return $this->users;
   }
 }

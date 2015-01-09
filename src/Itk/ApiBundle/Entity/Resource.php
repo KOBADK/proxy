@@ -50,8 +50,7 @@ class Resource {
   /**
    * Constructor
    */
-  public function __construct()
-  {
+  public function __construct() {
     $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
   }
 
@@ -60,8 +59,7 @@ class Resource {
    *
    * @return integer
    */
-  public function getId()
-  {
+  public function getId() {
     return $this->id;
   }
 
@@ -71,8 +69,7 @@ class Resource {
    * @param string $name
    * @return Resource
    */
-  public function setName($name)
-  {
+  public function setName($name) {
     $this->name = $name;
 
     return $this;
@@ -83,8 +80,7 @@ class Resource {
    *
    * @return string
    */
-  public function getName()
-  {
+  public function getName() {
     return $this->name;
   }
 
@@ -94,8 +90,7 @@ class Resource {
    * @param string $mail
    * @return Resource
    */
-  public function setMail($mail)
-  {
+  public function setMail($mail) {
     $this->mail = $mail;
 
     return $this;
@@ -106,8 +101,7 @@ class Resource {
    *
    * @return string
    */
-  public function getMail()
-  {
+  public function getMail() {
     return $this->mail;
   }
 
@@ -117,8 +111,7 @@ class Resource {
    * @param string $routing
    * @return Resource
    */
-  public function setRouting($routing)
-  {
+  public function setRouting($routing) {
     $this->routing = $routing;
 
     return $this;
@@ -129,8 +122,7 @@ class Resource {
    *
    * @return string
    */
-  public function getRouting()
-  {
+  public function getRouting() {
     return $this->routing;
   }
 
@@ -140,8 +132,7 @@ class Resource {
    * @param string $mailbox
    * @return Resource
    */
-  public function setMailbox($mailbox)
-  {
+  public function setMailbox($mailbox) {
     $this->mailbox = $mailbox;
 
     return $this;
@@ -152,8 +143,7 @@ class Resource {
    *
    * @return string
    */
-  public function getMailbox()
-  {
+  public function getMailbox() {
     return $this->mailbox;
   }
 
@@ -163,8 +153,7 @@ class Resource {
    * @param integer $expire
    * @return Resource
    */
-  public function setExpire($expire)
-  {
+  public function setExpire($expire) {
     $this->expire = $expire;
 
     return $this;
@@ -175,32 +164,29 @@ class Resource {
    *
    * @return integer
    */
-  public function getExpire()
-  {
+  public function getExpire() {
     return $this->expire;
   }
 
   /**
-   * Add roles
+   * Add role
    *
-   * @param \Itk\ApiBundle\Entity\Role $roles
+   * @param \Itk\ApiBundle\Entity\Role $role
    * @return Resource
    */
-  public function addRole(\Itk\ApiBundle\Entity\Role $roles)
-  {
-    $this->roles[] = $roles;
+  public function addRole(\Itk\ApiBundle\Entity\Role $role) {
+    $this->roles[] = $role;
 
     return $this;
   }
 
   /**
-   * Remove roles
+   * Remove role
    *
-   * @param \Itk\ApiBundle\Entity\Role $roles
+   * @param \Itk\ApiBundle\Entity\Role $role
    */
-  public function removeRole(\Itk\ApiBundle\Entity\Role $roles)
-  {
-    $this->roles->removeElement($roles);
+  public function removeRole(\Itk\ApiBundle\Entity\Role $role) {
+    $this->roles->removeElement($role);
   }
 
   /**
@@ -208,8 +194,7 @@ class Resource {
    *
    * @return \Doctrine\Common\Collections\Collection
    */
-  public function getRoles()
-  {
+  public function getRoles() {
     return $this->roles;
   }
 }
