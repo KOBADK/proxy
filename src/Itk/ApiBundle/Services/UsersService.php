@@ -9,6 +9,7 @@
 namespace Itk\ApiBundle\Services;
 
 use Symfony\Component\DependencyInjection\Container;
+use Itk\ApiBundle\Entity\User;
 
 /**
  * Class UsersService
@@ -39,7 +40,7 @@ class UsersService {
    * @return array
    */
   public function getUser($id) {
-    $user = $this->doctrine->getRepository('Itk\ApiBundle\Entity\User')->findById($id);
+    $user = $this->doctrine->getRepository('Itk\ApiBundle\Entity\User')->findOneById($id);
 
     $status = $user ? 200 : 404;
 
@@ -62,6 +63,57 @@ class UsersService {
     return array(
       'data' => $users,
       'status' => $status
+    );
+  }
+
+  /**
+   * Update the user.
+   *  - only status and roles.
+   *  - all other data is set on creation.
+   *
+   * @param $id
+   * @param User $updatedUser
+   * @return array
+   */
+  public function updateUser($id, User $updatedUser) {
+    // Get the user.
+    $result = $this->getUser($id);
+    if ($result['status'] !== 200) {
+      return $result;
+    }
+
+    $user = $result['data'];
+
+    // Update status
+    if ($updatedUser->getStatus() !== null) {
+      $user->setStatus($updatedUser->getStatus());
+    }
+
+    // Update roles.
+    if ($updatedUser->getRoles() !== null) {
+      // Remove roles.
+      foreach($user->getRoles() as $role) {
+        if (!$updatedUser->getRoles()->contains($role)) {
+          $user->removeRole($role);
+        }
+      }
+
+      // Add roles.
+      foreach($updatedUser->getRoles() as $role) {
+        if (!$user->getRoles()->contains($role)) {
+          // TODO: validate each Role object.
+
+          $user->addRole($role);
+        }
+      }
+    }
+
+    // Update db.
+    $this->em->flush();
+
+    return array(
+      'data' => $user,
+      'status' => 200
     );
   }
 }

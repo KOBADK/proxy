@@ -3,6 +3,7 @@
 namespace Itk\ApiBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity
@@ -10,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Resource {
   /**
+   * Internal resource ID
+   *
    * @ORM\Column(type="integer")
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="AUTO")
@@ -17,31 +20,45 @@ class Resource {
   protected $id;
 
   /**
+   * Resource name
+   *
    * @ORM\Column(type="string")
+   *
+   * @Groups({"role_create"})
    */
   protected $name;
 
   /**
+   * Resource mail
+   *
    * @ORM\Column(type="string")
    */
   protected $mail;
 
   /**
+   * Routing protocol
+   *
    * @ORM\Column(type="string")
    */
   protected $routing;
 
   /**
+   *
+   *
    * @ORM\Column(type="string")
    */
   protected $mailbox;
 
   /**
+   * When should the resource be reloaded?
+   *
    * @ORM\Column(type="integer")
    */
   protected $expire;
 
   /**
+   * Roles that have access to this resource
+   *
    * @ORM\ManyToMany(targetEntity="Role", inversedBy="resources")
    * @ORM\JoinTable(name="koba_roles_resources")
    **/

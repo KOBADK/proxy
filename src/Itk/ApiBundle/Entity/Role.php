@@ -3,6 +3,8 @@
 namespace Itk\ApiBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\MaxDepth;
 
 /**
  * @ORM\Entity
@@ -10,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Role {
   /**
+   * Internal role ID
+   *
    * @ORM\Column(type="integer")
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="AUTO")
@@ -17,22 +21,38 @@ class Role {
   protected $id;
 
   /**
-   * @ORM\Column(type="string")
+   * The title of the role
+   *
+   * @ORM\Column(type="string", nullable=false)
+   *
+   * @Groups({"role_create"})
    */
   protected $title;
 
   /**
+   * The description of the role
+   *
    * @ORM\Column(type="text")
+   *
+   * @Groups({"role_create"})
    */
   protected $description;
 
   /**
+   * Resources the role has access to
+   *
    * @ORM\ManyToMany(targetEntity="Resource", mappedBy="roles")
+   *
+   * @Groups({"role_create"})
    **/
   protected $resources;
 
   /**
+   * Users that have this role
+   *
    * @ORM\ManyToMany(targetEntity="User", mappedBy="roles")
+   *
+   * @Groups({"role_create"})
    **/
   protected $users;
 

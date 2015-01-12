@@ -3,6 +3,7 @@
 namespace Itk\ApiBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity
@@ -10,40 +11,65 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User {
   /**
+   * Internal user ID
+   *
    * @ORM\Column(type="integer")
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="AUTO")
+   *
+   * @Groups({"user_update", "role_create"})
    */
   protected $id;
 
   /**
+   * User UUID
+   *
    * @ORM\Column(type="string")
+   * @Groups({})
    */
   protected $uuid;
 
   /**
+   * The user's roles
+   *
    * @ORM\ManyToMany(targetEntity="Role", inversedBy="users")
    * @ORM\JoinTable(name="koba_roles_users")
+   *
+   * @Groups({"user_update"})
    **/
   protected $roles;
 
   /**
+   * User's name
+   *
    * @ORM\Column(type="string")
+   * @Groups({})
    */
   protected $name;
 
   /**
+   * User's mail
+   *
    * @ORM\Column(type="string")
+   * @Groups({})
    */
   protected $mail;
 
   /**
+   * User status (active?)
+   *
    * @ORM\Column(type="boolean")
+   *
+   * @Groups({"user_update"})
    */
   protected $status;
 
   /**
+   * User's bookings
+   *
    * @ORM\OneToMany(targetEntity="Booking", mappedBy="user")
+   *
+   * @Groups({"user_update"})
    **/
   protected $bookings;
 

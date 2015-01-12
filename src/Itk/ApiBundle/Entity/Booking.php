@@ -3,6 +3,7 @@
 namespace Itk\ApiBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity
@@ -10,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Booking {
   /**
+   * Internal booking ID
+   *
    * @ORM\Column(type="integer")
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="AUTO")
@@ -17,12 +20,15 @@ class Booking {
   protected $id;
 
   /**
-   * Exchange event id
+   * Exchange event ID
+   *
    * @ORM\Column(type="string")
    */
   protected $eid;
 
   /**
+   * User that owns the booking
+   *
    * @ORM\ManyToOne(targetEntity="User", inversedBy="bookings")
    * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
    **/
