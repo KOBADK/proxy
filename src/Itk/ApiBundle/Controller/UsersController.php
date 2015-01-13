@@ -77,9 +77,6 @@ class UsersController extends FOSRestController {
    *   input={
    *     "class"="Itk\ApiBundle\Entity\User",
    *     "groups"={"user_update"}
-   *   },
-   *   tags={
-   *     "not_complete"
    *   }
    * )
    *

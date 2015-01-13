@@ -12,7 +12,8 @@ class UserControllerTest extends ExtendedWebTestCase {
     $client = static::createClient();
     $em = $client->getContainer()->get('doctrine')->getManager();
 
-    $this->setupDatabase($em);
+    $this->emptyDatabase($em);
+    $this->setupData($em);
 
     // Assert valid json response.
     $client->request('GET', '/api/users');
@@ -27,7 +28,8 @@ class UserControllerTest extends ExtendedWebTestCase {
     $client = static::createClient();
     $em = $client->getContainer()->get('doctrine')->getManager();
 
-    $this->setupDatabase($em);
+    $this->emptyDatabase($em);
+    $this->setupData($em);
 
     // Assert valid json response.
     $client->request('GET', '/api/users/3');
@@ -42,7 +44,8 @@ class UserControllerTest extends ExtendedWebTestCase {
     $client = static::createClient();
     $em = $client->getContainer()->get('doctrine')->getManager();
 
-    $this->setupDatabase($em);
+    $this->emptyDatabase($em);
+    $this->setupData($em);
 
     // Assert valid json response.
     $client->request('GET', '/api/users/1');

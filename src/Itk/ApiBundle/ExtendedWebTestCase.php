@@ -5,6 +5,7 @@ namespace Itk\ApiBundle;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Itk\ApiBundle\Entity\User;
 use Itk\ApiBundle\Entity\Role;
+use Itk\ApiBundle\Entity\Resource;
 use Doctrine\ORM\EntityManager;
 
 class ExtendedWebTestCase extends WebTestCase {
@@ -32,20 +33,21 @@ class ExtendedWebTestCase extends WebTestCase {
    *
    * @param EntityManager $em
    */
-  protected function setupDatabase($em) {
+  protected function emptyDatabase($em) {
     // Empty database tables.
     $connection = $em->getConnection();
-    $platform   = $connection->getDatabasePlatform();
+    $platform = $connection->getDatabasePlatform();
     $connection->executeQuery('SET FOREIGN_KEY_CHECKS = 0;');
-    $connection->executeUpdate($platform->getTruncateTableSQL('koba_roles_resources', true));
-    $connection->executeUpdate($platform->getTruncateTableSQL('koba_roles_users', true));
-    $connection->executeUpdate($platform->getTruncateTableSQL('koba_booking', true));
-    $connection->executeUpdate($platform->getTruncateTableSQL('koba_resource', true));
-    $connection->executeUpdate($platform->getTruncateTableSQL('koba_role', true));
-    $connection->executeUpdate($platform->getTruncateTableSQL('koba_user', true));
+    $connection->executeUpdate($platform->getTruncateTableSQL('koba_roles_resources', TRUE));
+    $connection->executeUpdate($platform->getTruncateTableSQL('koba_roles_users', TRUE));
+    $connection->executeUpdate($platform->getTruncateTableSQL('koba_booking', TRUE));
+    $connection->executeUpdate($platform->getTruncateTableSQL('koba_resource', TRUE));
+    $connection->executeUpdate($platform->getTruncateTableSQL('koba_role', TRUE));
+    $connection->executeUpdate($platform->getTruncateTableSQL('koba_user', TRUE));
     $connection->executeQuery('SET FOREIGN_KEY_CHECKS = 1;');
+  }
 
-    // Create user 1
+  protected function setupData($em) {
     $user1 = new User();
     $user1->setUuid("user1");
     $user1->setName("Name 1");
@@ -53,7 +55,6 @@ class ExtendedWebTestCase extends WebTestCase {
     $user1->setStatus(true);
     $em->persist($user1);
 
-    // Create user 2
     $user2 = new User();
     $user2->setUuid("user2");
     $user2->setName("Name 2");
@@ -82,6 +83,34 @@ class ExtendedWebTestCase extends WebTestCase {
     $role4->setTitle('Ansat');
     $role4->setDescription('vil være den rolle en ansat får tildelt ved login.');
     $em->persist($role4);
+
+    $resource1 = new Resource();
+    $resource1->setName("Rum 1");
+    $resource1->setMail("test1@test.test");
+    $resource1->setRouting("SMTP");
+    $resource1->setMailbox("PublicDL");
+    $resource1->setExpire(1000000);
+    $resource1->addRole($role1);
+    $resource1->addRole($role2);
+    $resource1->addRole($role3);
+    $resource1->addRole($role4);
+    $em->persist($resource1);
+
+    $resource2 = new Resource();
+    $resource2->setName("Rum 2");
+    $resource2->setMail("test2@test.test");
+    $resource2->setRouting("SMTP");
+    $resource2->setMailbox("PublicDL");
+    $resource2->setExpire(1000000);
+    $em->persist($resource2);
+
+    $role5 = new Role();
+    $role5->setTitle('Rum 2 adgang');
+    $role5->setDescription('adgang til Rum 2');
+    $role5->addResource($resource2);
+    $em->persist($role5);
+
+    $user2->addRole($role5);
 
     $em->flush();
   }
