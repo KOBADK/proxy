@@ -37,6 +37,14 @@ class Booking {
   protected $user;
 
   /**
+   * Resource that is booked
+   *
+   * @ORM\ManyToOne(targetEntity="Resource", inversedBy="bookings")
+   * @ORM\JoinColumn(name="resource_id", referencedColumnName="id")
+   */
+  protected $resource;
+
+  /**
    * Get id
    *
    * @return integer

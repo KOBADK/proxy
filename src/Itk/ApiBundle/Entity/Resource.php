@@ -45,7 +45,7 @@ class Resource {
   protected $routing;
 
   /**
-   *
+   * Mailbox type
    *
    * @ORM\Column(type="string")
    */
@@ -65,6 +65,13 @@ class Resource {
    * @ORM\JoinTable(name="koba_roles_resources")
    **/
   protected $roles;
+
+  /**
+   * Bookings of the resource
+   *
+   * @ORM\OneToMany(targetEntity="Booking", mappedBy="resource")
+   **/
+  protected $bookings;
 
   /**
    * Constructor
