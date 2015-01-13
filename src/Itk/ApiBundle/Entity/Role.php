@@ -5,10 +5,12 @@ namespace Itk\ApiBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\MaxDepth;
+use JMS\Serializer\Annotation\XmlRoot;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="koba_role")
+ * @XmlRoot("role")
  */
 class Role {
   /**

@@ -4,10 +4,12 @@ namespace Itk\ApiBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\XmlRoot;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="koba_resource")
+ * @XmlRoot("resource")
  */
 class Resource {
   /**
