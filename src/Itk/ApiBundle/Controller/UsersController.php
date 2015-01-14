@@ -13,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use JMS\Serializer\SerializationContext;
 
 /**
  * @Route("/users")
@@ -40,7 +41,10 @@ class UsersController extends FOSRestController {
 
     $result = $usersService->getUser($id);
 
+    $context = new SerializationContext();
+    $context->setGroups(array('user'));
     $view = $this->view($result['data'], $result['status']);
+    $view->setSerializationContext($context);
     return $this->handleView($view);
   }
 
@@ -61,7 +65,10 @@ class UsersController extends FOSRestController {
 
     $result = $usersService->getAllUsers();
 
+    $context = new SerializationContext();
+    $context->setGroups(array('user'));
     $view = $this->view($result['data'], $result['status']);
+    $view->setSerializationContext($context);
     return $this->handleView($view);
   }
 
@@ -79,7 +86,8 @@ class UsersController extends FOSRestController {
    *   },
    *   statusCodes={
    *     204="Returned when successful",
-   *     400="Malformed input"
+   *     400="Malformed input",
+   *     404="user not found"
    *   }
    * )
    *
@@ -121,7 +129,10 @@ class UsersController extends FOSRestController {
 
     $result = $usersService->getUserRoles($id);
 
+    $context = new SerializationContext();
+    $context->setGroups(array('user'));
     $view = $this->view($result['data'], $result['status']);
+    $view->setSerializationContext($context);
     return $this->handleView($view);
   }
 
@@ -219,7 +230,10 @@ class UsersController extends FOSRestController {
 
     $result = $usersService->getUserBookings($id);
 
+    $context = new SerializationContext();
+    $context->setGroups(array('booking'));
     $view = $this->view($result['data'], $result['status']);
+// @TODO:    $view->setSerializationContext($context);
     return $this->handleView($view);
   }
 }

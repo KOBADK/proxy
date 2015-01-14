@@ -21,6 +21,8 @@ class User {
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="AUTO")
    *
+   * @Groups({"user"})
+   *
    * @Assert\NotNull
    */
   protected $id;
@@ -29,6 +31,8 @@ class User {
    * User UUID
    *
    * @ORM\Column(type="string", nullable=false)
+   *
+   * @Groups({"user"})
    *
    * @Assert\NotNull
    */
@@ -49,6 +53,8 @@ class User {
    *
    * @ORM\Column(type="string", nullable=false)
    *
+   * @Groups({"user"})
+   *
    * @Assert\NotNull
    */
   protected $name;
@@ -57,6 +63,8 @@ class User {
    * Email
    *
    * @ORM\Column(type="string", nullable=false)
+   *
+   * @Groups({"user"})
    *
    * @Assert\NotNull
    * @Assert\Email
@@ -67,6 +75,8 @@ class User {
    * User status (active?)
    *
    * @ORM\Column(type="boolean", nullable=false)
+   *
+   * @Groups({"user"})
    *
    * @Assert\NotNull
    */
