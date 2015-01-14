@@ -10,6 +10,7 @@ namespace Itk\ApiBundle\Services;
 
 use Symfony\Component\DependencyInjection\Container;
 use Itk\ApiBundle\Entity\User;
+use Itk\ApiBundle\Entity\Role;
 
 /**
  * Class UsersService
@@ -20,34 +21,40 @@ class UsersService {
   protected $container;
   protected $doctrine;
   protected $em;
+  protected $helperService;
+  protected $userRepository;
+  protected $roleRepository;
 
   /**
    * Constructor.
    *
    * @param Container $container
    */
-  function __construct(Container $container) {
+  function __construct(Container $container, HelperService $helperService) {
     $this->container = $container;
+    $this->helperService = $helperService;
 
     $this->doctrine = $this->container->get('doctrine');
     $this->em = $this->doctrine->getManager();
+
+    $this->userRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\User');
+    $this->roleRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\Role');
   }
 
   /**
-   * Get the user with $id
+   * Get a user with $id
    *
    * @param $id
    * @return array
    */
   public function getUser($id) {
-    $user = $this->doctrine->getRepository('Itk\ApiBundle\Entity\User')->findOneById($id);
+    $user = $this->userRepository->findOneById($id);
 
-    $status = $user ? 200 : 404;
+    if (!$user) {
+      return $this->helperService->generateResponse(404, null, array('message' => 'user not found'));
+    }
 
-    return array(
-      'data' => $user,
-      'status' => $status
-    );
+    return $this->helperService->generateResponse(200, $user);
   }
 
   /**
@@ -56,64 +63,118 @@ class UsersService {
    * @return array
    */
   public function getAllUsers() {
-    $users = $this->doctrine->getRepository('Itk\ApiBundle\Entity\User')->findAll();
+    $users = $this->userRepository->findAll();
 
-    $status = $users ? 200 : 404;
-
-    return array(
-      'data' => $users,
-      'status' => $status
-    );
+    return $this->helperService->generateResponse(200, $users);
   }
 
   /**
-   * Update the user.
-   *  - only status and roles.
-   *  - all other data is set on creation.
+   * Update a user
    *
    * @param $id
    * @param User $updatedUser
    * @return array
    */
   public function updateUser($id, User $updatedUser) {
-    // Get the user.
-    $result = $this->getUser($id);
-    if ($result['status'] !== 200) {
-      return $result;
+    // Validate user
+    $validation = $this->get('koba.helper_service')->validateUser($updatedUser);
+    if ($validation['status'] !== 200) {
+      return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
     }
 
-    $user = $result['data'];
-
-    // Update status
-    if ($updatedUser->getStatus() !== null) {
-      $user->setStatus($updatedUser->getStatus());
+    // Validate ids match
+    if ($id != $updatedUser->getId()) {
+      return $this->helperService->generateResponse(400, null, array('errors' => 'ids do not match'));
     }
 
-    // Update roles.
-    if ($updatedUser->getRoles() !== null) {
-      // Remove roles.
-      foreach($user->getRoles() as $role) {
-        if (!$updatedUser->getRoles()->contains($role)) {
-          $user->removeRole($role);
-        }
-      }
-
-      // Add roles.
-      foreach($updatedUser->getRoles() as $role) {
-        if (!$user->getRoles()->contains($role)) {
-          // TODO: validate each Role object.
-
-          $user->addRole($role);
-        }
-      }
+    if (!$this->userRepository->findOneById($updatedUser->getId())) {
+      return $this->helperService->generateResponse(404, null, array('errors' => 'user not found'));
     }
 
-    // Update db.
+    $this->em->merge($updatedUser);
     $this->em->flush();
 
-    return array(
-      'data' => $user,
-      'status' => 200
-    );
+    return $this->helperService->generateResponse(204);
+  }
+
+  /**
+   * Get a user's roles
+   *
+   * @param $id
+   * @return array
+   */
+  public function getUserRoles($id) {
+    $user = $this->userRepository->findOneById($id);
+
+    if (!$user) {
+      return $this->helperService->generateResponse(404, null, array('message' => 'user not found'));
+    }
+
+    return $this->helperService->generateResponse(200, $user->getRoles());
+  }
+
+  /**
+   * Add a role to a user
+   *
+   * @param integer $userId
+   * @param Role $role
+   * @return array
+   */
+  public function addRoleToUser($userId, $role) {
+    $validation = $this->helperService->validateRole($role);
+    if ($validation['status'] !== 200) {
+      return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
+    }
+
+    $user = $this->userRepository->findOneById($userId);
+
+    if (!$user) {
+      return $this->helperService->generateResponse(404, null, array('message' => 'user not found'));
+    }
+
+    $role = $this->roleRepository->findOneById($role->getId());
+
+    if (!$role) {
+      return $this->helperService->generateResponse(404, null, array('message' => 'role not found'));
+    }
+
+    if ($user->getRoles()->contains($role)) {
+      return $this->helperService->generateResponse(409, null, array('message' => 'user already has that role'));
+    }
+
+    $user->addRole($role);
+    $this->em->flush();
+
+    return $this->helperService->generateResponse(204);
+  }
+
+  /**
+   * Remove a role from a user
+   *
+   * @param $userId
+   * @param $roleId
+   * @return array
+   */
+  public function removeRoleFromUser($userId, $roleId) {
+    $user = $this->userRepository->findOneById($userId);
+
+    if (!$user) {
+      return $this->helperService->generateResponse(404, null, array('message' => 'user not found'));
+    }
+
+    $role = $this->roleRepository->findOneById($roleId);
+
+    if (!$role) {
+      return $this->helperService->generateResponse(404, null, array('message' => 'role not found'));
+    }
+
+    if (!$user->getRoles()->contains($role)) {
+      return $this->helperService->generateResponse(409, null, array('message' => 'user does not have that role'));
+    }
+
+    $user->removeRole($role);
+    $this->em->flush();
+
+    return $this->helperService->generateResponse(204);
   }
 }

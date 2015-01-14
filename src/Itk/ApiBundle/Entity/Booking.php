@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\XmlRoot;
 
+use Symfony\Component\Validator\Constraints AS Assert;
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="koba_booking")
@@ -18,6 +20,8 @@ class Booking {
    * @ORM\Column(type="integer")
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="AUTO")
+   *
+   * @Assert\NotNull
    */
   protected $id;
 

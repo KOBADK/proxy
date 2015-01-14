@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\XmlRoot;
 
+use Symfony\Component\Validator\Constraints AS Assert;
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="koba_user")
@@ -15,63 +17,67 @@ class User {
   /**
    * Internal user ID
    *
-   * @ORM\Column(type="integer")
+   * @ORM\Column(type="integer", nullable=false)
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="AUTO")
    *
-   * @Groups({"user_update", "role_create"})
+   * @Assert\NotNull
    */
   protected $id;
 
   /**
    * User UUID
    *
-   * @ORM\Column(type="string")
-   * @Groups({})
+   * @ORM\Column(type="string", nullable=false)
+   *
+   * @Assert\NotNull
    */
   protected $uuid;
 
   /**
    * The user's roles
    *
-   * @ORM\ManyToMany(targetEntity="Role", inversedBy="users")
+   * @ORM\ManyToMany(targetEntity="Role", inversedBy="users", cascade={"all"})
    * @ORM\JoinTable(name="koba_roles_users")
    *
-   * @Groups({"user_update"})
+   * @Assert\Collection
    **/
   protected $roles;
 
   /**
-   * User's name
+   * Name
    *
-   * @ORM\Column(type="string")
-   * @Groups({})
+   * @ORM\Column(type="string", nullable=false)
+   *
+   * @Assert\NotNull
    */
   protected $name;
 
   /**
-   * User's mail
+   * Email
    *
-   * @ORM\Column(type="string")
-   * @Groups({})
+   * @ORM\Column(type="string", nullable=false)
+   *
+   * @Assert\NotNull
+   * @Assert\Email
    */
   protected $mail;
 
   /**
    * User status (active?)
    *
-   * @ORM\Column(type="boolean")
+   * @ORM\Column(type="boolean", nullable=false)
    *
-   * @Groups({"user_update"})
+   * @Assert\NotNull
    */
   protected $status;
 
   /**
    * User's bookings
    *
-   * @ORM\OneToMany(targetEntity="Booking", mappedBy="user")
+   * @ORM\OneToMany(targetEntity="Booking", mappedBy="user", cascade={"all"})
    *
-   * @Groups({"user_update"})
+   * @Assert\Collection
    **/
   protected $bookings;
 

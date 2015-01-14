@@ -26,8 +26,6 @@ class Role {
    * The title of the role
    *
    * @ORM\Column(type="string", nullable=false)
-   *
-   * @Groups({"role_create"})
    */
   protected $title;
 
@@ -35,26 +33,20 @@ class Role {
    * The description of the role
    *
    * @ORM\Column(type="text")
-   *
-   * @Groups({"role_create"})
    */
   protected $description;
 
   /**
    * Resources the role has access to
    *
-   * @ORM\ManyToMany(targetEntity="Resource", mappedBy="roles")
-   *
-   * @Groups({"role_create"})
+   * @ORM\ManyToMany(targetEntity="Resource", mappedBy="roles", cascade={"all"})
    **/
   protected $resources;
 
   /**
    * Users that have this role
    *
-   * @ORM\ManyToMany(targetEntity="User", mappedBy="roles")
-   *
-   * @Groups({"role_create"})
+   * @ORM\ManyToMany(targetEntity="User", mappedBy="roles", cascade={"all"})
    **/
   protected $users;
 
