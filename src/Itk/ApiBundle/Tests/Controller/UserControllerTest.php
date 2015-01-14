@@ -147,5 +147,53 @@ class UserControllerTest extends ExtendedWebTestCase {
     $this->assertEquals($mail, $user->mail);
   }
 
-  
+  /**
+   * Get User Roles: 3 cases
+   * - Get user 1 roles
+   *   Expect 200: 1 role
+   * - Get user 2 roles
+   *   Expect 200: 2 roles
+   * - Get user 3
+   *   Expect 404
+   */
+  public function testGetUserRoles() {
+    $client = $this->baseSetup();
+
+    $client->request('GET', '/api/users/1/roles');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 200);
+
+    $array = (array) json_decode($response->getContent());
+    $this->assertEquals(1, count($array));
+
+    $client->request('GET', '/api/users/2/roles');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 200);
+
+    $array = (array) json_decode($response->getContent());
+    $this->assertEquals(2, count($array));
+
+    $client->request('GET', '/api/users/3/roles');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 404);
+  }
+
+  /**
+   * Get User Bookings:
+   * - Get user 1 bookings
+   *   Expect 200: 0 bookings
+   *
+   * @TODO: Expand test setup with bookings.
+   */
+  public function testGetUserBookings() {
+    $client = $this->baseSetup();
+
+    $client->request('GET', '/api/users/1/bookings');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 200);
+
+    $array = (array) json_decode($response->getContent());
+    $this->assertEquals(0, count($array));
+
+  }
 }

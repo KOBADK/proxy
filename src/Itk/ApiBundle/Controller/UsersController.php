@@ -117,6 +117,10 @@ class UsersController extends FOSRestController {
    *   description="Get a user's roles",
    *   requirements={
    *     {"name"="id", "dataType"="integer", "requirement"="\d+"}
+   *   },
+   *   statusCodes={
+   *     200="Success",
+   *     404="User not found"
    *   }
    * )
    *
