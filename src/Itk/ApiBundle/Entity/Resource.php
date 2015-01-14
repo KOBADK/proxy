@@ -59,7 +59,7 @@ class Resource {
   /**
    * Roles that have access to this resource
    *
-   * @ORM\ManyToMany(targetEntity="Role", inversedBy="resources", cascade={"all"})
+   * @ORM\ManyToMany(targetEntity="Role", inversedBy="resources")
    * @ORM\JoinTable(name="koba_roles_resources")
    **/
   protected $roles;
@@ -67,7 +67,7 @@ class Resource {
   /**
    * Bookings of the resource
    *
-   * @ORM\OneToMany(targetEntity="Booking", mappedBy="resource", cascade={"all"})
+   * @ORM\OneToMany(targetEntity="Booking", mappedBy="resource")
    **/
   protected $bookings;
 

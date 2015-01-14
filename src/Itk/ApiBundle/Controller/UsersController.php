@@ -196,4 +196,30 @@ class UsersController extends FOSRestController {
     $view = $this->view($result['data'], $result['status']);
     return $this->handleView($view);
   }
+
+  /**
+   * @Get("/{id}/bookings")
+   *
+   * @ApiDoc(
+   *  description="Get a user's bookings",
+   *  requirements={
+   *    {"name"="id", "dataType"="integer", "requirement"="\d+"}
+   *  },
+   *  statusCodes={
+   *    200="Success",
+   *    404="No users are found"
+   *  }
+   * )
+   *
+   * @param integer $id the id of the user
+   * @return \Symfony\Component\HttpFoundation\Response
+   */
+  public function getUserBookings($id) {
+    $usersService = $this->get('koba.users_service');
+
+    $result = $usersService->getUserBookings($id);
+
+    $view = $this->view($result['data'], $result['status']);
+    return $this->handleView($view);
+  }
 }

@@ -177,4 +177,20 @@ class UsersService {
 
     return $this->helperService->generateResponse(204);
   }
+
+  /**
+   * Returns a user's bookings
+   *
+   * @param $id
+   * @return array
+   */
+  public function getUserBookings($id) {
+    $user = $this->userRepository->findOneById($id);
+
+    if (!$user) {
+      return $this->helperService->generateResponse(404, null, array('message' => 'user not found'));
+    }
+
+    return $this->helperService->generateResponse(200, $user->getBookings());
+  }
 }

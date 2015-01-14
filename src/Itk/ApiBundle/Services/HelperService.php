@@ -11,6 +11,8 @@ namespace Itk\ApiBundle\Services;
 use Symfony\Component\DependencyInjection\Container;
 use Itk\ApiBundle\Entity\User;
 use Itk\ApiBundle\Entity\Role;
+use Itk\ApiBundle\Entity\Resource;
+use Itk\ApiBundle\Entity\Booking;
 
 /**
  * Class HelperService
@@ -51,7 +53,7 @@ class HelperService {
   /**
    * Validate user
    *
-   * @param User $user
+   * @param \Itk\ApiBundle\Entity\User $user
    * @return array
    */
   public function validateUser(User $user) {
@@ -69,7 +71,7 @@ class HelperService {
   /**
    * Validate role
    *
-   * @param Role $role
+   * @param \Itk\ApiBundle\Entity\Role $role
    * @return array
    */
   public function validateRole(Role $role) {
@@ -83,4 +85,41 @@ class HelperService {
       'status' => $status
     );
   }
+
+  /**
+   * Validate resource
+   *
+   * @param \Itk\ApiBundle\Entity\Resource $resource
+   * @return array
+   */
+  public function validateResource(Resource $resource) {
+    $validator = $this->container->get('validator');
+    $errors = $validator->validate($resource);
+
+    $status = count($errors) > 0 ? 400 : 200;
+
+    return array(
+      'errors' => $errors,
+      'status' => $status
+    );
+  }
+
+  /**
+   * Validate booking
+   *
+   * @param \Itk\ApiBundle\Entity\Booking $booking
+   * @return array
+   */
+  public function validateBooking(Booking $booking) {
+    $validator = $this->container->get('validator');
+    $errors = $validator->validate($booking);
+
+    $status = count($errors) > 0 ? 400 : 200;
+
+    return array(
+      'errors' => $errors,
+      'status' => $status
+    );
+  }
+
 }

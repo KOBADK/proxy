@@ -37,7 +37,7 @@ class User {
   /**
    * The user's roles
    *
-   * @ORM\ManyToMany(targetEntity="Role", inversedBy="users", cascade={"all"})
+   * @ORM\ManyToMany(targetEntity="Role", inversedBy="users")
    * @ORM\JoinTable(name="koba_roles_users")
    *
    * @Assert\Collection
@@ -75,7 +75,7 @@ class User {
   /**
    * User's bookings
    *
-   * @ORM\OneToMany(targetEntity="Booking", mappedBy="user", cascade={"all"})
+   * @ORM\OneToMany(targetEntity="Booking", mappedBy="user")
    *
    * @Assert\Collection
    **/

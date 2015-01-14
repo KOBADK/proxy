@@ -39,14 +39,14 @@ class Role {
   /**
    * Resources the role has access to
    *
-   * @ORM\ManyToMany(targetEntity="Resource", mappedBy="roles", cascade={"all"})
+   * @ORM\ManyToMany(targetEntity="Resource", mappedBy="roles")
    **/
   protected $resources;
 
   /**
    * Users that have this role
    *
-   * @ORM\ManyToMany(targetEntity="User", mappedBy="roles", cascade={"all"})
+   * @ORM\ManyToMany(targetEntity="User", mappedBy="roles")
    **/
   protected $users;
 
