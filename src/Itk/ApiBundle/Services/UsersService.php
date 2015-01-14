@@ -77,7 +77,7 @@ class UsersService {
    */
   public function updateUser($id, User $updatedUser) {
     // Validate user
-    $validation = $this->get('koba.helper_service')->validateUser($updatedUser);
+    $validation = $this->helperService->validateUser($updatedUser);
     if ($validation['status'] !== 200) {
       return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
     }

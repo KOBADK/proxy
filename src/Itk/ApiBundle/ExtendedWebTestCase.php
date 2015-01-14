@@ -10,6 +10,31 @@ use Doctrine\ORM\EntityManager;
 
 class ExtendedWebTestCase extends WebTestCase {
   /**
+   * @return \Symfony\Bundle\FrameworkBundle\Client
+   */
+  protected function baseSetup() {
+    $client = static::createClient();
+    $em = $client->getContainer()->get('doctrine')->getManager();
+
+    $this->emptyDatabase($em);
+    $this->setupData($em);
+
+    return $client;
+  }
+
+  /**
+   * Asserts an empty response.
+   *
+   * @param $response
+   * @param int $statusCode
+   */
+  protected function assertEmptyResponse($response, $statusCode = 200) {
+    $this->assertEquals(
+      $statusCode, $response->getStatusCode()
+    );
+  }
+
+  /**
    * Asserts a json response.
    *
    * @param $response
@@ -25,7 +50,9 @@ class ExtendedWebTestCase extends WebTestCase {
       $response->headers
     );
 
-    $this->assertJson($response->getContent());
+    if ($response->getContent()) {
+      $this->assertJson($response->getContent());
+    }
   }
 
   /**

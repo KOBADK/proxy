@@ -8,18 +8,42 @@
  */
 namespace Itk\ApiBundle\Services;
 
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\Container;
 
 /**
  * Class ResourcesService
  *
  * @package Itk\ApiBundle\Services
  */
-class ResourcesService extends ContainerAware {
-  /**
-   * Constructor.
-   */
-  function __construct() {
+class ResourcesService {
+  protected $container;
+  protected $doctrine;
+  protected $em;
+  protected $bookingRepository;
+  protected $helperService;
 
+  /**
+   * Constructor
+   *
+   * @param Container $container
+   * @param HelperService $helperService
+   */
+  function __construct(Container $container, HelperService $helperService) {
+    $this->container = $container;
+    $this->helperService = $helperService;
+    $this->doctrine = $this->container->get('doctrine');
+    $this->em = $this->doctrine->getManager();
+    $this->resourceRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\Resource');
+  }
+
+  /**
+   * Get all resources
+   *
+   * @return array
+   */
+  public function getAllResources() {
+    $resources = $this->resourceRepository->findAll();
+
+    return $this->helperService->generateResponse(200, $resources);
   }
 }
