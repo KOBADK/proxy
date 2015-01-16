@@ -69,6 +69,8 @@ class BookingsController extends FOSRestController {
   public function postUserBooking(Request $request) {
     $bookingsService = $this->get('koba.bookings_service');
 
+
+
     $result = $bookingsService->createBooking(null);
 
     $view = $this->view($result['data'], $result['status']);

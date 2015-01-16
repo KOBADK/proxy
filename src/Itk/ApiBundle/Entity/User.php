@@ -21,9 +21,9 @@ class User {
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="AUTO")
    *
-   * @Groups({"user", "role"})
-   *
    * @Assert\NotNull
+   *
+   * @Groups({"user", "role"})
    */
   protected $id;
 
@@ -32,9 +32,9 @@ class User {
    *
    * @ORM\Column(type="string", nullable=false)
    *
-   * @Groups({"user"})
+   * @Assert\NotBlank
    *
-   * @Assert\NotNull
+   * @Groups({"user"})
    */
   protected $uuid;
 
@@ -53,9 +53,9 @@ class User {
    *
    * @ORM\Column(type="string", nullable=false)
    *
-   * @Groups({"user", "role"})
+   * @Assert\NotBlank
    *
-   * @Assert\NotNull
+   * @Groups({"user", "role"})
    */
   protected $name;
 
@@ -64,10 +64,10 @@ class User {
    *
    * @ORM\Column(type="string", nullable=false)
    *
-   * @Groups({"user"})
-   *
-   * @Assert\NotNull
+   * @Assert\NotBlank
    * @Assert\Email
+   *
+   * @Groups({"user"})
    */
   protected $mail;
 
@@ -75,6 +75,8 @@ class User {
    * User status (active?)
    *
    * @ORM\Column(type="boolean", nullable=false)
+   *
+   * @Assert\NotNull
    *
    * @Groups({"userstatus", "user"})
    */
@@ -85,9 +87,9 @@ class User {
    *
    * @ORM\OneToMany(targetEntity="Booking", mappedBy="user")
    *
-   * @Groups({})
-   *
    * @Assert\Collection
+   *
+   * @Groups({})
    **/
   protected $bookings;
 

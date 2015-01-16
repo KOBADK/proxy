@@ -33,4 +33,14 @@ class ExchangeService {
     $this->doctrine = $this->container->get('doctrine');
     $this->em = $this->doctrine->getManager();
   }
+
+  /**
+   * Get a resource from exchange
+   *
+   * @param string $mail the mail that identifies the resource in Exchange
+   * @return array
+   */
+  public function getResource($mail) {
+    return $this->helperService->generateResponse(500, null, array('message' => 'not implemented'));
+  }
 }

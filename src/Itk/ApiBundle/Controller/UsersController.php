@@ -170,7 +170,7 @@ class UsersController extends FOSRestController {
     $usersService = $this->get('koba.users_service');
     $serializer = $this->get('jms_serializer');
 
-    $role = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Role', 'json');
+    $role = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Role', $request->get('_format'));
 
     // Add role to user
     $result = $usersService->addRoleToUser($id, $role);

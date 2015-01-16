@@ -31,9 +31,6 @@ class RolesController extends FOSRestController {
    *   statusCodes={
    *     200="Returned when successful",
    *     404="Returned when no roles are found"
-   *   },
-   *   tags={
-   *     "no_tests"
    *   }
    * )
    *
@@ -60,9 +57,6 @@ class RolesController extends FOSRestController {
    *   statusCodes={
    *     200="Returned when successful",
    *     404="Returned when no roles are found",
-   *   },
-   *   tags={
-   *     "no_tests"
    *   }
    * )
    *
@@ -101,9 +95,6 @@ class RolesController extends FOSRestController {
 
     // Deserialize role
     $newRole = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Role', $request->get('_format'));
-    if ($newRole instanceof \Itk\ApiBundle\Entity\Role === false) {
-      return View::create(array('errors' => $newRole), 400);
-    }
 
     // Update user
     $result = $rolesService->createRole($newRole);
@@ -122,8 +113,10 @@ class RolesController extends FOSRestController {
    *     "class"="Itk\ApiBundle\Entity\Role",
    *     "groups"={"role_update"}
    *   },
-   *   tags={
-   *     "no_tests"
+   *   statusCodes={
+   *     204="Success",
+   *     400="Validation error",
+   *     404="Role not found"
    *   }
    * )
    *
@@ -138,9 +131,6 @@ class RolesController extends FOSRestController {
 
     // Deserialize role
     $newRole = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Role', $request->get('_format'));
-    if ($newRole instanceof \Itk\ApiBundle\Entity\Role === false) {
-      return View::create(array('errors' => $newRole), 400);
-    }
 
     // Update user
     $result = $rolesService->updateRole($id, $newRole);

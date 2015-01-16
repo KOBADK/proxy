@@ -83,7 +83,8 @@ class ResourcesController extends FOSRestController {
    * @ApiDoc(
    *   description="Create a resource",
    *   input={
-   *     "class"="\Itk\ApiBundle\Entity\Resource"
+   *     "class"="\Itk\ApiBundle\Entity\Resource",
+   *     "groups"={"resource_create"}
    *   },
    *   statusCodes={
    *     204="Success (No content)",
@@ -102,7 +103,7 @@ class ResourcesController extends FOSRestController {
     $resourcesService = $this->get('koba.resources_service');
     $serializer = $this->get('jms_serializer');
 
-    $resource = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Resource', 'json');
+    $resource = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Resource', $request->get('_format'));
 
     // Add role to user
     $result = $resourcesService->createResource($resource);

@@ -9,6 +9,7 @@
 namespace Itk\ApiBundle\Services;
 
 use Symfony\Component\DependencyInjection\Container;
+use Itk\ApiBundle\Entity\Resource;
 
 /**
  * Class ResourcesService
@@ -19,21 +20,24 @@ class ResourcesService {
   protected $container;
   protected $doctrine;
   protected $em;
-  protected $bookingRepository;
+  protected $resourcesRepository;
   protected $helperService;
+  protected $exchangeService;
 
   /**
    * Constructor
    *
    * @param Container $container
    * @param HelperService $helperService
+   * @param ExchangeService $exchangeService
    */
-  function __construct(Container $container, HelperService $helperService) {
+  function __construct(Container $container, HelperService $helperService, ExchangeService $exchangeService) {
     $this->container = $container;
     $this->helperService = $helperService;
     $this->doctrine = $this->container->get('doctrine');
     $this->em = $this->doctrine->getManager();
-    $this->resourceRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\Resource');
+    $this->resourcesRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\Resource');
+    $this->exchangeService = $exchangeService;
   }
 
   /**
@@ -42,8 +46,46 @@ class ResourcesService {
    * @return array
    */
   public function getAllResources() {
-    $resources = $this->resourceRepository->findAll();
+    $resources = $this->resourcesRepository->findAll();
 
     return $this->helperService->generateResponse(200, $resources);
+  }
+
+  /**
+   * Get resource by id
+   *
+   * @param integer $id id of the resource
+   * @return array
+   */
+  public function getResource($id) {
+    $resource = $this->resourcesRepository->findOneById($id);
+
+    if (!$resource) {
+      return $this->helperService->generateResponse(404, null, array('message' => 'resource not found'));
+    }
+
+    return $this->helperService->generateResponse(200, $resource);
+  }
+
+  /**
+   * Create a resource
+   *
+   * @param \Itk\ApiBundle\Entity\Resource $resource resource to create
+   * @return array
+   */
+  public function createResource(Resource $resource) {
+    $validation = $this->helperService->validateResource($resource);
+    if ($validation['status'] !== 200) {
+      return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
+    }
+
+    if ($this->resourcesRepository->findOneByMail($resource->getMail())) {
+      return $this->helperService->generateResponse(409, null, array('message' => 'resource already exists'));
+    }
+
+    // TODO: Validate resource against Exchange
+    $result = $this->exchangeService->getResource($resource->getMail());
+
+    return $result;
   }
 }

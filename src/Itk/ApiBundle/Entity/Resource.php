@@ -34,6 +34,8 @@ class Resource {
    * Resource mail
    *
    * @ORM\Column(type="string")
+   *
+   * @Groups({"resource_create"})
    */
   protected $mail;
 
