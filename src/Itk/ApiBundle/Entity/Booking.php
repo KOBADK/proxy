@@ -20,8 +20,6 @@ class Booking {
    * @ORM\Column(type="integer")
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="AUTO")
-   *
-   * @Assert\NotNull
    */
   protected $id;
 
@@ -29,6 +27,8 @@ class Booking {
    * Exchange event ID
    *
    * @ORM\Column(type="string")
+   *
+   * @Assert\NotNull
    */
   protected $eid;
 
@@ -37,16 +37,30 @@ class Booking {
    *
    * @ORM\ManyToOne(targetEntity="User", inversedBy="bookings")
    * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+   *
+   * @Assert\NotNull
    **/
   protected $user;
 
   /**
    * Resource that is booked
    *
-   * @ORM\ManyToOne(targetEntity="Resource", inversedBy="bookings")
-   * @ORM\JoinColumn(name="resource_id", referencedColumnName="id")
+   * @ORM\ManyToMany(targetEntity="Resource", inversedBy="bookings")
+   * @ORM\JoinTable(name="koba_bookings_resources")
+   *
+   * @Groups({"booking_create"})
+   *
+   * @Assert\NotNull
+   * @Assert\Collection
    */
-  protected $resource;
+  protected $resources;
+
+  /**
+   * Constructor
+   */
+  public function __construct() {
+    $this->resources = new \Doctrine\Common\Collections\ArrayCollection();
+  }
 
   /**
    * Get id
@@ -97,5 +111,35 @@ class Booking {
    */
   public function getUser() {
     return $this->user;
+  }
+
+  /**
+   * Add resources
+   *
+   * @param \Itk\ApiBundle\Entity\Resource $resources
+   * @return Booking
+   */
+  public function addResource(\Itk\ApiBundle\Entity\Resource $resources) {
+    $this->resources[] = $resources;
+
+    return $this;
+  }
+
+  /**
+   * Remove resources
+   *
+   * @param \Itk\ApiBundle\Entity\Resource $resources
+   */
+  public function removeResource(\Itk\ApiBundle\Entity\Resource $resources) {
+    $this->resources->removeElement($resources);
+  }
+
+  /**
+   * Get resources
+   *
+   * @return \Doctrine\Common\Collections\Collection
+   */
+  public function getResources() {
+    return $this->resources;
   }
 }

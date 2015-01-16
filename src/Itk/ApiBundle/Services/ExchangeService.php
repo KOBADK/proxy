@@ -9,18 +9,16 @@
 namespace Itk\ApiBundle\Services;
 
 use Symfony\Component\DependencyInjection\Container;
-use Itk\ApiBundle\Entity\Booking;
 
 /**
- * Class BookingsService
+ * Class ExchangeService
  *
  * @package Itk\ApiBundle\Services
  */
-class BookingsService {
+class ExchangeService {
   protected $container;
   protected $doctrine;
   protected $em;
-  protected $bookingRepository;
   protected $helperService;
 
   /**
@@ -34,28 +32,5 @@ class BookingsService {
     $this->helperService = $helperService;
     $this->doctrine = $this->container->get('doctrine');
     $this->em = $this->doctrine->getManager();
-    $this->bookingRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\Booking');
-  }
-
-  /**
-   * Get all bookings
-   *
-   * @return array
-   */
-  public function getAllBookings() {
-    $bookings = $this->bookingRepository->findAll();
-
-    return $this->helperService->generateResponse(200, $bookings);
-  }
-
-
-  /**
-   * Create a booking for a user
-   *
-   * @param Booking $booking booking
-   * @return array
-   */
-  public function createBooking($booking) {
-    return $this->helperService->generateResponse(500, array('message' => 'not implemented'));
   }
 }

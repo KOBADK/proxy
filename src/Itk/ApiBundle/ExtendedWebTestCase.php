@@ -7,6 +7,7 @@ use Itk\ApiBundle\Entity\User;
 use Itk\ApiBundle\Entity\Role;
 use Itk\ApiBundle\Entity\Resource;
 use Doctrine\ORM\EntityManager;
+use Itk\ApiBundle\Entity\Booking;
 
 class ExtendedWebTestCase extends WebTestCase {
   /**
@@ -65,6 +66,7 @@ class ExtendedWebTestCase extends WebTestCase {
     $connection = $em->getConnection();
     $platform = $connection->getDatabasePlatform();
     $connection->executeQuery('SET FOREIGN_KEY_CHECKS = 0;');
+    $connection->executeUpdate($platform->getTruncateTableSQL('koba_bookings_resources', TRUE));
     $connection->executeUpdate($platform->getTruncateTableSQL('koba_roles_resources', TRUE));
     $connection->executeUpdate($platform->getTruncateTableSQL('koba_roles_users', TRUE));
     $connection->executeUpdate($platform->getTruncateTableSQL('koba_booking', TRUE));
@@ -138,6 +140,27 @@ class ExtendedWebTestCase extends WebTestCase {
     $em->persist($role5);
 
     $user2->addRole($role5);
+
+    $booking1 = new Booking();
+    $booking1->setEid("asd123");
+    $booking1->addResource($resource1);
+    $em->persist($booking1);
+
+    $user1->addBooking($booking1);
+
+    $booking2 = new Booking();
+    $booking2->setEid("qwe321");
+    $booking2->addResource($resource2);
+    $em->persist($booking2);
+
+    $user1->addBooking($booking2);
+
+    $booking3 = new Booking();
+    $booking3->setEid("tre345");
+    $booking3->addResource($resource1);
+    $em->persist($booking3);
+
+    $user2->addBooking($booking3);
 
     $em->flush();
   }

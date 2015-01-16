@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 use Itk\ApiBundle\Entity\Role;
+use JMS\Serializer\SerializationContext;
 
 /**
  * @Route("/roles")
@@ -23,14 +24,17 @@ class RolesController extends FOSRestController {
    * @Get("/{id}")
    *
    * @ApiDoc(
-   *  description="Get a role by id",
-   *  requirements={
-   *    {"name"="id", "dataType"="integer", "requirement"="\d+"}
-   *  },
-   *  statusCodes={
-   *    200="Returned when successful",
-   *    404="Returned when no roles are found"
-   *  }
+   *   description="Get a role by id",
+   *   requirements={
+   *     {"name"="id", "dataType"="integer", "requirement"="\d+"}
+   *   },
+   *   statusCodes={
+   *     200="Returned when successful",
+   *     404="Returned when no roles are found"
+   *   },
+   *   tags={
+   *     "no_tests"
+   *   }
    * )
    *
    * @param integer $id the id of the role
@@ -41,7 +45,10 @@ class RolesController extends FOSRestController {
 
     $result = $rolesService->getRole($id);
 
+    $context = new SerializationContext();
+    $context->setGroups(array('role'));
     $view = $this->view($result['data'], $result['status']);
+    $view->setSerializationContext($context);
     return $this->handleView($view);
   }
 
@@ -49,11 +56,14 @@ class RolesController extends FOSRestController {
    * @Get("")
    *
    * @ApiDoc(
-   *  description="Get all roles",
-   *  statusCodes={
-   *    200="Returned when successful",
-   *    404="Returned when no roles are found",
-   *  }
+   *   description="Get all roles",
+   *   statusCodes={
+   *     200="Returned when successful",
+   *     404="Returned when no roles are found",
+   *   },
+   *   tags={
+   *     "no_tests"
+   *   }
    * )
    *
    * @return \Symfony\Component\HttpFoundation\Response
@@ -75,6 +85,9 @@ class RolesController extends FOSRestController {
    *   input={
    *     "class"="Itk\ApiBundle\Entity\Role",
    *     "groups"={"role_create"}
+   *   },
+   *   tags={
+   *     "no_tests"
    *   }
    * )
    *
@@ -108,6 +121,9 @@ class RolesController extends FOSRestController {
    *   input={
    *     "class"="Itk\ApiBundle\Entity\Role",
    *     "groups"={"role_update"}
+   *   },
+   *   tags={
+   *     "no_tests"
    *   }
    * )
    *

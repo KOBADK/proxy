@@ -18,6 +18,8 @@ class Resource {
    * @ORM\Column(type="integer")
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="AUTO")
+   *
+   * @Groups({"booking_create"})
    */
   protected $id;
 
@@ -67,7 +69,7 @@ class Resource {
   /**
    * Bookings of the resource
    *
-   * @ORM\OneToMany(targetEntity="Booking", mappedBy="resource")
+   * @ORM\ManyToMany(targetEntity="Booking", mappedBy="resources")
    **/
   protected $bookings;
 
@@ -220,5 +222,35 @@ class Resource {
    */
   public function getRoles() {
     return $this->roles;
+  }
+
+  /**
+   * Add booking
+   *
+   * @param \Itk\ApiBundle\Entity\Booking $booking
+   * @return Resource
+   */
+  public function addBooking(\Itk\ApiBundle\Entity\Booking $booking) {
+    $this->bookings[] = $booking;
+
+    return $this;
+  }
+
+  /**
+   * Remove booking
+   *
+   * @param \Itk\ApiBundle\Entity\Booking $booking
+   */
+  public function removeBooking(\Itk\ApiBundle\Entity\Booking $booking) {
+    $this->bookings->removeElement($booking);
+  }
+
+  /**
+   * Get bookings
+   *
+   * @return \Doctrine\Common\Collections\Collection
+   */
+  public function getBookings() {
+    return $this->bookings;
   }
 }

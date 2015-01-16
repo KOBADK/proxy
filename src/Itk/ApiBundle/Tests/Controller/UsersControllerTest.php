@@ -4,7 +4,7 @@ namespace Itk\ApiBundle\Tests\Controller;
 
 use Itk\ApiBundle\ExtendedWebTestCase;
 
-class UserControllerTest extends ExtendedWebTestCase {
+class UsersControllerTest extends ExtendedWebTestCase {
   /**
    * GetAll:
    * - get all
@@ -55,41 +55,36 @@ class UserControllerTest extends ExtendedWebTestCase {
   public function testUpdateNonExistingUser() {
     $client = $this->baseSetup();
 
-    $user = array(
-      'id' => 3,
-      'name' => 'Tester',
-      'uuid' => '123',
-      'mail' => 'asd@asd.asd',
+    $status = array(
       'status' => false
     );
-    $client->request('PUT', '/api/users/3', array(), array(), array(), json_encode($user));
+    $client->request('PUT', '/api/users/3/status', array(), array(), array(), json_encode($status));
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 404);
   }
 
   /**
-   * Update: id mismatch
-   * Expect: 400
+   * Update: updating a non-existing user
+   * - updating user 3 (non-existing)
+   * Expect: 404
    */
-  public function testUpdateIDmismatches() {
+  public function testUpdateInvalid() {
     $client = $this->baseSetup();
 
-    $user = array(
-      'id' => 2,
-      'name' => 'Tester',
-      'uuid' => '123',
-      'mail' => 'asd@asd.asd',
-      'status' => FALSE
+    $status = array(
+      'status' => array(
+        'fisk' => 'faks'
+      )
     );
-    $client->request('PUT', '/api/users/3', array(), array(), array(), json_encode($user));
+    $client->request('PUT', '/api/users/2/status', array(), array(), array(), json_encode($status));
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 400);
   }
 
   /**
-   * Update: update success
+   * Update status: success
    * - get user 1
-   * - update fields
+   * - update status
    * - get user 1
    * - assert changes have been made
    * Expect: 204 no content
@@ -100,12 +95,13 @@ class UserControllerTest extends ExtendedWebTestCase {
     $client->request('GET', '/api/users/1');
     $response = $client->getResponse();
     $user = json_decode($response->getContent());
-    $user->uuid = "321";
-    $user->status = 0;
-    $user->name = "testertester";
-    $user->mail = "t@t.t";
+    $this->assertEquals(true, $user->status);
 
-    $client->request('PUT', '/api/users/1', array(), array(), array(), json_encode($user));
+    $status = array(
+      'status' => false
+    );
+
+    $client->request('PUT', '/api/users/1/status', array(), array(), array(), json_encode($status));
     $response = $client->getResponse();
     $this->assertEmptyResponse($response, 204);
 
@@ -114,37 +110,6 @@ class UserControllerTest extends ExtendedWebTestCase {
     $user = json_decode($response->getContent());
 
     $this->assertEquals(false, $user->status);
-    $this->assertEquals("321", $user->uuid);
-    $this->assertEquals("testertester", $user->name);
-    $this->assertEquals("t@t.t", $user->mail);
-  }
-
-  /**
-   * Update: invalid mail
-   * - set wrong mail
-   * - try update
-   * - assert mail has not changed
-   * Expect: 400 validation error
-   */
-  public function testUpdateInvalidMail() {
-    $client = $this->baseSetup();
-
-    $client->request('GET', '/api/users/1');
-    $response = $client->getResponse();
-    $user = json_decode($response->getContent());
-    $mail = $user->mail;
-
-    // invalid update
-    $user->mail = "ttttt";
-
-    $client->request('PUT', '/api/users/1', array(), array(), array(), json_encode($user));
-    $response = $client->getResponse();
-    $this->assertJsonResponse($response, 400);
-
-    $client->request('GET', '/api/users/1');
-    $response = $client->getResponse();
-    $user = json_decode($response->getContent());
-    $this->assertEquals($mail, $user->mail);
   }
 
   /**
@@ -179,11 +144,61 @@ class UserControllerTest extends ExtendedWebTestCase {
   }
 
   /**
+   * Post User Role:
+   * - get user 1 roles
+   * - get role 5
+   * - add role 5 to user 1
+   * - check that the role has been added
+   */
+  public function testPostUserRole() {
+    $client = $this->baseSetup();
+
+    $client->request('GET', '/api/users/1/roles');
+    $response = $client->getResponse();
+    $array = (array) json_decode($response->getContent());
+    $this->assertEquals(1, count($array));
+
+    $client->request('GET', '/api/roles/5');
+    $role = $client->getResponse()->getContent();
+
+    $client->request('POST', '/api/users/1/roles', array(), array(), array(), $role);
+    $response = $client->getResponse();
+    $this->assertEmptyResponse($response, 204);
+
+    $client->request('GET', '/api/users/1/roles');
+    $response = $client->getResponse();
+    $array = (array) json_decode($response->getContent());
+    $this->assertEquals(2, count($array));
+  }
+
+  /**
+   * Delete user role
+   * - get user 1 roles
+   * - delete role 2
+   * - check that the role has been deleted
+   */
+  public function testDeleteUserRole() {
+    $client = $this->baseSetup();
+
+    $client->request('GET', '/api/users/1/roles');
+    $response = $client->getResponse();
+    $array = (array) json_decode($response->getContent());
+    $this->assertEquals(1, count($array));
+
+    $client->request('DELETE', '/api/users/1/roles/2');
+    $response = $client->getResponse();
+    $this->assertEmptyResponse($response, 204);
+
+    $client->request('GET', '/api/users/1/roles');
+    $response = $client->getResponse();
+    $array = (array) json_decode($response->getContent());
+    $this->assertEquals(0, count($array));
+  }
+
+  /**
    * Get User Bookings:
    * - Get user 1 bookings
-   *   Expect 200: 0 bookings
-   *
-   * @TODO: Expand test setup with bookings.
+   *   Expect 200: 2 bookings
    */
   public function testGetUserBookings() {
     $client = $this->baseSetup();
@@ -193,7 +208,6 @@ class UserControllerTest extends ExtendedWebTestCase {
     $this->assertJsonResponse($response, 200);
 
     $array = (array) json_decode($response->getContent());
-    $this->assertEquals(0, count($array));
-
+    $this->assertEquals(2, count($array));
   }
 }

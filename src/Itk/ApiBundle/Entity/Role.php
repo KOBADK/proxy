@@ -19,6 +19,8 @@ class Role {
    * @ORM\Column(type="integer")
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="AUTO")
+   *
+   * @Groups({"role"})
    */
   protected $id;
 
@@ -26,6 +28,8 @@ class Role {
    * The title of the role
    *
    * @ORM\Column(type="string", nullable=false)
+   *
+   * @Groups({"role"})
    */
   protected $title;
 
@@ -33,6 +37,8 @@ class Role {
    * The description of the role
    *
    * @ORM\Column(type="text")
+   *
+   * @Groups({"role"})
    */
   protected $description;
 
@@ -40,6 +46,8 @@ class Role {
    * Resources the role has access to
    *
    * @ORM\ManyToMany(targetEntity="Resource", mappedBy="roles")
+   *
+   * @Groups({"role"})
    **/
   protected $resources;
 
@@ -47,6 +55,8 @@ class Role {
    * Users that have this role
    *
    * @ORM\ManyToMany(targetEntity="User", mappedBy="roles")
+   *
+   * @Groups({"role"})
    **/
   protected $users;
 

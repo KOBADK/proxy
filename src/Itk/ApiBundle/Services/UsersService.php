@@ -11,6 +11,7 @@ namespace Itk\ApiBundle\Services;
 use Symfony\Component\DependencyInjection\Container;
 use Itk\ApiBundle\Entity\User;
 use Itk\ApiBundle\Entity\Role;
+use Itk\ApiBundle\Entity\Booking;
 
 /**
  * Class UsersService
@@ -69,29 +70,30 @@ class UsersService {
   }
 
   /**
-   * Update a user
+   * Update user status
    *
-   * @param $id
-   * @param User $updatedUser
+   * @param integer $id user id
+   * @param boolean $status user status
    * @return array
    */
-  public function updateUser($id, User $updatedUser) {
-    // Validate user
-    $validation = $this->helperService->validateUser($updatedUser);
+  public function setUserStatus($id, $status) {
+    $user = $this->userRepository->findOneById($id);
+
+    if (!$user) {
+      return $this->helperService->generateResponse(404, null, array('errors' => 'user not found'));
+    }
+
+    if (!is_bool($status)) {
+      return $this->helperService->generateResponse(400, null, array('errors' => 'status is not a boolean'));
+    }
+
+    $user->setStatus($status);
+
+    $validation = $this->helperService->validateUser($user);
     if ($validation['status'] !== 200) {
       return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
     }
 
-    // Validate ids match
-    if ($id != $updatedUser->getId()) {
-      return $this->helperService->generateResponse(400, null, array('errors' => 'ids do not match'));
-    }
-
-    if (!$this->userRepository->findOneById($updatedUser->getId())) {
-      return $this->helperService->generateResponse(404, null, array('errors' => 'user not found'));
-    }
-
-    $this->em->merge($updatedUser);
     $this->em->flush();
 
     return $this->helperService->generateResponse(204);

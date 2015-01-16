@@ -14,6 +14,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use JMS\Serializer\SerializationContext;
+use Itk\ApiBundle\Entity\Booking;
+use Doctrine\DBAL\Types\BooleanType;
 
 /**
  * @Route("/users")
@@ -36,7 +38,7 @@ class UsersController extends FOSRestController {
    * @param integer $id the id of the user
    * @return \Symfony\Component\HttpFoundation\Response
    */
-  public function getUserAction($id) {
+  public function getUser($id) {
     $usersService = $this->get('koba.users_service');
 
     $result = $usersService->getUser($id);
@@ -60,7 +62,7 @@ class UsersController extends FOSRestController {
    *
    * @return \Symfony\Component\HttpFoundation\Response
    */
-  public function getUsersAction() {
+  public function getUsers() {
     $usersService = $this->get('koba.users_service');
 
     $result = $usersService->getAllUsers();
@@ -73,16 +75,16 @@ class UsersController extends FOSRestController {
   }
 
   /**
-   * @Put("/{id}")
+   * @Put("/{id}/status")
    *
    * @ApiDoc(
-   *   description="Update the user",
+   *   description="Update user status",
    *   requirements={
    *     {"name"="id", "dataType"="integer", "requirement"="\d+"}
    *   },
    *   input={
-   *     "class"="Itk\ApiBundle\Entity\User",
-   *     "groups"={"user_update"}
+   *     "class"="\Itk\ApiBundle\Entity\User",
+   *     "groups"={"userstatus"}
    *   },
    *   statusCodes={
    *     204="Returned when successful",
@@ -93,18 +95,17 @@ class UsersController extends FOSRestController {
    *
    * @param Request $request
    * @param integer $id id of the user
-   *
    * @return \Symfony\Component\HttpFoundation\Response
    */
-  public function putUserAction($id, Request $request) {
+  public function putUserStatus($id, Request $request) {
     $usersService = $this->get('koba.users_service');
     $serializer = $this->get('jms_serializer');
 
     // Deserialize user
-    $updatedUser = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\User', $request->get('_format'));
+    $status = $serializer->deserialize($request->getContent(), 'array', $request->get('_format'));
 
     // Update user
-    $result = $usersService->updateUser($id, $updatedUser);
+    $result = $usersService->setUserStatus($id, $status['status']);
 
     $view = $this->view($result['data'], $result['status']);
     return $this->handleView($view);
@@ -124,11 +125,10 @@ class UsersController extends FOSRestController {
    *   }
    * )
    *
-   * @param $id
-   *
+   * @param integer $id id of the user
    * @return \Symfony\Component\HttpFoundation\Response
    */
-  public function getUserRolesAction($id) {
+  public function getUserRoles($id) {
     $usersService = $this->get('koba.users_service');
 
     $result = $usersService->getUserRoles($id);
@@ -162,11 +162,11 @@ class UsersController extends FOSRestController {
    *   }
    * )
    *
-   * @param $id
+   * @param integer $id id of the user
    * @param Request $request
    * @return View|\Symfony\Component\HttpFoundation\Response
    */
-  public function postUserRoleAction($id, Request $request) {
+  public function postUserRole($id, Request $request) {
     $usersService = $this->get('koba.users_service');
     $serializer = $this->get('jms_serializer');
 
@@ -237,7 +237,7 @@ class UsersController extends FOSRestController {
     $context = new SerializationContext();
     $context->setGroups(array('booking'));
     $view = $this->view($result['data'], $result['status']);
-// @TODO:    $view->setSerializationContext($context);
+    $view->setSerializationContext($context);
     return $this->handleView($view);
   }
 }

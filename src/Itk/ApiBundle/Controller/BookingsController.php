@@ -24,6 +24,9 @@ class BookingsController extends FOSRestController {
    *  description="Get all bookings",
    *  statusCodes={
    *    200="Success"
+   *  },
+   *  tags={
+   *    "no_tests"
    *  }
    * )
    *
@@ -33,6 +36,40 @@ class BookingsController extends FOSRestController {
     $bookingsService = $this->get('koba.bookings_service');
 
     $result = $bookingsService->getAllBookings();
+
+    $view = $this->view($result['data'], $result['status']);
+    return $this->handleView($view);
+  }
+
+
+  /**
+   * @Post("")
+   *
+   * @ApiDoc(
+   *   description="Create a booking for a user",
+   *   input={
+   *     "class"="\Itk\ApiBundle\Entity\Booking"
+   *   },
+   *   statusCodes={
+   *     204="Success (No content)",
+   *     400="Validation errors",
+   *     404={
+   *       "User not found"
+   *     }
+   *   },
+   *   tags={
+   *     "not_implemented",
+   *     "no_tests"
+   *   }
+   * )
+   *
+   * @param Request $request
+   * @return \Symfony\Component\HttpFoundation\Response
+   */
+  public function postUserBooking(Request $request) {
+    $bookingsService = $this->get('koba.bookings_service');
+
+    $result = $bookingsService->createBooking(null);
 
     $view = $this->view($result['data'], $result['status']);
     return $this->handleView($view);
