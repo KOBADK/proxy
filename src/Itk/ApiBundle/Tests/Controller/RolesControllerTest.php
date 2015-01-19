@@ -185,4 +185,39 @@ class RolesControllerTest extends ExtendedWebTestCase {
     $this->assertJsonResponse($response, 404);
   }
 
+  /**
+   * Create role validation error
+   * Expect: 400 validation error
+   */
+  public function testPostRoleErrorValidation() {
+    $client = $this->baseSetup();
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 200);
+    $array = (array) json_decode($response->getContent());
+    $this->assertEquals(5, count($array));
+
+    $role = array(
+      "title" => null,
+      "description" => "and stuff"
+    );
+
+    $client->request('POST', '/api/roles', array(), array(), array(), json_encode($role));
+    $response = $client->getResponse();
+    $this->assertEmptyResponse($response, 400);
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 200);
+    $array = (array) json_decode($response->getContent());
+    $this->assertEquals(5, count($array));
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles/6');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 404);
+  }
 }

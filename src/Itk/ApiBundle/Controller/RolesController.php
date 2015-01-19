@@ -84,9 +84,6 @@ class RolesController extends FOSRestController {
    *     204="Success",
    *     400="Validation error",
    *     409="A role with that name already exists"
-   *   },
-   *   tags={
-   *     "no_tests"
    *   }
    * )
    *
