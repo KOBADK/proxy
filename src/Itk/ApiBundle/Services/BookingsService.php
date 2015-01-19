@@ -22,6 +22,7 @@ class BookingsService {
   protected $em;
   protected $bookingRepository;
   protected $helperService;
+  protected $exchangeService;
 
   /**
    * Constructor
@@ -35,6 +36,7 @@ class BookingsService {
     $this->doctrine = $this->container->get('doctrine');
     $this->em = $this->doctrine->getManager();
     $this->bookingRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\Booking');
+    $this->exchangeService = $this->container->get('koba.exchange_service');
   }
 
   /**
@@ -56,6 +58,8 @@ class BookingsService {
    * @return array
    */
   public function createBooking($booking) {
+    $this->exchangeService->sendBookingTest();
+
     return $this->helperService->generateResponse(500, array('message' => 'not implemented'));
   }
 }
