@@ -24,9 +24,6 @@ class BookingsController extends FOSRestController {
    *  description="Get all bookings",
    *  statusCodes={
    *    200="Success"
-   *  },
-   *  tags={
-   *    "no_tests"
    *  }
    * )
    *

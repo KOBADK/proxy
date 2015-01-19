@@ -4,6 +4,13 @@ namespace Itk\ApiBundle\Tests\Controller;
 
 use Itk\ApiBundle\ExtendedWebTestCase;
 
+/**
+ * Class RolesControllerTest
+ *
+ * Tests for RolesController.
+ *
+ * @package Itk\ApiBundle\Tests\Controller
+ */
 class RolesControllerTest extends ExtendedWebTestCase {
   /**
    * GetAll:
