@@ -9,6 +9,8 @@ use JMS\Serializer\Annotation\XmlRoot;
 use Symfony\Component\Validator\Constraints AS Assert;
 
 /**
+ * A user. Is hooked up with a mail in the Exchange system.
+ *
  * @ORM\Entity
  * @ORM\Table(name="koba_user")
  * @XmlRoot("user")

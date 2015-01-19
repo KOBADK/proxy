@@ -10,6 +10,8 @@ use JMS\Serializer\Annotation\XmlRoot;
 use Symfony\Component\Validator\Constraints AS Assert;
 
 /**
+ * A user role. Used to decide which resources a user has access to.
+ *
  * @ORM\Entity
  * @ORM\Table(name="koba_role")
  * @XmlRoot("role")

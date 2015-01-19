@@ -7,6 +7,8 @@ use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\XmlRoot;
 
 /**
+ * A resource. Is hooked up with a mail in Exchange.
+ *
  * @ORM\Entity
  * @ORM\Table(name="koba_resource")
  * @XmlRoot("resource")

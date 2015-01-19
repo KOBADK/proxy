@@ -9,6 +9,8 @@ use JMS\Serializer\Annotation\XmlRoot;
 use Symfony\Component\Validator\Constraints AS Assert;
 
 /**
+ * A container for an Exchange booking. Used for validation and history.
+ *
  * @ORM\Entity
  * @ORM\Table(name="koba_exchange_booking")
  * @XmlRoot("exchange_booking")

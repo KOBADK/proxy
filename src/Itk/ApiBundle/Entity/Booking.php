@@ -9,6 +9,8 @@ use JMS\Serializer\Annotation\XmlRoot;
 use Symfony\Component\Validator\Constraints AS Assert;
 
 /**
+ * A booking. The internal representation of a booking.
+ *
  * @ORM\Entity
  * @ORM\Table(name="koba_booking")
  * @XmlRoot("booking")

@@ -68,7 +68,7 @@ class RolesService {
 
   /**
    * Create a role.
-   * @param Role $role
+   * @param Role $role The role class to create. Should contain title and description.
    * @return array
    */
   public function createRole(Role $role) {
@@ -77,21 +77,12 @@ class RolesService {
       return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
     }
 
-    // Create the new role.
-    $newRole = new Role();
-    $newRole->setTitle($role->getTitle());
-    $newRole->setDescription($role->getDescription());
-
-    // Set users.
-    if ($newRole->getUsers() !== null) {
-      // Add users.
-      foreach($role->getUsers() as $user) {
-        $user = $this->userRepository->findOneById($user->getId());
-        $newRole->addUser($user);
-      }
+    if ($this->rolesRepository->findOneByTitle($role->getTitle())) {
+      return $this->helperService->generateResponse(409, null, array('message' => 'a role with that title already exists'));
     }
 
-    $this->em->persist($newRole);
+    // Persist the new role
+    $this->em->persist($role);
 
     // Update db.
     $this->em->flush();
@@ -110,41 +101,21 @@ class RolesService {
   public function updateRole($id, Role $updatedRole) {
     $role = $this->rolesRepository->findOneById($id);
 
-    $validation = $this->helperService->validateRole($updatedRole);
-    if ($validation['status'] !== 200) {
-      return $this->helperService->generateResponse($validation['status'], null, array('stuff' => $validation['errors']));
-    }
-
     if (!$role) {
       return $this->helperService->generateResponse(404, null, array('message' => 'role not found'));
     }
 
-    // Update
-    if ($updatedRole->getTitle() !== null) {
-      $role->setTitle($updatedRole->getTitle());
+    $validation = $this->helperService->validateRole($updatedRole);
+    if ($validation['status'] !== 200) {
+      return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
     }
 
-    if ($updatedRole->getDescription() !== null) {
-      $role->setDescription($updatedRole->getDescription());
-    }
-
-    // Update users.
-    if ($updatedRole->getUsers() !== null) {
-      // Remove users.
-      foreach($role->getUsers() as $user) {
-        if (!$updatedRole->getUsers()->contains($role)) {
-          $role->removeUser($user);
-        }
-      }
-
-      // Add users.
-      foreach($updatedRole->getUsers() as $user) {
-        $user = $this->userRepository->findOneById($user->getId());
-        $role->addUser($user);
-      }
+    if ($role->getId() !== $updatedRole->getId()) {
+      return $this->helperService->generateResponse(400, null, array('message' => 'ids do not match'));
     }
 
     // Update db.
+    $this->em->merge($updatedRole);
     $this->em->flush();
 
     return $this->helperService->generateResponse(204);

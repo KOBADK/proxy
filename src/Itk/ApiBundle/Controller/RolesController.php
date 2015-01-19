@@ -80,6 +80,11 @@ class RolesController extends FOSRestController {
    *     "class"="Itk\ApiBundle\Entity\Role",
    *     "groups"={"role_create"}
    *   },
+   *   statusCodes={
+   *     204="Success",
+   *     400="Validation error",
+   *     409="A role with that name already exists"
+   *   },
    *   tags={
    *     "no_tests"
    *   }
@@ -96,7 +101,7 @@ class RolesController extends FOSRestController {
     // Deserialize role
     $newRole = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Role', $request->get('_format'));
 
-    // Update user
+    // Create role
     $result = $rolesService->createRole($newRole);
 
     // Return response.

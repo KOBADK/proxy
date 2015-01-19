@@ -76,6 +76,11 @@ class ExtendedWebTestCase extends WebTestCase {
     $connection->executeQuery('SET FOREIGN_KEY_CHECKS = 1;');
   }
 
+  /**
+   * Data setup for tests.
+   *
+   * @param $em
+   */
   protected function setupData($em) {
     $user1 = new User();
     $user1->setUuid("user1");
