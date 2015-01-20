@@ -28,9 +28,7 @@ class Booking {
   /**
    * Exchange event ID
    *
-   * @ORM\Column(type="string")
-   *
-   * @Assert\NotNull
+   * @ORM\Column(type="string", nullable=true)
    */
   protected $eid;
 
@@ -47,15 +45,69 @@ class Booking {
   /**
    * Resource that is booked
    *
-   * @ORM\ManyToMany(targetEntity="Resource", inversedBy="bookings")
-   * @ORM\JoinTable(name="koba_bookings_resources")
+   * @ORM\ManyToOne(targetEntity="Resource", inversedBy="bookings")
+   * @ORM\JoinColumn(name="resource_id", referencedColumnName="id")
    *
    * @Groups({"booking_create"})
    *
    * @Assert\NotNull
    * @Assert\Collection
    */
-  protected $resources;
+  protected $resource;
+
+  /**
+   * Start time
+   * Must be in UTC
+   *
+   * @ORM\Column(name="start_datetime", type="datetime")
+   *
+   * @Assert\NotBlank
+   */
+  protected $startDateTime;
+
+  /**
+   * End time
+   * Must be in UTC
+   *
+   * @ORM\Column(name="end_datetime", type="datetime")
+   *
+   * @Assert\NotBlank
+   */
+  protected $endDateTime;
+
+  /**
+   * Subject
+   *
+   * @ORM\Column(name="subject", type="string")
+   *
+   * @Assert\NotBlank
+   */
+  protected $subject;
+
+  /**
+   * Description
+   *
+   * @ORM\Column(name="description", type="text")
+   *
+   * @Assert\NotBlank
+   */
+  protected $description;
+
+  /**
+   * Completed
+   *
+   * @ORM\Column(name="completed", type="boolean", nullable=true)
+   *
+   * @Assert\NotBlank
+   */
+  protected $completed;
+
+  /**
+   * Status message for booking.
+   *
+   * @ORM\Column(name="status_message", type="string", nullable=true)
+   */
+  protected $statusMessage;
 
   /**
    * Constructor
@@ -115,33 +167,175 @@ class Booking {
     return $this->user;
   }
 
+
   /**
-   * Add resources
+   * Set startDateTime
    *
-   * @param \Itk\ApiBundle\Entity\Resource $resources
+   * @param \DateTime $startDateTime
    * @return Booking
    */
-  public function addResource(\Itk\ApiBundle\Entity\Resource $resources) {
-    $this->resources[] = $resources;
+  public function setStartDateTime($startDateTime) {
+    $this->startDateTime = $startDateTime;
 
     return $this;
   }
 
   /**
-   * Remove resources
+   * Get startDateTime
    *
-   * @param \Itk\ApiBundle\Entity\Resource $resources
+   * @return \DateTime
    */
-  public function removeResource(\Itk\ApiBundle\Entity\Resource $resources) {
-    $this->resources->removeElement($resources);
+  public function getStartDateTime() {
+    return $this->startDateTime;
   }
 
   /**
-   * Get resources
+   * Set endDateTime
    *
-   * @return \Doctrine\Common\Collections\Collection
+   * @param \DateTime $endDateTime
+   * @return Booking
    */
-  public function getResources() {
-    return $this->resources;
+  public function setEndDateTime($endDateTime) {
+    $this->endDateTime = $endDateTime;
+
+    return $this;
+  }
+
+  /**
+   * Get endDateTime
+   *
+   * @return \DateTime
+   */
+  public function getEndDateTime() {
+    return $this->endDateTime;
+  }
+
+  /**
+   * Set subject
+   *
+   * @param string $subject
+   * @return Booking
+   */
+  public function setSubject($subject) {
+    $this->subject = $subject;
+
+    return $this;
+  }
+
+  /**
+   * Get subject
+   *
+   * @return string
+   */
+  public function getSubject() {
+    return $this->subject;
+  }
+
+  /**
+   * Set description
+   *
+   * @param string $description
+   * @return Booking
+   */
+  public function setDescription($description) {
+    $this->description = $description;
+
+    return $this;
+  }
+
+  /**
+   * Get description
+   *
+   * @return string
+   */
+  public function getDescription() {
+    return $this->description;
+  }
+
+  /**
+   * Set completed
+   *
+   * @param boolean $completed
+   * @return Booking
+   */
+  public function setCompleted($completed) {
+    $this->completed = $completed;
+
+    return $this;
+  }
+
+  /**
+   * Get completed
+   *
+   * @return boolean
+   */
+  public function getCompleted() {
+    return $this->completed;
+  }
+
+  /**
+   * Set statusMessage
+   *
+   * @param string $statusMessage
+   * @return Booking
+   */
+  public function setStatusMessage($statusMessage) {
+    $this->statusMessage = $statusMessage;
+
+    return $this;
+  }
+
+  /**
+   * Get statusMessage
+   *
+   * @return string
+   */
+  public function getStatusMessage() {
+    return $this->statusMessage;
+  }
+
+  /**
+   * Get start datetime formatted for a vCard.
+   *
+   * Complete date plus hours, minutes and seconds: YYYYMMDDThhmmssTZD (eg 19970716T192030+0100)
+   *   T = Separator between date and time
+   *   TZD  = time zone designator (Z or +hh:mm or -hh:mm)
+   *   See http://www.w3.org/TR/NOTE-datetime where the separators have been removed
+   */
+  public function getStartDatetimeForVCard() {
+    // TODO: Implement
+  }
+
+  /**
+   * Get end datetime formatted for a vCard.
+   *
+   * Complete date plus hours, minutes and seconds: YYYYMMDDThhmmssTZD (eg 19970716T192030+0100)
+   *   T = Separator between date and time
+   *   TZD  = time zone designator (Z or +hh:mm or -hh:mm)
+   *   See http://www.w3.org/TR/NOTE-datetime where the separators have been removed
+   */
+  public function getEndDatetimeForVCard() {
+    // TODO: Implement
+  }
+
+  /**
+   * Set resource
+   *
+   * @param \Itk\ApiBundle\Entity\Resource $resource
+   * @return Booking
+   */
+  public function setResource(\Itk\ApiBundle\Entity\Resource $resource = null) {
+    $this->resource = $resource;
+
+    return $this;
+  }
+
+  /**
+   * Get resource
+   *
+   * @return \Itk\ApiBundle\Entity\Resource
+   */
+  public function getResource() {
+    return $this->resource;
   }
 }

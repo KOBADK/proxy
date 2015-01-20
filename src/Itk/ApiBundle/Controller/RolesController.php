@@ -55,8 +55,7 @@ class RolesController extends FOSRestController {
    * @ApiDoc(
    *   description="Get all roles",
    *   statusCodes={
-   *     200="Returned when successful",
-   *     404="Returned when no roles are found",
+   *     200="Returned when successful"
    *   }
    * )
    *

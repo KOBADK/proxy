@@ -215,6 +215,6 @@ class UsersControllerTest extends ExtendedWebTestCase {
     $this->assertJsonResponse($response, 200);
 
     $array = (array) json_decode($response->getContent());
-    $this->assertEquals(2, count($array));
+    $this->assertEquals(0, count($array));
   }
 }

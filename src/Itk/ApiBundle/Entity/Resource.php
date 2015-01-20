@@ -73,7 +73,7 @@ class Resource {
   /**
    * Bookings of the resource
    *
-   * @ORM\ManyToMany(targetEntity="Booking", mappedBy="resources")
+   * @ORM\OneToMany(targetEntity="Booking", mappedBy="resource")
    **/
   protected $bookings;
 
@@ -229,24 +229,24 @@ class Resource {
   }
 
   /**
-   * Add booking
+   * Add bookings
    *
-   * @param \Itk\ApiBundle\Entity\Booking $booking
+   * @param \Itk\ApiBundle\Entity\Booking $bookings
    * @return Resource
    */
-  public function addBooking(\Itk\ApiBundle\Entity\Booking $booking) {
-    $this->bookings[] = $booking;
+  public function addBooking(\Itk\ApiBundle\Entity\Booking $bookings) {
+    $this->bookings[] = $bookings;
 
     return $this;
   }
 
   /**
-   * Remove booking
+   * Remove bookings
    *
-   * @param \Itk\ApiBundle\Entity\Booking $booking
+   * @param \Itk\ApiBundle\Entity\Booking $bookings
    */
-  public function removeBooking(\Itk\ApiBundle\Entity\Booking $booking) {
-    $this->bookings->removeElement($booking);
+  public function removeBooking(\Itk\ApiBundle\Entity\Booking $bookings) {
+    $this->bookings->removeElement($bookings);
   }
 
   /**

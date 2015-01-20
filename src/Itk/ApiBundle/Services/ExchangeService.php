@@ -9,6 +9,7 @@
 namespace Itk\ApiBundle\Services;
 
 use Symfony\Component\DependencyInjection\Container;
+use Itk\ApiBundle\Entity\Booking;
 
 /**
  * Class ExchangeService
@@ -52,20 +53,18 @@ class ExchangeService {
    *
    * Creates a vCard of the event to send to the resource.
    *
-   * @param string $resourceMail The email of the resource to book
-   * @param string $fromMail The email of the booker.
-   * @param string $fromName Name of the booker.
-   * @param string $startDateTime Start time
-   *  Complete date plus hours, minutes and seconds: YYYYMMDDThhmmssTZD (eg 19970716T192030+0100)
-   *  http://www.w3.org/TR/NOTE-datetime
-   * @param string $endDateTime End time
-   * @param string $subject Subject
-   * @param string $description Description
+   * iCalendar doc (p. 52 icalbody):
+   * https://www.ietf.org/rfc/rfc2445.txt
+   *
+   * @param Booking $booking The booking to attempt to make
    * @return array
    */
-  public function sendBookingRequestEmail($resourceMail, $fromMail, $fromName, $startDateTime, $endDateTime, $subject, $description) {
+  public function sendBookingRequestEmail(Booking $booking) {
+    $booking->setCompleted(false);
+    $booking->setStatusMessage('Mailing request');
+
     $timestamp = gmdate('Ymd\THis+01');
-    $uid  = $timestamp . "|" . $fromMail;
+    $uid  = $timestamp . "-" . $booking->getUser()->getMail();
     $prodId = "-//KOBA//NONSGML v1.0//EN";
 
     // vCard.
@@ -77,22 +76,28 @@ class ExchangeService {
       BEGIN:VEVENT\r\n
       UID:" . $uid . "\r\n
       DTSTAMP:" . $timestamp . "\r\n
-      DTSTART:" . $startDateTime . "\r\n
-      DTEND:" . $endDateTime . "r\n
-      SUMMARY:" . $subject . "\r\n
-      ORGANIZER;CN=" . $fromName . ":mailto:" . $fromMail . "\r\n
-      DESCRIPTION:" . $description . "\r\n
+      DTSTART:" . $booking->getStartDatetimeForVCard() . "\r\n
+      DTEND:" . $booking->getEndDatetimeForVCard() . "r\n
+      SUMMARY:" . $booking->getSubject() . "\r\n
+      ORGANIZER;CN=" . $booking->getUser()->getName() . ":mailto:" . $booking->getUser()->getMail() . "\r\n
+      DESCRIPTION:" . $booking->getDescription() . "\r\n
       END:VEVENT\r\n
       END:VCALENDAR\r\n";
 
     // Send the e-mail.
-    //$success = mail($resourceMail, $subject, $message, $this->ewsHeaders, "-f " . $fromMail);
-    $this->helperService->generateResponse(204, array('message' => 'booking request sent'));
+    $success = mail($booking->getResources(), $subject, $message, $this->ewsHeaders, "-f " . $fromMail);
 
-    // TODO: mark booking request as sent.
+    if (!$success) {
+      return $this->helperService->generateResponse(503, null, array('message' => 'Booking was not delivered to Exchange, try again'));
+    }
+
+
   }
 
   public function sendBookingTest() {
+
+
+
     // What resource?
     $resource = 'test@test.test';
 
