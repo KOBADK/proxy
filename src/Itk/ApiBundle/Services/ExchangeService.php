@@ -10,6 +10,9 @@ namespace Itk\ApiBundle\Services;
 
 use Symfony\Component\DependencyInjection\Container;
 use Itk\ApiBundle\Entity\Booking;
+use Itk\ApiBundle\Entity\Resource;
+use Itk\ApiBundle\Entity\User;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * Class ExchangeService
@@ -59,10 +62,7 @@ class ExchangeService {
    * @param Booking $booking The booking to attempt to make
    * @return array
    */
-  public function sendBookingRequestEmail(Booking $booking) {
-    $booking->setCompleted(false);
-    $booking->setStatusMessage('Mailing request');
-
+  public function sendBookingRequest(Booking $booking) {
     $timestamp = gmdate('Ymd\THis+01');
     $uid  = $timestamp . "-" . $booking->getUser()->getMail();
     $prodId = "-//KOBA//NONSGML v1.0//EN";
@@ -85,36 +85,47 @@ class ExchangeService {
       END:VCALENDAR\r\n";
 
     // Send the e-mail.
-    $success = mail($booking->getResources(), $subject, $message, $this->ewsHeaders, "-f " . $fromMail);
+    $success = mail($booking->getResource()->getMail(), $booking->getSubject(), $message, $this->ewsHeaders, "-f " . $booking->getUser()->getMail());
 
     if (!$success) {
-      return $this->helperService->generateResponse(503, null, array('message' => 'Booking was not delivered to Exchange, try again'));
+      $booking->setStatusMessage('Mail not received by resource');
+
+      $this->em->flush();
+      return $this->helperService->generateResponse(503, null, array('message' => 'Booking request was not delivered to resource, try again'));
     }
-
-
+    else {
+      return $this->helperService->generateResponse(200, $booking);
+    }
   }
 
+
   public function sendBookingTest() {
+    $resource = new Resource();
+    $resource->setName("res 1");
+    $resource->setMail("test_loc@test.test");
+    $resource->setExpire(10000000);
+    $resource->setMailbox("bla");
+    $resource->setRouting("blip");
+    $this->em->persist($resource);
 
+    $user = new User();
+    $user->setStatus(true);
+    $user->setMail("test@test.test");
+    $user->setName("Test testesen");
+    $user->setUuid("123");
+    $this->em->persist($user);
 
+    $booking = new Booking();
+    $booking->setStartDateTime(new \DateTime("@1421749680"));
+    $booking->setEndDateTime(  new \DateTime("@1421749880"));
+    $booking->setDescription("fisk");
+    $booking->setSubject("faks");
+    $booking->setUser($user);
+    $booking->setResource($resource);
+    $this->em->persist($booking);
 
-    // What resource?
-    $resource = 'test@test.test';
+    $this->em->flush();
 
-    // From who?
-    $from = 'test2@test.test';
-    $organizer = 'Test Testesen';
-
-    // Date
-    $startDateTime = '20141231T080000+01';
-    $endDateTime = '20141231T090000+01';
-
-    // Subject
-    $subject = 'Dette er et emne';
-
-    // Description
-    $description = 'Dette er en beskrivelse.';
-
-    return $this->sendBookingRequestEmail($resource, $from, $organizer, $startDateTime, $endDateTime, $subject, $description);
+    return $this->sendBookingRequestEmail($booking);
   }
 }

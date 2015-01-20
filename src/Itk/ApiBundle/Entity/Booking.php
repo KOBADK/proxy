@@ -48,8 +48,6 @@ class Booking {
    * @ORM\ManyToOne(targetEntity="Resource", inversedBy="bookings")
    * @ORM\JoinColumn(name="resource_id", referencedColumnName="id")
    *
-   * @Groups({"booking_create"})
-   *
    * @Assert\NotNull
    * @Assert\Collection
    */
@@ -97,8 +95,6 @@ class Booking {
    * Completed
    *
    * @ORM\Column(name="completed", type="boolean", nullable=true)
-   *
-   * @Assert\NotBlank
    */
   protected $completed;
 
@@ -113,7 +109,6 @@ class Booking {
    * Constructor
    */
   public function __construct() {
-    $this->resources = new \Doctrine\Common\Collections\ArrayCollection();
   }
 
   /**
@@ -303,7 +298,7 @@ class Booking {
    *   See http://www.w3.org/TR/NOTE-datetime where the separators have been removed
    */
   public function getStartDatetimeForVCard() {
-    // TODO: Implement
+    return $this->startDateTime->format("Ymd\THis\Z");
   }
 
   /**
@@ -315,7 +310,7 @@ class Booking {
    *   See http://www.w3.org/TR/NOTE-datetime where the separators have been removed
    */
   public function getEndDatetimeForVCard() {
-    // TODO: Implement
+    return $this->endDateTime->format("Ymd\THis\Z");
   }
 
   /**
@@ -337,5 +332,23 @@ class Booking {
    */
   public function getResource() {
     return $this->resource;
+  }
+
+  /**
+   * Set the startDateTime from a unix timestamp.
+   *
+   * @param integer $unixTimestamp Unix timestamp
+   */
+  public function setStartDatetimeFromUnixTimestamp($unixTimestamp) {
+    $this->setStartDateTime(new \DateTime($unixTimestamp));
+  }
+
+  /**
+   * Set the endDateTime from a unix timestamp.
+   *
+   * @param integer $unixTimestamp Unix timestamp
+   */
+  public function setEndDatetimeFromUnixTimestamp($unixTimestamp) {
+    $this->setEndDateTime(new \DateTime($unixTimestamp));
   }
 }

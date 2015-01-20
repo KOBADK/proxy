@@ -48,10 +48,11 @@ class BookingsController extends FOSRestController {
    *     "class"="\Itk\ApiBundle\Entity\Booking"
    *   },
    *   statusCodes={
-   *     204="Success (No content)",
+   *     200="Success (No content)",
    *     400="Validation errors",
    *     404={
-   *       "User not found"
+   *       "User not found",
+   *       "Resource not found"
    *     }
    *   },
    *   tags={
@@ -66,9 +67,14 @@ class BookingsController extends FOSRestController {
   public function postUserBooking(Request $request) {
     $bookingsService = $this->get('koba.bookings_service');
 
+    $serializer = $this->get('jms_serializer');
 
-    // TODO: Implement this
-    $result = $bookingsService->createBooking(null);
+    $booking = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Booking', $request->get('_format'));
+
+    $booking->setStartDateTimeFromUnixTimestamp($booking->getStartDateTime());
+    $booking->setEndDateTimeFromUnixTimestamp($booking->getEndDateTime());
+
+    $result = $bookingsService->createBooking($booking);
 
     $view = $this->view($result['data'], $result['status']);
     return $this->handleView($view);

@@ -35,7 +35,11 @@ class BookingsService {
     $this->helperService = $helperService;
     $this->doctrine = $this->container->get('doctrine');
     $this->em = $this->doctrine->getManager();
+
     $this->bookingRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\Booking');
+    $this->userRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\User');
+    $this->resourceRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\Resource');
+
     $this->exchangeService = $this->container->get('koba.exchange_service');
   }
 
@@ -58,8 +62,32 @@ class BookingsService {
    * @return array
    */
   public function createBooking($booking) {
-    $this->exchangeService->sendBookingTest();
+    $validation = $this->helperService->validateBooking($booking);
+    if ($validation['status'] !== 200) {
+      return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
+    }
 
-    return $this->helperService->generateResponse(500, array('message' => 'not implemented'));
+    $user = $this->userRepository->findOneById($booking->getUser()->getId());
+
+    if (!$user) {
+      return $this->helperService->generateResponse(404, null, array('message' => 'user not found'));
+    }
+
+    $booking->setUser($user);
+
+    $resource = $this->resourceRepository->findOneById($booking->getResource()->getId());
+
+    if (!$resource) {
+      return $this->helperService->generateResponse(404, null, array('message' => 'resource not found'));
+    }
+
+    $booking->setResource($resource);
+
+    $booking->setCompleted(false);
+    $booking->setStatusMessage('Sending request');
+    $this->em->persist($booking);
+    $this->em->flush();
+
+    return $this->exchangeService->sendBookingRequest($booking);
   }
 }

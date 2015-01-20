@@ -21,7 +21,7 @@ class Resource {
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="AUTO")
    *
-   * @Groups({"booking_create"})
+   * @Groups({"booking_create", "resource"})
    */
   protected $id;
 
@@ -29,6 +29,8 @@ class Resource {
    * Resource name
    *
    * @ORM\Column(type="string")
+   *
+   * @Groups({"resource"})
    */
   protected $name;
 
@@ -37,7 +39,7 @@ class Resource {
    *
    * @ORM\Column(type="string")
    *
-   * @Groups({"resource_create"})
+   * @Groups({"resource_create", "resource"})
    */
   protected $mail;
 
