@@ -226,3 +226,5 @@ eof;
     }
   }
 }
+
+class SPortoException extends \Exception {}
