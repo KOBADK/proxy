@@ -7,8 +7,34 @@ use Itk\ApiBundle\Entity\User;
 use Itk\ApiBundle\Entity\Role;
 use Itk\ApiBundle\Entity\Resource;
 use Doctrine\ORM\EntityManager;
+use Itk\ApiBundle\Entity\Booking;
 
 class ExtendedWebTestCase extends WebTestCase {
+  /**
+   * @return \Symfony\Bundle\FrameworkBundle\Client
+   */
+  protected function baseSetup() {
+    $client = static::createClient();
+    $em = $client->getContainer()->get('doctrine')->getManager();
+
+    $this->emptyDatabase($em);
+    $this->setupData($em);
+
+    return $client;
+  }
+
+  /**
+   * Asserts an empty response.
+   *
+   * @param $response
+   * @param int $statusCode
+   */
+  protected function assertEmptyResponse($response, $statusCode = 200) {
+    $this->assertEquals(
+      $statusCode, $response->getStatusCode()
+    );
+  }
+
   /**
    * Asserts a json response.
    *
@@ -25,7 +51,9 @@ class ExtendedWebTestCase extends WebTestCase {
       $response->headers
     );
 
-    $this->assertJson($response->getContent());
+    if ($response->getContent()) {
+      $this->assertJson($response->getContent());
+    }
   }
 
   /**
@@ -47,6 +75,11 @@ class ExtendedWebTestCase extends WebTestCase {
     $connection->executeQuery('SET FOREIGN_KEY_CHECKS = 1;');
   }
 
+  /**
+   * Data setup for tests.
+   *
+   * @param $em
+   */
   protected function setupData($em) {
     $user1 = new User();
     $user1->setUuid("user1");

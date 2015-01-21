@@ -1,0 +1,6 @@
+parameters:
+
+services:
+  koba.exchange_service:
+    class: Itk\ApiBundle\Services\ExchangeServiceMock
+    arguments: [@service_container, @koba.helper_service]

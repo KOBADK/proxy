@@ -9,6 +9,8 @@ use JMS\Serializer\Annotation\XmlRoot;
 use Symfony\Component\Validator\Constraints AS Assert;
 
 /**
+ * A user. Is hooked up with a mail in the Exchange system.
+ *
  * @ORM\Entity
  * @ORM\Table(name="koba_user")
  * @XmlRoot("user")
@@ -22,6 +24,8 @@ class User {
    * @ORM\GeneratedValue(strategy="AUTO")
    *
    * @Assert\NotNull
+   *
+   * @Groups({"user", "role"})
    */
   protected $id;
 
@@ -30,14 +34,16 @@ class User {
    *
    * @ORM\Column(type="string", nullable=false)
    *
-   * @Assert\NotNull
+   * @Assert\NotBlank
+   *
+   * @Groups({"user"})
    */
   protected $uuid;
 
   /**
    * The user's roles
    *
-   * @ORM\ManyToMany(targetEntity="Role", inversedBy="users", cascade={"all"})
+   * @ORM\ManyToMany(targetEntity="Role", inversedBy="users")
    * @ORM\JoinTable(name="koba_roles_users")
    *
    * @Assert\Collection
@@ -49,7 +55,9 @@ class User {
    *
    * @ORM\Column(type="string", nullable=false)
    *
-   * @Assert\NotNull
+   * @Assert\NotBlank
+   *
+   * @Groups({"user", "role"})
    */
   protected $name;
 
@@ -58,8 +66,10 @@ class User {
    *
    * @ORM\Column(type="string", nullable=false)
    *
-   * @Assert\NotNull
+   * @Assert\NotBlank
    * @Assert\Email
+   *
+   * @Groups({"user"})
    */
   protected $mail;
 
@@ -69,15 +79,19 @@ class User {
    * @ORM\Column(type="boolean", nullable=false)
    *
    * @Assert\NotNull
+   *
+   * @Groups({"userstatus", "user"})
    */
   protected $status;
 
   /**
    * User's bookings
    *
-   * @ORM\OneToMany(targetEntity="Booking", mappedBy="user", cascade={"all"})
+   * @ORM\OneToMany(targetEntity="Booking", mappedBy="user")
    *
    * @Assert\Collection
+   *
+   * @Groups({})
    **/
   protected $bookings;
 

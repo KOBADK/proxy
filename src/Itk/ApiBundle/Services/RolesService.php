@@ -20,16 +20,23 @@ class RolesService {
   protected $container;
   protected $doctrine;
   protected $em;
+  protected $helperService;
+  protected $rolesRepository;
+  protected $userRepository;
 
   /**
    * Constructor.
    *
    * @param Container $container
+   * @param HelperService $helperService
    */
-  function __construct(Container $container) {
+  function __construct(Container $container, HelperService $helperService) {
     $this->container = $container;
     $this->doctrine = $this->container->get('doctrine');
     $this->em = $this->doctrine->getManager();
+    $this->helperService = $helperService;
+    $this->rolesRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\Role');
+    $this->userRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\User');
   }
 
   /**
@@ -39,14 +46,13 @@ class RolesService {
    * @return array
    */
   public function getRole($id) {
-    $role = $this->doctrine->getRepository('Itk\ApiBundle\Entity\Role')->findOneById($id);
+    $role = $this->rolesRepository->findOneById($id);
 
-    $status = $role ? 200 : 404;
+    if (!$role) {
+      return $this->helperService->generateResponse(404, null, array('message' => 'role not found'));
+    }
 
-    return array(
-      'data' => $role,
-      'status' => $status
-    );
+    return $this->helperService->generateResponse(200, $role);
   }
 
   /**
@@ -55,53 +61,33 @@ class RolesService {
    * @return array
    */
   public function getAllRoles() {
-    $roles = $this->doctrine->getRepository('Itk\ApiBundle\Entity\Role')->findAll();
+    $roles = $this->rolesRepository->findAll();
 
-    $status = $roles ? 200 : 404;
-
-    return array(
-      'data' => $roles,
-      'status' => $status
-    );
+    return $this->helperService->generateResponse(200, $roles);
   }
 
   /**
    * Create a role.
-   * @param Role $role
+   * @param Role $role The role class to create. Should contain title and description.
    * @return array
    */
   public function createRole(Role $role) {
-    // Validate input
-    if ($role->getTitle() === null) {
-      return array(
-        'data' => null,
-        'status' => 400
-      );
+    $validation = $this->helperService->validateRole($role);
+    if ($validation['status'] !== 200) {
+      return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
     }
 
-    // Create the new role.
-    $newRole = new Role();
-    $newRole->setTitle($role->getTitle());
-    $newRole->setDescription($role->getDescription());
-
-    // Set users.
-    if ($newRole->getUsers() !== null) {
-      // Add users.
-      foreach($role->getUsers() as $user) {
-        $user = $this->doctrine->getRepository('Itk\ApiBundle\Entity\User')->findOneById($user->getId());
-        $newRole->addUser($user);
-      }
+    if ($this->rolesRepository->findOneByTitle($role->getTitle())) {
+      return $this->helperService->generateResponse(409, null, array('message' => 'a role with that title already exists'));
     }
 
-    $this->em->persist($newRole);
+    // Persist the new role
+    $this->em->persist($role);
 
     // Update db.
     $this->em->flush();
 
-    return array(
-      'data' => $newRole,
-      'status' => 200
-    );
+    return $this->helperService->generateResponse(204);
   }
 
   /**
@@ -113,45 +99,25 @@ class RolesService {
    * @return array
    */
   public function updateRole($id, Role $updatedRole) {
-    // Get the role.
-    $result = $this->getRole($id);
-    if ($result['status'] !== 200) {
-      return $result;
+    $role = $this->rolesRepository->findOneById($id);
+
+    if (!$role) {
+      return $this->helperService->generateResponse(404, null, array('message' => 'role not found'));
     }
 
-    $role = $result['data'];
-
-    // Update
-    if ($updatedRole->getTitle() !== null) {
-      $role->setTitle($updatedRole->getTitle());
+    $validation = $this->helperService->validateRole($updatedRole);
+    if ($validation['status'] !== 200) {
+      return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
     }
 
-    if ($updatedRole->getDescription() !== null) {
-      $role->setDescription($updatedRole->getDescription());
-    }
-
-    // Update users.
-    if ($updatedRole->getUsers() !== null) {
-      // Remove users.
-      foreach($role->getUsers() as $user) {
-        if (!$updatedRole->getUsers()->contains($role)) {
-          $role->removeUser($user);
-        }
-      }
-
-      // Add users.
-      foreach($updatedRole->getUsers() as $user) {
-        $user = $this->doctrine->getRepository('Itk\ApiBundle\Entity\User')->findOneById($user->getId());
-        $role->addUser($user);
-      }
+    if ($role->getId() !== $updatedRole->getId()) {
+      return $this->helperService->generateResponse(400, null, array('message' => 'ids do not match'));
     }
 
     // Update db.
+    $this->em->merge($updatedRole);
     $this->em->flush();
 
-    return array(
-      'data' => $role,
-      'status' => 200
-    );
+    return $this->helperService->generateResponse(204);
   }
 }

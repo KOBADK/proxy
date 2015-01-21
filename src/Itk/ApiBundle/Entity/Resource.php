@@ -7,6 +7,8 @@ use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\XmlRoot;
 
 /**
+ * A resource. Is hooked up with a mail in Exchange.
+ *
  * @ORM\Entity
  * @ORM\Table(name="koba_resource")
  * @XmlRoot("resource")
@@ -18,6 +20,8 @@ class Resource {
    * @ORM\Column(type="integer")
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="AUTO")
+   *
+   * @Groups({"booking_create", "resource"})
    */
   protected $id;
 
@@ -25,6 +29,8 @@ class Resource {
    * Resource name
    *
    * @ORM\Column(type="string")
+   *
+   * @Groups({"resource"})
    */
   protected $name;
 
@@ -32,6 +38,8 @@ class Resource {
    * Resource mail
    *
    * @ORM\Column(type="string")
+   *
+   * @Groups({"resource_create", "resource"})
    */
   protected $mail;
 
@@ -59,7 +67,7 @@ class Resource {
   /**
    * Roles that have access to this resource
    *
-   * @ORM\ManyToMany(targetEntity="Role", inversedBy="resources", cascade={"all"})
+   * @ORM\ManyToMany(targetEntity="Role", inversedBy="resources")
    * @ORM\JoinTable(name="koba_roles_resources")
    **/
   protected $roles;
@@ -67,7 +75,7 @@ class Resource {
   /**
    * Bookings of the resource
    *
-   * @ORM\OneToMany(targetEntity="Booking", mappedBy="resource", cascade={"all"})
+   * @ORM\OneToMany(targetEntity="Booking", mappedBy="resource")
    **/
   protected $bookings;
 
@@ -220,5 +228,35 @@ class Resource {
    */
   public function getRoles() {
     return $this->roles;
+  }
+
+  /**
+   * Add bookings
+   *
+   * @param \Itk\ApiBundle\Entity\Booking $bookings
+   * @return Resource
+   */
+  public function addBooking(\Itk\ApiBundle\Entity\Booking $bookings) {
+    $this->bookings[] = $bookings;
+
+    return $this;
+  }
+
+  /**
+   * Remove bookings
+   *
+   * @param \Itk\ApiBundle\Entity\Booking $bookings
+   */
+  public function removeBooking(\Itk\ApiBundle\Entity\Booking $bookings) {
+    $this->bookings->removeElement($bookings);
+  }
+
+  /**
+   * Get bookings
+   *
+   * @return \Doctrine\Common\Collections\Collection
+   */
+  public function getBookings() {
+    return $this->bookings;
   }
 }

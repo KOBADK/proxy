@@ -7,7 +7,11 @@ use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\MaxDepth;
 use JMS\Serializer\Annotation\XmlRoot;
 
+use Symfony\Component\Validator\Constraints AS Assert;
+
 /**
+ * A user role. Used to decide which resources a user has access to.
+ *
  * @ORM\Entity
  * @ORM\Table(name="koba_role")
  * @XmlRoot("role")
@@ -19,6 +23,8 @@ class Role {
    * @ORM\Column(type="integer")
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="AUTO")
+   *
+   * @Groups({"role"})
    */
   protected $id;
 
@@ -26,6 +32,10 @@ class Role {
    * The title of the role
    *
    * @ORM\Column(type="string", nullable=false)
+   *
+   * @Assert\NotBlank
+   *
+   * @Groups({"role"})
    */
   protected $title;
 
@@ -33,20 +43,32 @@ class Role {
    * The description of the role
    *
    * @ORM\Column(type="text")
+   *
+   * @Assert\NotBlank
+
+   * @Groups({"role"})
    */
   protected $description;
 
   /**
    * Resources the role has access to
    *
-   * @ORM\ManyToMany(targetEntity="Resource", mappedBy="roles", cascade={"all"})
+   * @ORM\ManyToMany(targetEntity="Resource", mappedBy="roles")
+   *
+   * @Assert\Collection
+   *
+   * @Groups({"role"})
    **/
   protected $resources;
 
   /**
    * Users that have this role
    *
-   * @ORM\ManyToMany(targetEntity="User", mappedBy="roles", cascade={"all"})
+   * @ORM\ManyToMany(targetEntity="User", mappedBy="roles")
+   *
+   * @Assert\Collection
+   *
+   * @Groups({"role"})
    **/
   protected $users;
 

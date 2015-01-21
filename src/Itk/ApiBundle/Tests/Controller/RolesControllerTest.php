@@ -1,0 +1,230 @@
+<?php
+
+namespace Itk\ApiBundle\Tests\Controller;
+
+use Itk\ApiBundle\ExtendedWebTestCase;
+
+/**
+ * Class RolesControllerTest
+ *
+ * Tests for RolesController.
+ *
+ * @package Itk\ApiBundle\Tests\Controller
+ */
+class RolesControllerTest extends ExtendedWebTestCase {
+  /**
+   * GetAll:
+   * - get all
+   * Expect: 200, json response
+   */
+  public function testGetAllRoles() {
+    $client = $this->baseSetup();
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 200);
+    $array = (array) json_decode($response->getContent());
+    $this->assertEquals(5, count($array));
+  }
+
+  /**
+   * Get existing role
+   * Expect: 200
+   */
+  public function testGetRoleExists() {
+    $client = $this->baseSetup();
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles/1');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 200);
+  }
+
+  /**
+   * Get non-existing role
+   * Expect: 404
+   */
+  public function testGetRoleNotExists() {
+    $client = $this->baseSetup();
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles/100');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 404);
+  }
+
+  /**
+   * Update role
+   * Expect: 204
+   */
+  public function testPutRoleSuccess() {
+    $client = $this->baseSetup();
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles/1');
+    $response = $client->getResponse();
+    $role = json_decode($response->getContent());
+
+    $role->title = 'fiskfisk';
+    $role->description = 'faksfaks';
+
+    $client->request('PUT', '/api/roles/1', array(), array(), array(), json_encode($role));
+    $response = $client->getResponse();
+    $this->assertEmptyResponse($response, 204);
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles/1');
+    $response = $client->getResponse();
+    $roleUpdated = json_decode($response->getContent());
+
+    $this->assertEquals($role->title, $roleUpdated->title);
+    $this->assertEquals($role->description, $roleUpdated->description);
+  }
+
+
+  /**
+   * Update role errors
+   * Expect: 400
+   */
+  public function testPutRoleErrorValidation() {
+    $client = $this->baseSetup();
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles/1');
+    $response = $client->getResponse();
+    $role = json_decode($response->getContent());
+
+    $role->title = null;
+
+    $client->request('PUT', '/api/roles/1', array(), array(), array(), json_encode($role));
+    $response = $client->getResponse();
+    $this->assertEmptyResponse($response, 400);
+  }
+
+
+  /**
+   * Update role errors
+   * Expect: 404
+   */
+  public function testPutRoleErrorNotFound() {
+    $client = $this->baseSetup();
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles/1');
+    $response = $client->getResponse();
+    $role = json_decode($response->getContent());
+
+    $client->request('PUT', '/api/roles/1000', array(), array(), array(), json_encode($role));
+    $response = $client->getResponse();
+    $this->assertEmptyResponse($response, 404);
+  }
+
+  /**
+   * Create role
+   * Expect: 204
+   */
+  public function testPostRoleSuccess() {
+    $client = $this->baseSetup();
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 200);
+    $array = (array) json_decode($response->getContent());
+    $this->assertEquals(5, count($array));
+
+    $role = array(
+      "title" => "fisk",
+      "description" => "and stuff"
+    );
+
+    $client->request('POST', '/api/roles', array(), array(), array(), json_encode($role));
+    $response = $client->getResponse();
+    $this->assertEmptyResponse($response, 204);
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 200);
+    $array = (array) json_decode($response->getContent());
+    $this->assertEquals(6, count($array));
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles/6');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 200);
+  }
+
+  /**
+   * Create role with title taken
+   * Expect: 409 conflict
+   */
+  public function testPostRoleErrorDuplicate() {
+    $client = $this->baseSetup();
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 200);
+    $array = (array) json_decode($response->getContent());
+    $this->assertEquals(5, count($array));
+
+    $role = array(
+      "title" => "Anonym",
+      "description" => "and stuff"
+    );
+
+    $client->request('POST', '/api/roles', array(), array(), array(), json_encode($role));
+    $response = $client->getResponse();
+    $this->assertEmptyResponse($response, 409);
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 200);
+    $array = (array) json_decode($response->getContent());
+    $this->assertEquals(5, count($array));
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles/6');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 404);
+  }
+
+  /**
+   * Create role validation error
+   * Expect: 400 validation error
+   */
+  public function testPostRoleErrorValidation() {
+    $client = $this->baseSetup();
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 200);
+    $array = (array) json_decode($response->getContent());
+    $this->assertEquals(5, count($array));
+
+    $role = array(
+      "title" => null,
+      "description" => "and stuff"
+    );
+
+    $client->request('POST', '/api/roles', array(), array(), array(), json_encode($role));
+    $response = $client->getResponse();
+    $this->assertEmptyResponse($response, 400);
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 200);
+    $array = (array) json_decode($response->getContent());
+    $this->assertEquals(5, count($array));
+
+    // Assert valid json response.
+    $client->request('GET', '/api/roles/6');
+    $response = $client->getResponse();
+    $this->assertJsonResponse($response, 404);
+  }
+}

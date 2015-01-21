@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 use Itk\ApiBundle\Entity\Role;
+use JMS\Serializer\SerializationContext;
 
 /**
  * @Route("/roles")
@@ -23,14 +24,14 @@ class RolesController extends FOSRestController {
    * @Get("/{id}")
    *
    * @ApiDoc(
-   *  description="Get a role by id",
-   *  requirements={
-   *    {"name"="id", "dataType"="integer", "requirement"="\d+"}
-   *  },
-   *  statusCodes={
-   *    200="Returned when successful",
-   *    404="Returned when no roles are found"
-   *  }
+   *   description="Get a role by id",
+   *   requirements={
+   *     {"name"="id", "dataType"="integer", "requirement"="\d+"}
+   *   },
+   *   statusCodes={
+   *     200="Returned when successful",
+   *     404="Returned when no roles are found"
+   *   }
    * )
    *
    * @param integer $id the id of the role
@@ -41,7 +42,10 @@ class RolesController extends FOSRestController {
 
     $result = $rolesService->getRole($id);
 
+    $context = new SerializationContext();
+    $context->setGroups(array('role'));
     $view = $this->view($result['data'], $result['status']);
+    $view->setSerializationContext($context);
     return $this->handleView($view);
   }
 
@@ -49,11 +53,10 @@ class RolesController extends FOSRestController {
    * @Get("")
    *
    * @ApiDoc(
-   *  description="Get all roles",
-   *  statusCodes={
-   *    200="Returned when successful",
-   *    404="Returned when no roles are found",
-   *  }
+   *   description="Get all roles",
+   *   statusCodes={
+   *     200="Returned when successful"
+   *   }
    * )
    *
    * @return \Symfony\Component\HttpFoundation\Response
@@ -75,6 +78,11 @@ class RolesController extends FOSRestController {
    *   input={
    *     "class"="Itk\ApiBundle\Entity\Role",
    *     "groups"={"role_create"}
+   *   },
+   *   statusCodes={
+   *     204="Success",
+   *     400="Validation error",
+   *     409="A role with that name already exists"
    *   }
    * )
    *
@@ -88,11 +96,8 @@ class RolesController extends FOSRestController {
 
     // Deserialize role
     $newRole = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Role', $request->get('_format'));
-    if ($newRole instanceof \Itk\ApiBundle\Entity\Role === false) {
-      return View::create(array('errors' => $newRole), 400);
-    }
 
-    // Update user
+    // Create role
     $result = $rolesService->createRole($newRole);
 
     // Return response.
@@ -108,6 +113,11 @@ class RolesController extends FOSRestController {
    *   input={
    *     "class"="Itk\ApiBundle\Entity\Role",
    *     "groups"={"role_update"}
+   *   },
+   *   statusCodes={
+   *     204="Success",
+   *     400="Validation error",
+   *     404="Role not found"
    *   }
    * )
    *
@@ -122,9 +132,6 @@ class RolesController extends FOSRestController {
 
     // Deserialize role
     $newRole = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Role', $request->get('_format'));
-    if ($newRole instanceof \Itk\ApiBundle\Entity\Role === false) {
-      return View::create(array('errors' => $newRole), 400);
-    }
 
     // Update user
     $result = $rolesService->updateRole($id, $newRole);
