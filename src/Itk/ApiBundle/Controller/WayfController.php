@@ -32,7 +32,7 @@ class WayfController extends FOSRestController {
    */
   public function getLoginAction() {
     $wayfService = $this->get('koba.wayf_service');
-    $wayfService->authenticate();
+    $wayfService->request();
   }
 
   /**
@@ -49,11 +49,26 @@ class WayfController extends FOSRestController {
    */
   public function PostLoginAction() {
     $wayfService = $this->get('koba.wayf_service');
-    $result = $wayfService->authenticate();
+    $result = $wayfService->response();
 
     $mail = $result['attributes']['mail'][0];
     $firstName = $result['attributes']['gn'][0];
     $lastName = $result['attributes']['sn'][0];
     $uniqId = $result['attributes']['eduPersonTargetedID'][0];
   }
+
+  /**
+   * @Get("/token")
+   *
+   * @ApiDoc(
+   *  description="Get logged in token",
+   *  statusCodes={
+   *    200="Returned when successful",
+   *  }
+   * )
+   *
+   */
+  public function getTokenAction() {
+  }
+
 }
