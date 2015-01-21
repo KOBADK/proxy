@@ -13,3 +13,9 @@ parameters:
 
     locale:            en
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    wayf_idp_certificate: file
+    wayf_sso:
+    wayf_private_key: file
+    wayf_asc:
+    wayf_entityid:
