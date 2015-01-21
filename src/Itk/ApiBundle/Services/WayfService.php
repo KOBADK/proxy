@@ -209,7 +209,7 @@ eof;
       $issues[] = 'SubjectConfirmation too old';
     }
     $conditions_notbefore = $xp->query('./saml:Conditions/@NotBefore', $assertion);
-    $hello = $conditions_notbefore->item(0)->value;
+
     if ($conditions_notbefore->length && $ashortwhileago > $conditions_notbefore->item(0)->value) {
       $issues[] = 'Assertion Conditions not yet valid';
     }
