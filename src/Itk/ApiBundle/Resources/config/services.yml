@@ -20,3 +20,7 @@ services:
   koba.helper_service:
     class: Itk\ApiBundle\Services\HelperService
     arguments: [@service_container]
+
+  koba.wayf_service:
+    class: Itk\ApiBundle\Services\WayfService
+    arguments: [@service_container]
