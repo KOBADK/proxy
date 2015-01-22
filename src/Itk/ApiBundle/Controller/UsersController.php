@@ -101,8 +101,13 @@ class UsersController extends FOSRestController {
     $usersService = $this->get('koba.users_service');
     $serializer = $this->get('jms_serializer');
 
-    // Deserialize user
-    $status = $serializer->deserialize($request->getContent(), 'array', $request->get('_format'));
+    // Deserialize input
+    try {
+      $status = $serializer->deserialize($request->getContent(), 'array', $request->get('_format'));
+    } catch (\Exception $e) {
+      $view = $this->view(array('message' => 'invalid input'), 400);
+      return $this->handleView($view);
+    }
 
     // Update user
     $result = $usersService->setUserStatus($id, $status['status']);
@@ -170,7 +175,13 @@ class UsersController extends FOSRestController {
     $usersService = $this->get('koba.users_service');
     $serializer = $this->get('jms_serializer');
 
-    $role = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Role', $request->get('_format'));
+    // Deserialize input
+    try {
+      $role = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Role', $request->get('_format'));
+    } catch (\Exception $e) {
+      $view = $this->view(array('message' => 'invalid input'), 400);
+      return $this->handleView($view);
+    }
 
     // Add role to user
     $result = $usersService->addRoleToUser($id, $role);

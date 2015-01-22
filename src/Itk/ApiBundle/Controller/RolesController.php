@@ -94,8 +94,13 @@ class RolesController extends FOSRestController {
     $rolesService = $this->get('koba.roles_service');
     $serializer = $this->get('jms_serializer');
 
-    // Deserialize role
-    $newRole = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Role', $request->get('_format'));
+    // Deserialize input
+    try {
+      $newRole = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Role', $request->get('_format'));
+    } catch (\Exception $e) {
+      $view = $this->view(array('message' => 'invalid input'), 400);
+      return $this->handleView($view);
+    }
 
     // Create role
     $result = $rolesService->createRole($newRole);
@@ -130,8 +135,13 @@ class RolesController extends FOSRestController {
     $rolesService = $this->get('koba.roles_service');
     $serializer = $this->get('jms_serializer');
 
-    // Deserialize role
-    $newRole = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Role', $request->get('_format'));
+    // Deserialize input
+    try {
+      $newRole = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Role', $request->get('_format'));
+    } catch (\Exception $e) {
+      $view = $this->view(array('message' => 'invalid input'), 400);
+      return $this->handleView($view);
+    }
 
     // Update user
     $result = $rolesService->updateRole($id, $newRole);

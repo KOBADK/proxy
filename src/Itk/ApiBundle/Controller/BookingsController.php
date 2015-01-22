@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Acl\Exception\Exception;
 
 /**
  * @Route("/bookings")
@@ -69,7 +70,13 @@ class BookingsController extends FOSRestController {
 
     $serializer = $this->get('jms_serializer');
 
-    $booking = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Booking', $request->get('_format'));
+    // Deserialize input
+    try {
+      $booking = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Booking', $request->get('_format'));
+    } catch (\Exception $e) {
+      $view = $this->view(array('message' => 'invalid input'), 400);
+      return $this->handleView($view);
+    }
 
     $booking->setStartDateTimeFromUnixTimestamp($booking->getStartDateTime());
     $booking->setEndDateTimeFromUnixTimestamp($booking->getEndDateTime());

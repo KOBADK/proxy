@@ -19,3 +19,7 @@ parameters:
     wayf_private_key: file
     wayf_asc:
     wayf_entityid:
+
+    ews_host:
+    ews_user:
+    ews_password:

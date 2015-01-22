@@ -65,6 +65,8 @@ class ExchangeServiceMock extends ExchangeService {
   public function sendBookingRequest(Booking $booking) {
     if ($booking->getSubject() === 'success') {
       $booking->setStatusMessage('Mail sent');
+      $booking->setCompleted(true);
+      $booking->setEid("123123");
       $this->em->flush();
       return $this->helperService->generateResponse(201, $booking);
     }

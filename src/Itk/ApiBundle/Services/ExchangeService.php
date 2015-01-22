@@ -12,7 +12,17 @@ use Symfony\Component\DependencyInjection\Container;
 use Itk\ApiBundle\Entity\Booking;
 use Itk\ApiBundle\Entity\Resource;
 use Itk\ApiBundle\Entity\User;
-use Symfony\Component\Validator\Constraints\DateTime;
+use PhpEws\ExchangeWebServices;
+use PhpEws\EWSType\ExchangeImpersonationType;
+use PhpEws\EWSType\ConnectingSIDType;
+use PhpEws\EWSType\FindItemType;
+use PhpEws\EWSType\ItemQueryTraversalType;
+use PhpEws\EWSType\ItemResponseShapeType;
+use PhpEws\EWSType\DefaultShapeNamesType;
+use PhpEws\EWSType\CalendarViewType;
+use PhpEws\EWSType\NonEmptyArrayOfBaseFolderIdsType;
+use PhpEws\EWSType\DistinguishedFolderIdType;
+use PhpEws\EWSType\DistinguishedFolderIdNameType;
 
 /**
  * Class ExchangeService
@@ -25,6 +35,9 @@ class ExchangeService {
   protected $em;
   protected $helperService;
   protected $ewsHeaders;
+  protected $ews;
+  protected $bookingMail;
+  protected $bookingUser;
 
   /**
    * Constructor
@@ -39,6 +52,16 @@ class ExchangeService {
     $this->em = $this->doctrine->getManager();
     $this->ewsHeaders = "Content-Type:text/calendar; charset=utf-8; method=REQUEST\r\n";
     $this->ewsHeaders .= "Content-Type: text/plain; charset=\"utf-8\" \r\n";
+
+    $this->ews = new ExchangeWebServices(
+      $this->container->getParameter('ews_host'),
+      $this->container->getParameter('ews_user'),
+      $this->container->getParameter('ews_password'),
+      ExchangeWebServices::VERSION_2010
+    );
+
+    $this->bookingMail = $this->container->getParameter('ews_booking_mail');
+    $this->bookingUser = $this->container->getParameter('ews_booking_user');
   }
 
   /**
@@ -48,7 +71,40 @@ class ExchangeService {
    * @return array
    */
   public function getResource($mail) {
+
+
     return $this->helperService->generateResponse(500, null, array('message' => 'not implemented'));
+  }
+
+  public function listAction($resourceMail, $startDate, $endDate) {
+    // Configure impersonation
+    $ei = new ExchangeImpersonationType();
+    $sid = new ConnectingSIDType();
+    $sid->PrimarySmtpAddress = $resourceMail;
+    $ei->ConnectingSID = $sid;
+    $this->ews->setImpersonation($ei);
+    $request = new FindItemType();
+    $request->Traversal = ItemQueryTraversalType::SHALLOW;
+    $request->ItemShape = new ItemResponseShapeType();
+    $request->ItemShape->BaseShape = DefaultShapeNamesType::DEFAULT_PROPERTIES;
+    $request->CalendarView = new CalendarViewType();
+    $request->CalendarView->StartDate = $startDate;
+    $request->CalendarView->EndDate = $endDate;
+    $request->ParentFolderIds = new NonEmptyArrayOfBaseFolderIdsType();
+    $request->ParentFolderIds->DistinguishedFolderId = new DistinguishedFolderIdType();
+    $request->ParentFolderIds->DistinguishedFolderId->Id = DistinguishedFolderIdNameType::CALENDAR;
+    $response = $this->ews->FindItem($request);
+
+
+
+    // Verify the response.
+    if ($response->ResponseMessages->FindItemResponseMessage->ResponseCode == "NoError") {
+      // Verify items.
+      if ($response->ResponseMessages->FindItemResponseMessage->RootFolder->TotalItemsInView > 0) {
+        return $this->helperService->generateResponse(200, $response->ResponseMessages->FindItemResponseMessage->RootFolder->Items->CalendarItem);
+      }
+    }
+    return $this->render('ItkKobaBundle:Default:index.html.twig');
   }
 
   /**
@@ -79,7 +135,7 @@ class ExchangeService {
       DTSTART:" . $booking->getStartDatetimeForVCard() . "\r\n
       DTEND:" . $booking->getEndDatetimeForVCard() . "r\n
       SUMMARY:" . $booking->getSubject() . "\r\n
-      ORGANIZER;CN=" . $booking->getUser()->getName() . ":mailto:" . $booking->getUser()->getMail() . "\r\n
+      ORGANIZER;CN=" . $this->bookingUser . ":mailto:" . $this->bookingMail . "\r\n
       DESCRIPTION:" . $booking->getDescription() . "\r\n
       END:VEVENT\r\n
       END:VCALENDAR\r\n";

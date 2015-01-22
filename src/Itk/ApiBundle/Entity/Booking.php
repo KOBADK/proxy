@@ -49,7 +49,6 @@ class Booking {
    * @ORM\JoinColumn(name="resource_id", referencedColumnName="id")
    *
    * @Assert\NotNull
-   * @Assert\Collection
    */
   protected $resource;
 

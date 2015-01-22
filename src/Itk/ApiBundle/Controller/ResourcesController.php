@@ -103,7 +103,13 @@ class ResourcesController extends FOSRestController {
     $resourcesService = $this->get('koba.resources_service');
     $serializer = $this->get('jms_serializer');
 
-    $resource = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Resource', $request->get('_format'));
+    // Deserialize input
+    try {
+      $resource = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Resource', $request->get('_format'));
+    } catch (\Exception $e) {
+      $view = $this->view(array('message' => 'invalid input'), 400);
+      return $this->handleView($view);
+    }
 
     // Add role to user
     $result = $resourcesService->createResource($resource);
