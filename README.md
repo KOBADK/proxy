@@ -23,3 +23,14 @@ Documentation for testing in Symfony see:
 <pre>
 http://symfony.com/doc/current/book/testing.html
 </pre>
+
+## Tunnel (only for testing!)
+Append following line to vendor/jameslarmes/PhpEws/NTLMSoapClient.php after line 84:
+<pre>
+curl_setopt($this->ch, CURLOPT_PROXY, 'socks5://localhost:8080');
+</pre>
+
+Run the following within the vagrant:
+<pre>
+ssh -D 8080 -f -C -q -N deploy@namor.aakb.dk
+</pre>
