@@ -168,7 +168,7 @@ class ExchangeService {
     $user->setStatus(true);
     $user->setMail("test@test.test");
     $user->setName("Test testesen");
-    $user->setUuid("123");
+    $user->setUniqueId("123");
     $this->em->persist($user);
 
     $booking = new Booking();
