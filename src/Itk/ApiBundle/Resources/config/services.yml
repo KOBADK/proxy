@@ -28,3 +28,10 @@ services:
   koba.exchange_service:
     class: Itk\ApiBundle\Services\ExchangeService
     arguments: [@service_container, @koba.helper_service]
+
+
+
+  kernel.listener.your_listener_name:
+    class: Itk\ApiBundle\EventListeners\InsufficientAuthenticationExceptionListener
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }

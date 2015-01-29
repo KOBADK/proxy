@@ -34,6 +34,8 @@ class LoginController extends FOSRestController {
    *
    */
   public function getLoginAction() {
+    // TODO: check if user is already logged in
+
     // Send the user to WAYF.
     $wayfService = $this->get('koba.wayf_service');
     $wayfService->request();
@@ -61,7 +63,13 @@ class LoginController extends FOSRestController {
     $mail = $result['attributes']['mail'][0];
     $firstName = $result['attributes']['gn'][0];
     $lastName = $result['attributes']['sn'][0];
-    $uniqueId = $result['attributes']['schacPersonalUniqueID'][0];
+
+    preg_match('/\d{10}$/', $result['attributes']['schacPersonalUniqueID'][0], $uniqueId);
+    $uniqueId = reset($uniqueId);
+
+    // TODO: HASH unique id
+
+    // TODO: If first user, give ROLE_ADMIN
 
     // Save data to user entity.
     $userService = $this->container->get('koba.users_service');
