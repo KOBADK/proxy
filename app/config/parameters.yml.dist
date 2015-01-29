@@ -23,3 +23,5 @@ parameters:
     ews_host:
     ews_user:
     ews_password:
+    ews_booking_mail:
+    ews_booking_user:
