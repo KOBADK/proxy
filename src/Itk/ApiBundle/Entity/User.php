@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\XmlRoot;
 
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints AS Assert;
 
 /**
@@ -15,7 +16,7 @@ use Symfony\Component\Validator\Constraints AS Assert;
  * @ORM\Table(name="koba_user")
  * @XmlRoot("user")
  */
-class User {
+class User implements UserInterface, \Serializable {
   /**
    * Internal user ID
    *
@@ -30,7 +31,7 @@ class User {
   protected $id;
 
   /**
-   * User UUID
+   * User unique id
    *
    * @ORM\Column(type="string", nullable=false)
    *
@@ -38,7 +39,7 @@ class User {
    *
    * @Groups({"user"})
    */
-  protected $uuid;
+  protected $uniqueId;
 
   /**
    * The user's roles
@@ -113,24 +114,24 @@ class User {
   }
 
   /**
-   * Set uuid
+   * Set unique id
    *
-   * @param string $uuid
+   * @param string $uniqueId
    * @return User
    */
-  public function setUuid($uuid) {
-    $this->uuid = $uuid;
+  public function setUniqueId($uniqueId) {
+    $this->uniqueId = $uniqueId;
 
     return $this;
   }
 
   /**
-   * Get uuid
+   * Get uniqueId
    *
    * @return string
    */
-  public function getUuid() {
-    return $this->uuid;
+  public function getUniqueId() {
+    return $this->uniqueId;
   }
 
   /**
@@ -220,9 +221,22 @@ class User {
   /**
    * Get roles
    *
-   * @return \Doctrine\Common\Collections\Collection
+   * @return array
    */
   public function getRoles() {
+    $arr = array();
+    foreach($this->getFullRoles() as $role) {
+      $arr[] = $role->getRole();
+    }
+    return $arr;
+  }
+
+  /**
+   * Get roles
+   *
+   * @return \Doctrine\Common\Collections\Collection
+   */
+  public function getFullRoles() {
     return $this->roles;
   }
 
@@ -254,5 +268,70 @@ class User {
    */
   public function getBookings() {
     return $this->bookings;
+  }
+
+  /**
+   * Returns the password used to authenticate the user.
+   *
+   * This should be the encoded password. On authentication, a plain-text
+   * password will be salted, encoded, and then compared to this value.
+   *
+   * @return string The password
+   */
+  public function getPassword() {
+    // TODO: Implement getPassword() method.
+    return null;
+  }
+
+  /**
+   * Returns the salt that was originally used to encode the password.
+   *
+   * This can return null if the password was not encoded using a salt.
+   *
+   * @return string|null The salt
+   */
+  public function getSalt() {
+    // TODO: Implement getSalt() method.
+    return null;
+  }
+
+  /**
+   * Returns the username used to authenticate the user.
+   *
+   * @return string The username
+   */
+  public function getUsername() {
+    return $this->getId();
+  }
+
+  /**
+   * Removes sensitive data from the user.
+   *
+   * This is important if, at any given point, sensitive information like
+   * the plain-text password is stored on this object.
+   */
+  public function eraseCredentials() {
+    // TODO: Implement eraseCredentials() method.
+  }
+
+
+  /**
+   * @see \Serializable::serialize()
+   */
+  public function serialize()
+  {
+    return serialize(array(
+      $this->id
+    ));
+  }
+
+  /**
+   * @see \Serializable::unserialize()
+   */
+  public function unserialize($serialized)
+  {
+    list (
+      $this->id,
+      ) = unserialize($serialized);
   }
 }

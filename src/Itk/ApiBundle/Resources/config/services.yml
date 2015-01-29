@@ -28,4 +28,3 @@ services:
   koba.exchange_service:
     class: Itk\ApiBundle\Services\ExchangeService
     arguments: [@service_container, @koba.helper_service]
-

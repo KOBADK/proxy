@@ -13,14 +13,17 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Session;
-
+use Itk\ApiBundle\Entity\User;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 /**
- * @Route("/wayf")
+ * @Route("/login")
  */
-class WayfController extends FOSRestController {
+class LoginController extends FOSRestController {
   /**
-   * @Get("/login")
+   * @Get("")
    *
    * @ApiDoc(
    *  description="Send a user to WAYF",
@@ -37,7 +40,7 @@ class WayfController extends FOSRestController {
   }
 
   /**
-   * @Post("/login")
+   * @Post("")
    *
    * @ApiDoc(
    *  description="Gets user back from WAYF",
@@ -46,9 +49,10 @@ class WayfController extends FOSRestController {
    *  }
    * )
    *
+   * @param Request $request
    * @return \Symfony\Component\HttpFoundation\Response
    */
-  public function PostLoginAction() {
+  public function PostLoginAction(Request $request) {
     // Parse and verify post data from WAYF.
     $wayfService = $this->get('koba.wayf_service');
     $result = $wayfService->response();
@@ -57,38 +61,34 @@ class WayfController extends FOSRestController {
     $mail = $result['attributes']['mail'][0];
     $firstName = $result['attributes']['gn'][0];
     $lastName = $result['attributes']['sn'][0];
-    $uniqId = $result['attributes']['eduPersonTargetedID'][0];
+    $uniqueId = $result['attributes']['schacPersonalUniqueID'][0];
 
     // Save data to user entity.
+    $userService = $this->container->get('koba.users_service');
+    $user = $userService->getUserByUniqueId($uniqueId);
 
-    // Setup a session for the user.
-    $session = new Session();
-    $session->start();
-    $session->set('uniqId', $uniqId);
+    if (!$user) {
+      $user = new User();
+      $user->setUniqueId($uniqueId);
+    }
+
+    $user->setName($firstName . " " . $lastName);
+    $user->setMail($mail);
+    $user->setStatus(true);
+
+    // Persist user to database.
+    $this->getDoctrine()->getManager()->persist($user);
+    $this->getDoctrine()->getManager()->flush();
+
+    // Set session token
+    $token = new UsernamePasswordToken($user, null, 'main', array('ROLE_ADMIN'));
+    $this->get('security.token_storage')->setToken($token);
+
+    // Dispatch the login event
+    $event = new InteractiveLoginEvent($request, $token);
+    $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
 
     // Return a reply to the end user.
-  }
-
-  /**
-   * @Get("/token")
-   *
-   * @ApiDoc(
-   *  description="Get logged in token",
-   *  statusCodes={
-   *    200="Returned when successful",
-   *  }
-   * )
-   *
-   */
-  public function getTokenAction() {
-    // Verify user.
-    $session = new Session();
-    $uniqId = $session->get('uniqId');
-    if ($uniqId) {
-      // User is valid, send token!
-    }
-    else {
-      // User is NOT valid. Return a reply.
-    }
+    return new JsonResponse(array('message' => 'success'), 200);
   }
 }

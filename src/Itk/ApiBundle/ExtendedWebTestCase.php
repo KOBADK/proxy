@@ -82,14 +82,14 @@ class ExtendedWebTestCase extends WebTestCase {
    */
   protected function setupData($em) {
     $user1 = new User();
-    $user1->setUuid("user1");
+    $user1->setUniqueId("user1");
     $user1->setName("Name 1");
     $user1->setMail("test1@test.test");
     $user1->setStatus(true);
     $em->persist($user1);
 
     $user2 = new User();
-    $user2->setUuid("user2");
+    $user2->setUniqueId("user2");
     $user2->setName("Name 2");
     $user2->setMail("test2@test.test");
     $user2->setStatus(true);

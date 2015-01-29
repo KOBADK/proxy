@@ -7,6 +7,7 @@ use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\MaxDepth;
 use JMS\Serializer\Annotation\XmlRoot;
 
+use Symfony\Component\Security\Core\Role\RoleInterface;
 use Symfony\Component\Validator\Constraints AS Assert;
 
 /**
@@ -16,7 +17,7 @@ use Symfony\Component\Validator\Constraints AS Assert;
  * @ORM\Table(name="koba_role")
  * @XmlRoot("role")
  */
-class Role {
+class Role implements RoleInterface {
   /**
    * Internal role ID
    *
@@ -193,5 +194,19 @@ class Role {
    */
   public function getUsers() {
     return $this->users;
+  }
+
+  /**
+   * Returns the role.
+   *
+   * This method returns a string representation whenever possible.
+   *
+   * When the role cannot be represented with sufficient precision by a
+   * string, it should return null.
+   *
+   * @return string|null A string representation of the role, or null
+   */
+  public function getRole() {
+    return $this->getTitle();
   }
 }

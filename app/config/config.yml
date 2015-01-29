@@ -17,7 +17,8 @@ framework:
         #assets_version: SomeVersionScheme
     default_locale:  "%locale%"
     trusted_proxies: ~
-    session:         false
+    session:
+        handler_id:  ~
     fragments:       ~
 
 # Twig Configuration

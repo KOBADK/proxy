@@ -59,6 +59,16 @@ class UsersService {
   }
 
   /**
+   * Get a user by uniqueId
+   *
+   * @param $uniqueId
+   * @return mixed
+   */
+  public function getUserByUniqueId($uniqueId) {
+    return $this->userRepository->findOneByUniqueId($uniqueId);
+  }
+
+  /**
    * Get all users
    *
    * @return array
