@@ -17,17 +17,18 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        logged_out:
+            pattern: ^/api/logged_out
+            security: false
+
         main:
             pattern: ^/
             logout:
                 path: /api/logout
-                target: /
+                target: /api/logged_out
             anonymous: true
-
-        login:
-            pattern: ^/login/
-            security: false
 
     access_control:
         - { path: ^/api/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: ROLE_ADMIN }
+        - { path: ^/api/logget_out$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }

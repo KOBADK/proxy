@@ -4,4 +4,4 @@ controllers:
   defaults: {_format: json}
 
 logout:
-    path:   /logout
+    path: /logout

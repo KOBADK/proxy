@@ -37,6 +37,15 @@ class WayfService {
   }
 
   /**
+   * Log out from wayf
+   *
+   * @TODO: Make this!
+   */
+  public function logout() {
+    return;
+  }
+
+  /**
    * Generate SAML request for WAYF.
    *
    * @throws WayfException
