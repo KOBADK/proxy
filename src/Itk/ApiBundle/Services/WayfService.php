@@ -128,7 +128,7 @@ eof;
   protected function extractAttributes($xp) {
     $res = array();
     // Grab attributes from AttributeSattement.
-    $attributes  = $xp->query("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute");
+    $attributes = $xp->query("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute");
     foreach ($attributes as $attribute) {
       $values = array();
       $attributeValues = $xp->query('./saml:AttributeValue', $attribute);
@@ -152,9 +152,11 @@ eof;
    * @throws WayfException
    */
   protected function verifySignature($xp, $assertion = TRUE) {
-    $status = $xp->query('/samlp:Response/samlp:Status/samlp:StatusCode/@Value')->item(0)->value;
+    $status = $xp->query('/samlp:Response/samlp:Status/samlp:StatusCode/@Value')
+      ->item(0)->value;
     if ($status != 'urn:oasis:names:tc:SAML:2.0:status:Success') {
-      $statusMessage = $xp->query('/samlp:Response/samlp:Status/samlp:StatusMessage')->item(0);
+      $statusMessage = $xp->query('/samlp:Response/samlp:Status/samlp:StatusMessage')
+        ->item(0);
       throw new WayfException('Invalid samlp response<br/>' . $statusMessage->C14N(TRUE, FALSE));
     }
 
@@ -165,11 +167,15 @@ eof;
       $context = $xp->query('/samlp:Response')->item(0);
     }
     // Get signature and digest value.
-    $signatureValue = base64_decode($xp->query('ds:Signature/ds:SignatureValue', $context)->item(0)->textContent);
-    $digestValue    = base64_decode($xp->query('ds:Signature/ds:SignedInfo/ds:Reference/ds:DigestValue', $context)->item(0)->textContent);
-    $signedElement  = $context;
-    $signature      = $xp->query("ds:Signature", $signedElement)->item(0);
-    $signedInfo     = $xp->query("ds:SignedInfo", $signature)->item(0)->C14N(TRUE, FALSE);
+    $signatureValue = base64_decode($xp->query('ds:Signature/ds:SignatureValue', $context)
+        ->item(0)->textContent);
+    $digestValue = base64_decode($xp->query('ds:Signature/ds:SignedInfo/ds:Reference/ds:DigestValue', $context)
+        ->item(0)->textContent);
+    $signedElement = $context;
+    $signature = $xp->query("ds:Signature", $signedElement)->item(0);
+    $signedInfo = $xp->query("ds:SignedInfo", $signature)
+      ->item(0)
+      ->C14N(TRUE, FALSE);
     $signature->parentNode->removeChild($signature);
     $canonicalXml = $signedElement->C14N(TRUE, FALSE);
     // Get IdP certificate.
@@ -188,7 +194,6 @@ eof;
    *
    * @param \DomXPath $xp
    *   Response.
-
    * @throws WayfException
    */
   protected function validateResponse($xp) {
@@ -205,7 +210,7 @@ eof;
     $inAShortWhile = gmdate('Y-m-d\TH:i:s\Z', time() + $skew);
     $assertion = $xp->query('/samlp:Response/saml:Assertion')->item(0);
     $subjectConfirmationDataNotBefore = $xp->query('./saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@NotBefore', $assertion);
-    if ($subjectConfirmationDataNotBefore->length  && $aShortWhileAgo < $subjectConfirmationDataNotBefore->item(0)->value) {
+    if ($subjectConfirmationDataNotBefore->length && $aShortWhileAgo < $subjectConfirmationDataNotBefore->item(0)->value) {
       $issues[] = 'SubjectConfirmation not valid yet';
     }
     $subjectConfirmationDataNotOnOrAfter = $xp->query('./saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@NotOnOrAfter', $assertion);
@@ -236,4 +241,5 @@ eof;
  *
  * @package Itk\ApiBundle\Services
  */
-class WayfException extends \Exception {}
+class WayfException extends \Exception {
+}
