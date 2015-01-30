@@ -39,6 +39,26 @@ class BookingsController extends FOSRestController {
     return $this->handleView($view);
   }
 
+  /**
+   * @Get("/exchange")
+   *
+   * @ApiDoc(
+   *  description="Get all exchange bookings",
+   *  statusCodes={
+   *    200="Success"
+   *  }
+   * )
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   */
+  public function getExchangeBookings() {
+    $bookingsService = $this->get('koba.bookings_service');
+
+    $result = $bookingsService->getAllExchangeBookings();
+
+    $view = $this->view($result['data'], $result['status']);
+    return $this->handleView($view);
+  }
 
   /**
    * @Post("")

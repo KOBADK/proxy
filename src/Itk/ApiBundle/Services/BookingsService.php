@@ -10,6 +10,7 @@ namespace Itk\ApiBundle\Services;
 
 use Symfony\Component\DependencyInjection\Container;
 use Itk\ApiBundle\Entity\Booking;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * Class BookingsService
@@ -52,6 +53,33 @@ class BookingsService {
     $bookings = $this->bookingRepository->findAll();
 
     return $this->helperService->generateResponse(200, $bookings);
+  }
+
+  /**
+   * Ask EWS for each resources bookings.
+   *
+   * @return array
+   */
+  public function getAllExchangeBookings() {
+    // Get resources.
+    $resources = $this->resourceRepository->findAll();
+
+    // Calculate the start & end of the current day.
+    $startToday = new \DateTime();
+    $startToday->setTime(0, 0, 0);
+    $endToday = new \DateTime();
+    $endToday->setTime(23, 59, 59);
+
+    // Iterate each resource and find bookings.
+    $items = array();
+    foreach ($resources as $resource) {
+      $items = $this->exchangeService->listAction(
+        $resource->getMail(),
+        $startToday->format("Ymd\THis\Z"),
+        $endToday->format("Ymd\THis\Z"));
+    }
+
+    return $this->helperService->generateResponse(200, $items);
   }
 
 
