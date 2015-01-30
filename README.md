@@ -27,7 +27,8 @@ http://symfony.com/doc/current/book/testing.html
 ## Tunnel (only for testing!)
 Append following line to vendor/jameslarmes/PhpEws/NTLMSoapClient.php after line 84:
 <pre>
-curl_setopt($this->ch, CURLOPT_PROXY, 'socks5://localhost:8080');
+curl_setopt($this->ch, CURLOPT_PROXY, "http://127.0.0.1:8080/");
+curl_setopt($this->ch, CURLOPT_PROXYTYPE, 7);
 </pre>
 
 Run the following within the vagrant:
