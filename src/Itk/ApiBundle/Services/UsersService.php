@@ -1,11 +1,9 @@
 <?php
 /**
  * @file
- * This file is a part of the Itk ApiBundle.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @todo Missing file description?
  */
+
 namespace Itk\ApiBundle\Services;
 
 use Symfony\Component\DependencyInjection\Container;
@@ -29,12 +27,20 @@ class UsersService {
   /**
    * Constructor.
    *
-   * @param Container $container
+   * @todo: there is a lot of generateResponse(404, null,.... mayby a new
+   * generateError would be needed?
+   *
+   * @param \Symfony\Component\DependencyInjection\Container $container
+   *   @TODO Missing description?
+   * @param \Itk\ApiBundle\Services\HelperService $helperService
+   *   @TODO Missing description?
    */
   function __construct(Container $container, HelperService $helperService) {
     $this->container = $container;
     $this->helperService = $helperService;
 
+    // @TODO: Inject "EntityManager $em" -> "@doctrine.orm.entity_manager" so
+    // it's not dependent on doctrine inside the service.
     $this->doctrine = $this->container->get('doctrine');
     $this->em = $this->doctrine->getManager();
 
@@ -46,7 +52,9 @@ class UsersService {
    * Get a user with $id
    *
    * @param $id
+   *   @TODO Missing description?
    * @return array
+   *   @TODO Missing description?
    */
   public function getUser($id) {
     $user = $this->userRepository->findOneById($id);
@@ -62,7 +70,9 @@ class UsersService {
    * Get a user by uniqueId
    *
    * @param $uniqueId
+   *   @TODO Missing description?
    * @return mixed
+   *   @TODO Missing description?
    */
   public function getUserByUniqueId($uniqueId) {
     return $this->userRepository->findOneByUniqueId($uniqueId);
@@ -72,6 +82,7 @@ class UsersService {
    * Get all users
    *
    * @return array
+   *   @TODO Missing description?
    */
   public function getAllUsers() {
     $users = $this->userRepository->findAll();
@@ -83,8 +94,12 @@ class UsersService {
    * Update user status
    *
    * @param integer $id user id
+   *   @TODO Missing description?
    * @param boolean $status user status
+   *   @TODO Missing description?
+   *
    * @return array
+   *   @TODO Missing description?
    */
   public function setUserStatus($id, $status) {
     $user = $this->userRepository->findOneById($id);
@@ -113,7 +128,9 @@ class UsersService {
    * Get a user's roles
    *
    * @param $id
+   *   @TODO Missing description?
    * @return array
+   *   @TODO Missing description?
    */
   public function getUserRoles($id) {
     $user = $this->userRepository->findOneById($id);
@@ -129,7 +146,10 @@ class UsersService {
    * Add a role to a user
    *
    * @param integer $userId
+   *   @TODO Missing description?
    * @param Role $role
+   *   @TODO Missing description?
+   *
    * @return array
    */
   public function addRoleToUser($userId, $role) {
@@ -164,8 +184,12 @@ class UsersService {
    * Remove a role from a user
    *
    * @param $userId
+   *   @TODO Missing description?
    * @param $roleId
+   *   @TODO Missing description?
+   *
    * @return array
+   *   @TODO Missing description?
    */
   public function removeRoleFromUser($userId, $roleId) {
     $user = $this->userRepository->findOneById($userId);
@@ -194,7 +218,10 @@ class UsersService {
    * Returns a user's bookings
    *
    * @param $id
+   *   @TODO Missing description?
+   *
    * @return array
+   *   @TODO Missing description?
    */
   public function getUserBookings($id) {
     $user = $this->userRepository->findOneById($id);

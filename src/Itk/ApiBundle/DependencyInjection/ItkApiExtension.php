@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * @TODO: Missing file description?
+ */
 
 namespace Itk\ApiBundle\DependencyInjection;
 

@@ -1,11 +1,9 @@
 <?php
 /**
  * @file
- * This file is a part of the Itk ApiBundle.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @todo Missing file description?
  */
+
 namespace Itk\ApiBundle\Services;
 
 use Symfony\Component\DependencyInjection\Container;
@@ -26,18 +24,26 @@ class HelperService {
    * Constructor.
    *
    * @param Container $container
+   *   @TODO Missing description?
    */
   function __construct(Container $container) {
+    // @TODO: container only used to get validator... consider to inject the
+    // validator?
     $this->container = $container;
   }
 
   /**
-   * Generate service response
+   * Generate service response.
    *
    * @param $status
+   *   @TODO Missing description?
    * @param null $data
+   *   @TODO Missing description?
    * @param null $errors
+   *   @TODO Missing description?
+   *
    * @return array
+   *   @TODO Missing description?
    */
   public function generateResponse($status, $data = null, $errors = null) {
     if ($errors) {
@@ -51,15 +57,19 @@ class HelperService {
   }
 
   /**
-   * Validate user
+   * Validate user.
    *
    * @param \Itk\ApiBundle\Entity\User $user
+   *   @TODO Missing description?
+   *
    * @return array
+   *   @TODO Missing description?
    */
   public function validateUser(User $user) {
     $validator = $this->container->get('validator');
     $errors = $validator->validate($user);
 
+    // @todo: What do this magic calculation do?
     $status = count($errors) > 0 ? 400 : 200;
 
     return array(
@@ -69,15 +79,19 @@ class HelperService {
   }
 
   /**
-   * Validate role
+   * Validate role.
    *
    * @param \Itk\ApiBundle\Entity\Role $role
+   *   @TODO Missing description?
+   *
    * @return array
+   *   @TODO Missing description?
    */
   public function validateRole(Role $role) {
     $validator = $this->container->get('validator');
     $errors = $validator->validate($role);
 
+    // @todo: What do this magic calculation do?
     $status = count($errors) > 0 ? 400 : 200;
 
     return array(
@@ -87,10 +101,13 @@ class HelperService {
   }
 
   /**
-   * Validate resource
+   * Validate resource.
    *
    * @param \Itk\ApiBundle\Entity\Resource $resource
+   *   @TODO Missing description?
+   *
    * @return array
+   *   @TODO Missing description?
    */
   public function validateResource(Resource $resource) {
     $validator = $this->container->get('validator');
@@ -105,10 +122,12 @@ class HelperService {
   }
 
   /**
-   * Validate booking
+   * Validate booking.
    *
    * @param \Itk\ApiBundle\Entity\Booking $booking
+   *   @TODO Missing description?
    * @return array
+   *   @TODO Missing description?
    */
   public function validateBooking(Booking $booking) {
     $validator = $this->container->get('validator');

@@ -123,6 +123,7 @@ class Booking {
    * Set eid
    *
    * @param string $eid
+   *
    * @return Booking
    */
   public function setEid($eid) {
@@ -144,9 +145,10 @@ class Booking {
    * Set user
    *
    * @param \Itk\ApiBundle\Entity\User $user
+   *
    * @return Booking
    */
-  public function setUser(\Itk\ApiBundle\Entity\User $user = null) {
+  public function setUser(\Itk\ApiBundle\Entity\User $user = NULL) {
     $this->user = $user;
 
     return $this;
@@ -166,6 +168,7 @@ class Booking {
    * Set startDateTime
    *
    * @param \DateTime $startDateTime
+   *
    * @return Booking
    */
   public function setStartDateTime($startDateTime) {
@@ -187,6 +190,7 @@ class Booking {
    * Set endDateTime
    *
    * @param \DateTime $endDateTime
+   *
    * @return Booking
    */
   public function setEndDateTime($endDateTime) {
@@ -208,6 +212,7 @@ class Booking {
    * Set subject
    *
    * @param string $subject
+   *
    * @return Booking
    */
   public function setSubject($subject) {
@@ -229,6 +234,7 @@ class Booking {
    * Set description
    *
    * @param string $description
+   *
    * @return Booking
    */
   public function setDescription($description) {
@@ -250,6 +256,7 @@ class Booking {
    * Set completed
    *
    * @param boolean $completed
+   *
    * @return Booking
    */
   public function setCompleted($completed) {
@@ -271,6 +278,7 @@ class Booking {
    * Set statusMessage
    *
    * @param string $statusMessage
+   *
    * @return Booking
    */
   public function setStatusMessage($statusMessage) {
@@ -316,9 +324,10 @@ class Booking {
    * Set resource
    *
    * @param \Itk\ApiBundle\Entity\Resource $resource
+   *
    * @return Booking
    */
-  public function setResource(\Itk\ApiBundle\Entity\Resource $resource = null) {
+  public function setResource(\Itk\ApiBundle\Entity\Resource $resource = NULL) {
     $this->resource = $resource;
 
     return $this;

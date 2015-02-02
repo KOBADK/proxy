@@ -1,11 +1,9 @@
 <?php
 /**
  * @file
- * This file is a part of the Itk ApiBundle.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @todo Missing file description?
  */
+
 namespace Itk\ApiBundle\Services;
 
 use Symfony\Component\DependencyInjection\Container;
@@ -31,10 +29,17 @@ class RolesService {
    * @param HelperService $helperService
    */
   function __construct(Container $container, HelperService $helperService) {
+    $this->helperService = $helperService;
+
+    // @todo: The service is only dependent on the container to get the entity
+    // manager?
     $this->container = $container;
+
+    // @TODO: Inject "EntityManager $em" -> "@doctrine.orm.entity_manager" so
+    // it's not dependent on doctrine inside the service.
     $this->doctrine = $this->container->get('doctrine');
     $this->em = $this->doctrine->getManager();
-    $this->helperService = $helperService;
+
     $this->rolesRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\Role');
     $this->userRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\User');
   }
@@ -43,7 +48,10 @@ class RolesService {
    * Get the role with $id
    *
    * @param $id
+   *   @TODO Missing description?
+   *
    * @return array
+   *   @TODO Missing description?
    */
   public function getRole($id) {
     $role = $this->rolesRepository->findOneById($id);
@@ -59,6 +67,7 @@ class RolesService {
    * Get all roles
    *
    * @return array
+   *   @TODO Missing description?
    */
   public function getAllRoles() {
     $roles = $this->rolesRepository->findAll();
@@ -68,8 +77,12 @@ class RolesService {
 
   /**
    * Create a role.
+   *
    * @param Role $role The role class to create. Should contain title and description.
+   *   @TODO Missing description?
+   *
    * @return array
+   *   @TODO Missing description?
    */
   public function createRole(Role $role) {
     $validation = $this->helperService->validateRole($role);
@@ -81,7 +94,7 @@ class RolesService {
       return $this->helperService->generateResponse(409, null, array('message' => 'a role with that title already exists'));
     }
 
-    // Persist the new role
+    // Persist the new role.
     $this->em->persist($role);
 
     // Update db.
@@ -94,9 +107,12 @@ class RolesService {
    * Update a role.
    *
    * @param $id
+   *   @TODO Missing description?
    * @param Role $updatedRole
+   *   @TODO Missing description?
    *
    * @return array
+   *   @TODO Missing description?
    */
   public function updateRole($id, Role $updatedRole) {
     $role = $this->rolesRepository->findOneById($id);

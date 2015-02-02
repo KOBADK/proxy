@@ -117,6 +117,7 @@ class User implements UserInterface, \Serializable {
    * Set unique id
    *
    * @param string $uniqueId
+   *
    * @return User
    */
   public function setUniqueId($uniqueId) {
@@ -138,6 +139,7 @@ class User implements UserInterface, \Serializable {
    * Set name
    *
    * @param string $name
+   *
    * @return User
    */
   public function setName($name) {
@@ -159,6 +161,7 @@ class User implements UserInterface, \Serializable {
    * Set mail
    *
    * @param string $mail
+   *
    * @return User
    */
   public function setMail($mail) {
@@ -180,6 +183,7 @@ class User implements UserInterface, \Serializable {
    * Set status
    *
    * @param boolean $status
+   *
    * @return User
    */
   public function setStatus($status) {
@@ -201,6 +205,7 @@ class User implements UserInterface, \Serializable {
    * Add role
    *
    * @param \Itk\ApiBundle\Entity\Role $role
+   *
    * @return User
    */
   public function addRole(\Itk\ApiBundle\Entity\Role $role) {
@@ -225,7 +230,7 @@ class User implements UserInterface, \Serializable {
    */
   public function getRoles() {
     $arr = array();
-    foreach($this->getFullRoles() as $role) {
+    foreach ($this->getFullRoles() as $role) {
       $arr[] = $role->getRole();
     }
     return $arr;
@@ -244,6 +249,7 @@ class User implements UserInterface, \Serializable {
    * Add booking
    *
    * @param \Itk\ApiBundle\Entity\Booking $booking
+   *
    * @return User
    */
   public function addBooking(\Itk\ApiBundle\Entity\Booking $booking) {
@@ -280,7 +286,7 @@ class User implements UserInterface, \Serializable {
    */
   public function getPassword() {
     // TODO: Implement getPassword() method.
-    return null;
+    return NULL;
   }
 
   /**
@@ -292,7 +298,7 @@ class User implements UserInterface, \Serializable {
    */
   public function getSalt() {
     // TODO: Implement getSalt() method.
-    return null;
+    return NULL;
   }
 
   /**
@@ -314,12 +320,10 @@ class User implements UserInterface, \Serializable {
     // TODO: Implement eraseCredentials() method.
   }
 
-
   /**
    * @see \Serializable::serialize()
    */
-  public function serialize()
-  {
+  public function serialize() {
     return serialize(array(
       $this->id
     ));
@@ -328,8 +332,7 @@ class User implements UserInterface, \Serializable {
   /**
    * @see \Serializable::unserialize()
    */
-  public function unserialize($serialized)
-  {
+  public function unserialize($serialized) {
     list (
       $this->id,
       ) = unserialize($serialized);

@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * @TODO: Missing file description?
+ */
 
 namespace Itk\ApiBundle\Controller;
 
@@ -22,6 +26,8 @@ use Doctrine\DBAL\Types\BooleanType;
  */
 class UsersController extends FOSRestController {
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Get("/{id}")
    *
    * @ApiDoc(
@@ -36,7 +42,10 @@ class UsersController extends FOSRestController {
    * )
    *
    * @param integer $id the id of the user
+   *   @TODO Missing description?
+   *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function getUser($id) {
     $usersService = $this->get('koba.users_service');
@@ -51,6 +60,8 @@ class UsersController extends FOSRestController {
   }
 
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Get("")
    *
    * @ApiDoc(
@@ -61,6 +72,7 @@ class UsersController extends FOSRestController {
    * )
    *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function getUsers() {
     $usersService = $this->get('koba.users_service');
@@ -94,8 +106,12 @@ class UsersController extends FOSRestController {
    * )
    *
    * @param Request $request
+   *   @TODO Missing description?
    * @param integer $id id of the user
+   *   @TODO Missing description?
+   *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function putUserStatus($id, Request $request) {
     $usersService = $this->get('koba.users_service');
@@ -117,7 +133,8 @@ class UsersController extends FOSRestController {
   }
 
   /**
-   * @Get("/{id}/roles")
+   * @TODO Missing function description + @see api documentation?   * @Get("/{id}/roles")
+   *
    *
    * @ApiDoc(
    *   description="Get a user's roles",
@@ -131,7 +148,10 @@ class UsersController extends FOSRestController {
    * )
    *
    * @param integer $id id of the user
+   *   @TODO Missing description?
+   *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function getUserRoles($id) {
     $usersService = $this->get('koba.users_service');
@@ -146,6 +166,8 @@ class UsersController extends FOSRestController {
   }
 
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Post("/{id}/roles")
    *
    * @ApiDoc(
@@ -168,8 +190,12 @@ class UsersController extends FOSRestController {
    * )
    *
    * @param integer $id id of the user
+   *   @TODO Missing description?
    * @param Request $request
+   *   @TODO Missing description?
+   *
    * @return View|\Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function postUserRole($id, Request $request) {
     $usersService = $this->get('koba.users_service');
@@ -191,6 +217,8 @@ class UsersController extends FOSRestController {
   }
 
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Delete("/{id}/roles/{rid}")
    *
    * @ApiDoc(
@@ -210,8 +238,12 @@ class UsersController extends FOSRestController {
    * )
    *
    * @param integer $id user id
+   *   @TODO Missing description?
    * @param integer $rid role id
+   *   @TODO Missing description?
+   *
    * @return View|\Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function deleteUserRole($id, $rid) {
     $usersService = $this->get('koba.users_service');
@@ -224,6 +256,8 @@ class UsersController extends FOSRestController {
   }
 
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Get("/{id}/bookings")
    *
    * @ApiDoc(
@@ -238,7 +272,10 @@ class UsersController extends FOSRestController {
    * )
    *
    * @param integer $id the id of the user
+   *   @TODO Missing description?
+   *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function getUserBookings($id) {
     $usersService = $this->get('koba.users_service');

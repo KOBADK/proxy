@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * @TODO: Missing file description?
+ */
 
 namespace Itk\ApiBundle\Controller;
 
@@ -23,6 +27,8 @@ use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
  */
 class LoginController extends FOSRestController {
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Get("")
    *
    * @ApiDoc(
@@ -42,6 +48,8 @@ class LoginController extends FOSRestController {
   }
 
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Post("")
    *
    * @ApiDoc(
@@ -52,7 +60,10 @@ class LoginController extends FOSRestController {
    * )
    *
    * @param Request $request
+   *   @TODO Missing description?
+   *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function PostLoginAction(Request $request) {
     // Parse and verify post data from WAYF.
@@ -64,12 +75,13 @@ class LoginController extends FOSRestController {
     $firstName = $result['attributes']['gn'][0];
     $lastName = $result['attributes']['sn'][0];
 
+    // @TODO: Should is be configurable which attribute to use?
     preg_match('/\d{10}$/', $result['attributes']['schacPersonalUniqueID'][0], $uniqueId);
     $uniqueId = reset($uniqueId);
 
-    // TODO: HASH unique id
+    // @TODO: HASH unique id
 
-    // TODO: If first user, give ROLE_ADMIN
+    // @TODO: If first user, give ROLE_ADMIN
 
     // Save data to user entity.
     $userService = $this->container->get('koba.users_service');

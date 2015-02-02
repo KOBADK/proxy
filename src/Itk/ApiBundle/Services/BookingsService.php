@@ -1,11 +1,9 @@
 <?php
 /**
  * @file
- * This file is a part of the Itk ApiBundle.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @todo Missing file description?
  */
+
 namespace Itk\ApiBundle\Services;
 
 use Symfony\Component\DependencyInjection\Container;
@@ -13,7 +11,7 @@ use Itk\ApiBundle\Entity\Booking;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
- * Class BookingsService
+ * Class BookingsService.
  *
  * @package Itk\ApiBundle\Services
  */
@@ -26,14 +24,20 @@ class BookingsService {
   protected $exchangeService;
 
   /**
-   * Constructor
+   * Constructor.
    *
    * @param Container $container
    * @param HelperService $helperService
    */
   function __construct(Container $container, HelperService $helperService) {
-    $this->container = $container;
     $this->helperService = $helperService;
+
+    // @todo: The service is only dependent on the container to get the entity
+    // manager and exchange service?
+    $this->container = $container;
+
+    // @TODO: Inject "EntityManager $em" -> "@doctrine.orm.entity_manager" so
+    // it's not dependent on doctrine inside the service.
     $this->doctrine = $this->container->get('doctrine');
     $this->em = $this->doctrine->getManager();
 
@@ -41,13 +45,16 @@ class BookingsService {
     $this->userRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\User');
     $this->resourceRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\Resource');
 
+    // @TODO: Inject the service, so it's not hard dependent will make tests
+    // possible?
     $this->exchangeService = $this->container->get('koba.exchange_service');
   }
 
   /**
-   * Get all bookings
+   * Get all bookings.
    *
    * @return array
+   *   @TODO Missing description?
    */
   public function getAllBookings() {
     $bookings = $this->bookingRepository->findAll();
@@ -59,11 +66,14 @@ class BookingsService {
    * Ask EWS for each resources bookings.
    *
    * @return array
+   *   @TODO Missing description?
    */
   public function getAllExchangeBookings() {
     // Get resources.
     $resources = $this->resourceRepository->findAll();
 
+    // @TODO: Use mktime and date to format it's a lot faster. If date is  ISO 8601 date
+    // then date('c', mktime(0, 0, 0)) would be start of day.
     // Calculate the start & end of the current day.
     $startToday = new \DateTime();
     $startToday->setTime(0, 0, 0);
@@ -84,10 +94,13 @@ class BookingsService {
 
 
   /**
-   * Create a booking for a user
+   * Create a booking for a user.
    *
    * @param Booking $booking booking
+   *   @TODO Missing description?
+   *
    * @return array
+   *   @TODO Missing description?
    */
   public function createBooking($booking) {
     $validation = $this->helperService->validateBooking($booking);

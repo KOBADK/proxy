@@ -1,10 +1,9 @@
 <?php
 /**
  * @file
- * This file is a part of the Itk ApiBundle.
+ * @todo Missing file description?
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @todo: Move mocks into test library folder to get more clean code separation?
  */
 namespace Itk\ApiBundle\Services;
 
@@ -30,13 +29,22 @@ class ExchangeServiceMock extends ExchangeService {
    * Constructor
    *
    * @param Container $container
+   *   @TODO Missing description?
    * @param HelperService $helperService
+   *   @TODO Missing description?
    */
   function __construct(Container $container, HelperService $helperService) {
-    $this->container = $container;
     $this->helperService = $helperService;
+
+    // @todo: The service is only dependent on the container to get the entity
+    // manager?
+    $this->container = $container;
+
+    // @TODO: Inject "EntityManager $em" -> "@doctrine.orm.entity_manager" so
+    // it's not dependent on doctrine inside the service.
     $this->doctrine = $this->container->get('doctrine');
     $this->em = $this->doctrine->getManager();
+
     $this->ewsHeaders = "Content-Type:text/calendar; charset=utf-8; method=REQUEST\r\n";
     $this->ewsHeaders .= "Content-Type: text/plain; charset=\"utf-8\" \r\n";
   }
@@ -45,7 +53,10 @@ class ExchangeServiceMock extends ExchangeService {
    * Get a resource from exchange
    *
    * @param string $mail the mail that identifies the resource in Exchange
+   *   @TODO Missing description?
+   *
    * @return array
+   *   @TODO Missing description?
    */
   public function getResource($mail) {
     if ($mail === 'resource1@test.test') {
@@ -56,11 +67,14 @@ class ExchangeServiceMock extends ExchangeService {
   /**
    * Mock of sendBookingRequest
    *
+   * @todo: What is this "subject" about?
    * subject = 'success'
    * subject = 'error_mail_not_received'
    *
    * @param Booking $booking The booking to attempt to make
+   *   @TODO Missing description?
    * @return array
+   *   @TODO Missing description?
    */
   public function sendBookingRequest(Booking $booking) {
     if ($booking->getSubject() === 'success') {

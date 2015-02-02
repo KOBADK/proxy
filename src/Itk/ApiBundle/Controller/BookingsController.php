@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file
+ * @TODO: Missing file description?
+ *
+ * @TODO: Generally defined the date format used in all the code and make it an
+ * constance or an parameters.xml option.
+ */
 
 namespace Itk\ApiBundle\Controller;
 
@@ -19,6 +26,8 @@ use Symfony\Component\Security\Acl\Exception\Exception;
  */
 class BookingsController extends FOSRestController {
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Get("")
    *
    * @ApiDoc(
@@ -29,6 +38,7 @@ class BookingsController extends FOSRestController {
    * )
    *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function getBookings() {
     $bookingsService = $this->get('koba.bookings_service');
@@ -40,6 +50,8 @@ class BookingsController extends FOSRestController {
   }
 
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Get("/exchange")
    *
    * @ApiDoc(
@@ -50,6 +62,7 @@ class BookingsController extends FOSRestController {
    * )
    *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function getExchangeBookings() {
     $bookingsService = $this->get('koba.bookings_service');
@@ -61,6 +74,8 @@ class BookingsController extends FOSRestController {
   }
 
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Post("")
    *
    * @ApiDoc(
@@ -83,7 +98,9 @@ class BookingsController extends FOSRestController {
    * )
    *
    * @param Request $request
+   *   @TODO Missing description?
    * @return \Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function postUserBooking(Request $request) {
     $bookingsService = $this->get('koba.bookings_service');

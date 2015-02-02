@@ -99,6 +99,7 @@ class Resource {
    * Set name
    *
    * @param string $name
+   *
    * @return Resource
    */
   public function setName($name) {
@@ -120,6 +121,7 @@ class Resource {
    * Set mail
    *
    * @param string $mail
+   *
    * @return Resource
    */
   public function setMail($mail) {
@@ -141,6 +143,7 @@ class Resource {
    * Set routing
    *
    * @param string $routing
+   *
    * @return Resource
    */
   public function setRouting($routing) {
@@ -162,6 +165,7 @@ class Resource {
    * Set mailbox
    *
    * @param string $mailbox
+   *
    * @return Resource
    */
   public function setMailbox($mailbox) {
@@ -183,6 +187,7 @@ class Resource {
    * Set expire
    *
    * @param integer $expire
+   *
    * @return Resource
    */
   public function setExpire($expire) {
@@ -204,6 +209,7 @@ class Resource {
    * Add role
    *
    * @param \Itk\ApiBundle\Entity\Role $role
+   *
    * @return Resource
    */
   public function addRole(\Itk\ApiBundle\Entity\Role $role) {
@@ -234,6 +240,7 @@ class Resource {
    * Add bookings
    *
    * @param \Itk\ApiBundle\Entity\Booking $bookings
+   *
    * @return Resource
    */
   public function addBooking(\Itk\ApiBundle\Entity\Booking $bookings) {
