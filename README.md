@@ -1,6 +1,14 @@
-#KOBA - Kalender og Booking API
+# KOBA - Kalender og Booking API
+This project is based on Symfony Rest Edition.
 
-##Symfony Rest Edition
+## Installation
+<pre>
+ $ composer install
+ $ php app/console doctrine:database:create
+ $ php app/console doctrine:schema:update --force
+</pre>
+
+## Symfony Rest Edition
 For the readme for the Symfony REST edition see README-Symfony-rest-edition.md.
 
 The API can be tested from the documentation that is generated. Visit:
@@ -13,7 +21,7 @@ The API accepts/returns json by default, but can also handle xml if the followin
 ?_format=xml
 </pre>
 
-##Testing
+## Testing
 To run symfony tests:
 <pre>
 $ php bin/phpunit -c app
