@@ -70,6 +70,18 @@ class UsersService {
   }
 
   /**
+   * Get paginated result
+   *
+   * @return array
+   */
+  public function fetchUsers($offset = 0, $limit = 5)
+  {
+    $users = $this->userRepository->findBy(array(), null, $limit, $offset);
+
+    return $this->helperService->generateResponse(200, $users);
+  }
+
+  /**
    * Update user status
    *
    * @param integer $id user id

@@ -3,7 +3,7 @@
 
 <!-- Header -->
 <div class="page-header">
-  <h1>Users</h1>
+  <h1>Roles</h1>
 </div>
 
 <!-- messages -->
@@ -16,27 +16,20 @@
   	<thead>
 			<tr>
 				<th>#</th>
-     		<th>UUID</th>
-     		<th>Name</th>
-        <th>Email</th>
-        <th>Active</th>
+     		<th>Title</th>
+     		<th>Description</th>
      		<th>Actions</th>
   		</tr>
   	</thead>
-    <tr data-ng-repeat="user in users">
+    <tr data-ng-repeat="role in roles">
     	<td>{{ $index + 1 }}</td>
-    	<td>{{ user.uuid }}</td>
-    	<td>{{ user.name }}</td>
-      <td>{{ user.mail }}</td>
+    	<td>{{ role.title }}</td>
+    	<td>{{ role.description }}</td>
       <td>
-        <i class="fa fa-check" data-ng-if="user.status"></i>
-      </td>
-      <td>
-        <!-- Edit index -->
-        <button type="button" class="btn btn-success btn-xs" data-ng-click="edit(user.id)">
+        <!-- Edit role -->
+        <button type="button" class="btn btn-success btn-xs" data-ng-click="edit(role.id)">
           <i class="fa fa-pencil-square-o"></i> Edit
         </button>
-
       </td>
     </tr>
   	</table>

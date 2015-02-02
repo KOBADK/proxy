@@ -36,9 +36,9 @@
 	<!-- Roles -->
 	<div class="form-group">
 		<label for="email">User Roles</label>
-		<div class="checkbox" data-ng-repeat="(key, role) in user.roles">
+		<div class="checkbox" data-ng-repeat="(key, role) in roles">
 			<label>
-				<input type="checkbox" value="" id="" checked>
+				<input type="checkbox" value="" id="" ng-checked="false">
 				<strong>{{ role.title }}</strong> - {{ role.description }}
 			</label>
 		</div>
