@@ -1,0 +1,11 @@
+<samlp:LogoutRequest
+        xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+        xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+        ID="{% id %}"
+        Version="2.0"
+        Destination="{% slo %}"
+        IssueInstant="{% issue_instant %}">
+    <saml:Issuer>{% sp %}</saml:Issuer>
+    <saml:NameID SPNameQualifier="urn:mace:feide.no:services:no.feide.foodle" Format="urn:oasis:names:tc:SAML:2.0:nameid-format:transient">{% name_id %}</saml:NameID>
+    <samlp:SessionIndex>{% session_index %}</samlp:SessionIndex>
+</samlp:LogoutRequest>

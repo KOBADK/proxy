@@ -1,0 +1,7 @@
+controllers:
+  resource: "@WayfBundle/Controller"
+  type: annotation
+  defaults: {_format: json}
+
+logout:
+    path: /logout

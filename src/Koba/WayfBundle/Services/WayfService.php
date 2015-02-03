@@ -1,11 +1,16 @@
 <?php
 /**
  * @file
- * @todo Missing file description?
+ * Handles communication with WAYF.dk identity provider to allow single sign on
+ * and single sign of.
+ *
+ * @TODO: Where is the redirects handle in routes? Should this be a bundle in
+ * it self?
  */
 
-namespace Itk\ApiBundle\Services;
+namespace Koba\WayfBundle\Services;
 
+use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
@@ -14,16 +19,22 @@ use Symfony\Component\DependencyInjection\Container;
  * @package Itk\ApiBundle\Services
  */
 class WayfService {
+
   protected $config;
   protected $container;
+  protected $templating;
+
 
   /**
    * Construct.
    *
-   * @param Container $container
-   *   Container.
+   * @param \Symfony\Component\Templating\EngineInterface $templating
+   * @param \Symfony\Component\DependencyInjection\Container $container
    */
-  public function __construct(Container $container) {
+  public function __construct(EngineInterface $templating, Container $container) {
+    $this->templating = $templating;
+
+    // @todo: Change to use setters.
     $this->container = $container;
 
     $configPath = $this->container->get('kernel')->getRootDir() . '/config/';
@@ -35,12 +46,17 @@ class WayfService {
   }
 
   /**
-   * Log out from wayf
+   * Render XML message.
    *
-   * @TODO: Make this!
+   * @param string $view
+   *   The view to use render the template.
+   * @param array $parameters
+   *   The parameters need be the template.
+   *
+   * @return string
    */
-  public function logout() {
-    return;
+  protected function render($view, array $parameters = array()) {
+    return $this->templating->render($view, $parameters);
   }
 
   /**
@@ -57,19 +73,7 @@ class WayfService {
     $sso = $this->config['sso'];
 
     // Construct request.
-    $request = <<<eof
-<?xml version="1.0"?>
-<samlp:AuthnRequest
-    ID="$id"
-    Version="2.0"
-    IssueInstant="$issueInstant"
-    Destination="$sso"
-    AssertionConsumerServiceURL="$asc"
-    ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
-    xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol">
-    <saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">$sp</saml:Issuer>
-</samlp:AuthnRequest>
-eof;
+    $request = $this->render('WayfBundle:Default:login_request.xml.twig', $this->config);
 
     // Construct request.
     $queryString = "SAMLRequest=" . urlencode(base64_encode(gzdeflate($request)));
@@ -99,20 +103,100 @@ eof;
    */
   public function response() {
     // Handle SAML response.
-    $message = base64_decode($_POST['SAMLResponse']);
+    $response = base64_decode($_POST['SAMLResponse']);
+
     $document = new \DOMDocument();
-    $document->loadXML($message);
+    $document->loadXML($response);
+
     $xp = new \DomXPath($document);
     $xp->registerNamespace('ds', 'http://www.w3.org/2000/09/xmldsig#');
     $xp->registerNamespace('samlp', 'urn:oasis:names:tc:SAML:2.0:protocol');
     $xp->registerNamespace('saml', 'urn:oasis:names:tc:SAML:2.0:assertion');
+
     $this->verifySignature($xp, TRUE);
     $this->validateResponse($xp);
+
     return array(
       'attributes' => $this->extractAttributes($xp),
-      'response' => $message,
+      'response' => $response,
     );
   }
+
+  /**
+   * Logout using the current session information.
+   *
+   * @TODO: Can we use sessions?
+   *
+   * @throws \Itk\ApiBundle\Services\SPortoException
+   */
+  public function logout() {
+    $id = '_' . sha1(uniqid(mt_rand(), TRUE));
+    $issue_instant = gmdate('Y-m-d\TH:i:s\Z', time());
+    $sp = $this->config['entityid'];
+    $slo = $this->config['slo'];
+
+    $ids = $_SESSION['wayf_dk_login'];
+
+    // Construct request.
+    $request = $this->render('WayfBundle:Default:logout_request.xml.twig', $this->config);
+
+    // Construct request.
+    $query = "SAMLRequest=" . urlencode(base64_encode(gzdeflate($request)));;
+    $query .= '&SigAlg=' . urlencode('http://www.w3.org/2000/09/xmldsig#rsa-sha1');
+
+    // Get private key.
+    $key = openssl_pkey_get_private($this->config['private_key']);
+    if (!$key) {
+      throw new WayfException('Invalid private key used');
+    }
+
+    // Sign the request.
+    $signature = "";
+    openssl_sign($query, $signature, $key, OPENSSL_ALGO_SHA1);
+    openssl_free_key($key);
+
+    // Remove session information to end redirect loop in logout endpoint. This
+    // assumes that we get logged out at WAYF. This is not optimal, but the best
+    // we have.
+    unset($_SESSION['wayf_dk_login']);
+
+    // Send logout request.
+    header('Location: ' . $slo . "?" . $query . '&Signature=' . urlencode(base64_encode($signature)));
+    exit;
+  }
+
+  /**
+   * Check if the user is logged in.
+   *
+   * @TODO: can we use session this way?
+   *
+   * As we don't know if the user is logged in we simply check if session WAYF
+   * variable exists for the user. This don't grantee that the user is logged
+   * into WAYF, but it's the best we have.
+   */
+  public function isLoggedIn() {
+    $ids = $_SESSION['wayf_dk_login'];
+    return (isset($ids['sessionIndex']) && isset($ids['nameID']));
+  }
+
+  /**
+   * Stores nameID and sessionID in drupal session.
+   *
+   * This information is needed to enabled logout from WAYF.dk.
+   *
+   * @TODO: can we use session this way?
+   *
+   * @param $xp
+   *   xp : samlresponse
+   */
+  protected function storeSessionInformation($xp) {
+    $assertion = $xp->query('/samlp:Response/saml:Assertion')->item(0);
+    $_SESSION['wayf_dk_login'] = array(
+      'nameID' => $xp->query('./saml:Subject/saml:NameID', $assertion)->item(0)->nodeValue,
+      'sessionIndex' => $xp->query('./saml:AuthnStatement/@SessionIndex', $assertion)->item(0)->value,
+    );
+  }
+
 
   /**
    * Extract SAML attributes.
@@ -231,6 +315,15 @@ eof;
     if (!empty($issues)) {
       throw new WayfException('Problems detected with response. ' . PHP_EOL . 'Issues: ' . PHP_EOL . implode(PHP_EOL, $issues));
     }
+  }
+
+  /**
+   * Generate sp metadata based on configuration.
+   *
+   * @return string
+   */
+  function getMetadata() {
+    return $this->render('WayfBundle:Default:metadata.xml.twig', $this->config);;
   }
 }
 
