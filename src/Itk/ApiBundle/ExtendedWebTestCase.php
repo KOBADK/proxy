@@ -8,6 +8,9 @@ use Itk\ApiBundle\Entity\Role;
 use Itk\ApiBundle\Entity\Resource;
 use Doctrine\ORM\EntityManager;
 use Itk\ApiBundle\Entity\Booking;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 class ExtendedWebTestCase extends WebTestCase {
   /**
@@ -20,7 +23,34 @@ class ExtendedWebTestCase extends WebTestCase {
     $this->emptyDatabase($em);
     $this->setupData($em);
 
+    $this->fakeLogin($client, 1);
+
     return $client;
+  }
+
+  /**
+   * TODO: Fix this!
+   *
+   * @param $client
+   * @param $userID
+   */
+  protected function fakeLogin($client, $userID) {
+    $container = $client->getContainer();
+
+    $user = $container->get('doctrine')->getRepository('ItkApiBundle:User')
+      ->findOneById($userID);
+
+    $token = new UsernamePasswordToken(
+      $user, null, 'main', array('ROLE_ADMIN')
+    );
+
+    // First Parameter is the actual user object.
+    // Change 'main' to whatever your firewall is called in security.yml
+    $container->get('security.token_storage')->setToken($token);
+
+    // Dispatch the login event
+    $event = new InteractiveLoginEvent(new Request(), $token);
+    $container->get("event_dispatcher")->dispatch("security.interactive_login", $event);
   }
 
   /**
@@ -116,6 +146,13 @@ class ExtendedWebTestCase extends WebTestCase {
     $role4->setTitle('Ansat');
     $role4->setDescription('vil være den rolle en ansat får tildelt ved login.');
     $em->persist($role4);
+
+    $roleAdmin = new Role();
+    $roleAdmin->setTitle('ROLE_ADMIN');
+    $roleAdmin->setDescription("bla bla bla");
+    $em->persist($roleAdmin);
+
+    $user1->addRole($roleAdmin);
 
     $resource1 = new Resource();
     $resource1->setName("Rum 1");
