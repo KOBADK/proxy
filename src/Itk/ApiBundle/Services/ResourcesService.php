@@ -1,11 +1,9 @@
 <?php
 /**
  * @file
- * This file is a part of the Itk ApiBundle.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @todo Missing file description?
  */
+
 namespace Itk\ApiBundle\Services;
 
 use Symfony\Component\DependencyInjection\Container;
@@ -32,10 +30,17 @@ class ResourcesService {
    * @param ExchangeService $exchangeService
    */
   function __construct(Container $container, HelperService $helperService, ExchangeService $exchangeService) {
-    $this->container = $container;
     $this->helperService = $helperService;
+
+    // @todo: The service is only dependent on the container to get the entity
+    // manager?
+    $this->container = $container;
+
+    // @TODO: Inject "EntityManager $em" -> "@doctrine.orm.entity_manager" so
+    // it's not dependent on doctrine inside the service.
     $this->doctrine = $this->container->get('doctrine');
     $this->em = $this->doctrine->getManager();
+
     $this->resourcesRepository = $this->doctrine->getRepository('Itk\ApiBundle\Entity\Resource');
     $this->exchangeService = $exchangeService;
   }
@@ -44,6 +49,7 @@ class ResourcesService {
    * Get all resources
    *
    * @return array
+   *   @TODO Missing description?
    */
   public function getAllResources() {
     $resources = $this->resourcesRepository->findAll();
@@ -55,7 +61,9 @@ class ResourcesService {
    * Get resource by id
    *
    * @param integer $id id of the resource
+   *   @TODO Missing description?
    * @return array
+   *   @TODO Missing description?
    */
   public function getResource($id) {
     $resource = $this->resourcesRepository->findOneById($id);
@@ -71,7 +79,10 @@ class ResourcesService {
    * Create a resource
    *
    * @param \Itk\ApiBundle\Entity\Resource $resource resource to create
+   *   @TODO Missing description?
+   *
    * @return array
+   *   @TODO Missing description?
    */
   public function createResource(Resource $resource) {
     $validation = $this->helperService->validateResource($resource);

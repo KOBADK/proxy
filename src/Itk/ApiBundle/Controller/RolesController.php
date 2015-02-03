@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * @TODO: Missing file description?
+ */
 
 namespace Itk\ApiBundle\Controller;
 
@@ -21,6 +25,8 @@ use JMS\Serializer\SerializationContext;
  */
 class RolesController extends FOSRestController {
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Get("/{id}")
    *
    * @ApiDoc(
@@ -35,7 +41,10 @@ class RolesController extends FOSRestController {
    * )
    *
    * @param integer $id the id of the role
+   *   @TODO Missing description?
+   *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function getRoleAction($id) {
     $rolesService = $this->get('koba.roles_service');
@@ -50,6 +59,8 @@ class RolesController extends FOSRestController {
   }
 
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Get("")
    *
    * @ApiDoc(
@@ -60,6 +71,7 @@ class RolesController extends FOSRestController {
    * )
    *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function getRolesAction() {
     $rolesService = $this->get('koba.roles_service');
@@ -71,6 +83,8 @@ class RolesController extends FOSRestController {
   }
 
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Post("")
    *
    * @ApiDoc(
@@ -89,6 +103,7 @@ class RolesController extends FOSRestController {
    * @param Request $request
    *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function postRoleAction(Request $request) {
     $rolesService = $this->get('koba.roles_service');
@@ -111,6 +126,8 @@ class RolesController extends FOSRestController {
   }
 
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Put("/{id}")
    *
    * @ApiDoc(
@@ -126,10 +143,13 @@ class RolesController extends FOSRestController {
    *   }
    * )
    *
-   * @param integer $id id of the role
+   * @param integer $id
+   *   Id of the role.
    * @param Request $request
+   *   @TODO Missing description?
    *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function putRoleAction($id, Request $request) {
     $rolesService = $this->get('koba.roles_service');

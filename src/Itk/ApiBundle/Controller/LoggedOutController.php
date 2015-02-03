@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * @TODO: Missing file description?
+ */
 
 namespace Itk\ApiBundle\Controller;
 
@@ -24,6 +28,8 @@ use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
  */
 class LoggedOutController extends FOSRestController {
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Get("")
    *
    * @ApiDoc(
@@ -33,6 +39,8 @@ class LoggedOutController extends FOSRestController {
    *  }
    * )
    *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   @TODO Missing description?
    */
   public function getLoggedOutAction() {
     $this->container->get('koba.wayf_service')->logout();

@@ -1,6 +1,14 @@
-#KOBA - Kalender og Booking API
+# KOBA - Kalender og Booking API
+This project is based on Symfony Rest Edition.
 
-##Symfony Rest Edition
+## Installation
+<pre>
+ $ composer install
+ $ php app/console doctrine:database:create
+ $ php app/console doctrine:schema:update --force
+</pre>
+
+## Symfony Rest Edition
 For the readme for the Symfony REST edition see README-Symfony-rest-edition.md.
 
 The API can be tested from the documentation that is generated. Visit:
@@ -13,7 +21,7 @@ The API accepts/returns json by default, but can also handle xml if the followin
 ?_format=xml
 </pre>
 
-##Testing
+## Testing
 To run symfony tests:
 <pre>
 $ php bin/phpunit -c app
@@ -27,7 +35,8 @@ http://symfony.com/doc/current/book/testing.html
 ## Tunnel (only for testing!)
 Append following line to vendor/jameslarmes/PhpEws/NTLMSoapClient.php after line 84:
 <pre>
-curl_setopt($this->ch, CURLOPT_PROXY, 'socks5://localhost:8080');
+curl_setopt($this->ch, CURLOPT_PROXY, "http://127.0.0.1:8080/");
+curl_setopt($this->ch, CURLOPT_PROXYTYPE, 7);
 </pre>
 
 Run the following within the vagrant:

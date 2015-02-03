@@ -46,7 +46,6 @@ class Role implements RoleInterface {
    * @ORM\Column(type="text")
    *
    * @Assert\NotBlank
-
    * @Groups({"role"})
    */
   protected $description;
@@ -94,6 +93,7 @@ class Role implements RoleInterface {
    * Set title
    *
    * @param string $title
+   *
    * @return Role
    */
   public function setTitle($title) {
@@ -115,6 +115,7 @@ class Role implements RoleInterface {
    * Set description
    *
    * @param string $description
+   *
    * @return Role
    */
   public function setDescription($description) {
@@ -136,6 +137,7 @@ class Role implements RoleInterface {
    * Add resource
    *
    * @param \Itk\ApiBundle\Entity\Resource $resource
+   *
    * @return Role
    */
   public function addResource(\Itk\ApiBundle\Entity\Resource $resource) {
@@ -168,6 +170,7 @@ class Role implements RoleInterface {
    * Add user
    *
    * @param \Itk\ApiBundle\Entity\User $user
+   *
    * @return Role
    */
   public function addUser(\Itk\ApiBundle\Entity\User $user) {

@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @file
+ * @TODO: Missing file description?
+ */
 namespace Itk\ApiBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;

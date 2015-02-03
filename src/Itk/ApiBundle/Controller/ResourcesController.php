@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * @TODO: Missing file description?
+ */
 
 namespace Itk\ApiBundle\Controller;
 
@@ -19,6 +23,8 @@ use JMS\Serializer\SerializationContext;
  */
 class ResourcesController extends FOSRestController {
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Get("")
    *
    * @ApiDoc(
@@ -32,6 +38,7 @@ class ResourcesController extends FOSRestController {
    * )
    *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function getResources() {
     $resourcesService = $this->get('koba.resources_service');
@@ -46,6 +53,8 @@ class ResourcesController extends FOSRestController {
   }
 
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Get("/{id}")
    *
    * @ApiDoc(
@@ -63,7 +72,10 @@ class ResourcesController extends FOSRestController {
    * )
    *
    * @param integer $id the id of the user
+   *   @TODO Missing description?
+   *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function getResource($id) {
     $resourcesService = $this->get('koba.resources_service');
@@ -78,6 +90,8 @@ class ResourcesController extends FOSRestController {
   }
 
   /**
+   * @TODO Missing function description + @see api documentation?
+   *
    * @Post("")
    *
    * @ApiDoc(
@@ -97,7 +111,10 @@ class ResourcesController extends FOSRestController {
    * )
    *
    * @param Request $request
+   *   @TODO Missing description?
+   *
    * @return View|\Symfony\Component\HttpFoundation\Response
+   *   @TODO Missing description?
    */
   public function postResource(Request $request) {
     $resourcesService = $this->get('koba.resources_service');

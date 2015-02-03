@@ -1,11 +1,9 @@
 <?php
 /**
  * @file
- * This file is a part of the Itk ApiBundle.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @todo Missing file description?
  */
+
 namespace Itk\ApiBundle\Services;
 
 use Symfony\Component\DependencyInjection\Container;
@@ -43,16 +41,27 @@ class ExchangeService {
    * Constructor
    *
    * @param Container $container
+   *   @TODO Missing description?
    * @param HelperService $helperService
+   *   @TODO Missing description?
    */
   function __construct(Container $container, HelperService $helperService) {
-    $this->container = $container;
     $this->helperService = $helperService;
+
+    // @todo: The service is only dependent on the container to get the entity
+    // manager and parameters?
+    $this->container = $container;
+
+    // @TODO: Inject "EntityManager $em" -> "@doctrine.orm.entity_manager" so
+    // it's not dependent on doctrine inside the service.
     $this->doctrine = $this->container->get('doctrine');
     $this->em = $this->doctrine->getManager();
+
     $this->ewsHeaders = "Content-Type:text/calendar; charset=utf-8; method=REQUEST\r\n";
     $this->ewsHeaders .= "Content-Type: text/plain; charset=\"utf-8\" \r\n";
 
+    // @TODO: Parameters could be injects into the service via constructor or
+    // setters? So names would not be hardcoded inside the service?
     $this->ews = new ExchangeWebServices(
       $this->container->getParameter('ews_host'),
       $this->container->getParameter('ews_user'),
@@ -68,14 +77,30 @@ class ExchangeService {
    * Get a resource from exchange
    *
    * @param string $mail the mail that identifies the resource in Exchange
+   *   @TODO Missing description?
+   *
    * @return array
+   *   @TODO Missing description?
    */
   public function getResource($mail) {
-
+    // @TODO: Mail parameter is not used?
 
     return $this->helperService->generateResponse(500, null, array('message' => 'not implemented'));
   }
 
+  /**
+   * @TODO Missing function description?
+   *
+   * @param $resourceMail
+   *   @TODO Missing description?
+   * @param $startDate
+   *   @TODO Missing description?
+   * @param $endDate
+   *   @TODO Missing description?
+   *
+   * @return array
+   *   @TODO Missing description?
+   */
   public function listAction($resourceMail, $startDate, $endDate) {
     // Configure impersonation
     $ei = new ExchangeImpersonationType();
@@ -95,8 +120,6 @@ class ExchangeService {
     $request->ParentFolderIds->DistinguishedFolderId->Id = DistinguishedFolderIdNameType::CALENDAR;
     $response = $this->ews->FindItem($request);
 
-
-
     // Verify the response.
     if ($response->ResponseMessages->FindItemResponseMessage->ResponseCode == "NoError") {
       // Verify items.
@@ -104,6 +127,9 @@ class ExchangeService {
         return $this->helperService->generateResponse(200, $response->ResponseMessages->FindItemResponseMessage->RootFolder->Items->CalendarItem);
       }
     }
+
+    // @TODO: Render not defined, if template need it should be inject into the
+    // service ("@templating" -> EngineInterface $templating).
     return $this->render('ItkKobaBundle:Default:index.html.twig');
   }
 
@@ -115,8 +141,10 @@ class ExchangeService {
    * iCalendar doc (p. 52 icalbody):
    * https://www.ietf.org/rfc/rfc2445.txt
    *
-   * @param Booking $booking The booking to attempt to make
+   * @param Booking $booking
+   *   The booking to attempt to make
    * @return array
+   *   @TODO Missing description?
    */
   public function sendBookingRequest(Booking $booking) {
     $timestamp = gmdate('Ymd\THis+01');
@@ -146,6 +174,7 @@ class ExchangeService {
     if (!$success) {
       $booking->setStatusMessage('Mail not received by resource');
 
+      // @TODO: Is is this function role to ensure that the entity is flushed?
       $this->em->flush();
       return $this->helperService->generateResponse(503, null, array('message' => 'Booking request was not delivered to resource, try again'));
     }
@@ -154,7 +183,12 @@ class ExchangeService {
     }
   }
 
-
+  /**
+   * @TODO Missing funciton description? Is this a test function and should it
+   * be located in the test cases?
+   *
+   * @return mixed
+   */
   public function sendBookingTest() {
     $resource = new Resource();
     $resource->setName("res 1");
