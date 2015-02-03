@@ -20,7 +20,7 @@ class KobaWayfExtension extends ConfigurableExtension {
    */
   public function loadInternal(array $configs, ContainerBuilder $container) {
     // Load the bundles service configurations.
-    $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+    $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
     $loader->load('services.xml');
   }
 }
