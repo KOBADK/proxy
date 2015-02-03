@@ -65,9 +65,8 @@ class WayfService {
    * @throws WayfException
    */
   public function request() {
-    // Handle SAML request.
     $id = '_' . sha1(uniqid(mt_rand(), TRUE));
-    $issueInstant = gmdate('Y-m-d\TH:i:s\Z', time());
+    $issue_instant = gmdate('Y-m-d\TH:i:s\Z', time());
     $sp = $this->config['entityId'];
     $asc = $this->config['asc'];
     $sso = $this->config['sso'];
@@ -90,10 +89,8 @@ class WayfService {
     openssl_sign($queryString, $signature, $key, OPENSSL_ALGO_SHA1);
     openssl_free_key($key);
 
-    // Send request.
-    header('Location: ' . $this->config['sso'] . "?" . $queryString . '&Signature=' . urlencode(base64_encode($signature)));
-    exit;
-  }
+    // Return the URL that the user should be redirected to.
+    return $this->config['sso'] . "?" . $queryString . '&Signature=' . urlencode(base64_encode($signature));  }
 
   /**
    * Parse SAML response.
@@ -160,9 +157,8 @@ class WayfService {
     // we have.
     unset($_SESSION['wayf_dk_login']);
 
-    // Send logout request.
-    header('Location: ' . $slo . "?" . $query . '&Signature=' . urlencode(base64_encode($signature)));
-    exit;
+    // Return the URL that the user should be redirected to.
+    return $slo . "?" . $query . '&Signature=' . urlencode(base64_encode($signature));
   }
 
   /**

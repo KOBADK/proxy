@@ -1,7 +1,8 @@
 <?php
 /**
  * @file
- * @TODO: Missing file description?
+ * Defines the callbacks need to when log in/out of the wayf.dk services which
+ * communicates via SAML messages and redirects.
  */
 
 namespace Itk\WayfBundle\Controller;
@@ -22,42 +23,34 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+
 /**
- * @Route("/login")
+ * @Route("/auth/wayf")
  */
-class LoginController extends FOSRestController {
+class WayfController extends Controller {
   /**
-   * @TODO Missing function description + @see api documentation?
+   * Tries to login the use by redirect the use to the WAYF SingleSignOn service.
    *
-   * @Get("")
+   * The function
    *
-   * @ApiDoc(
-   *  description="Send a user to WAYF",
-   *  statusCodes={
-   *    200="Returned when successful",
-   *  }
-   * )
-   *
+   * @Get("/login")
    */
   public function getLoginAction() {
-    // TODO: check if user is already logged in
+    $wayfService = $this->get('itk.wayf_service');
 
-    // Send the user to WAYF.
-    $wayfService = $this->get('koba.wayf_service');
-    $wayfService->request();
+    // Get the base64 encode message as an location URL.
+    $location = $wayfService->request();
+
+    // Create new response location to redirect the user.
+    $response = new Response();
+    $response->headers->set('location', $location);
+    $response->send();
   }
 
   /**
    * @TODO Missing function description + @see api documentation?
    *
-   * @Post("")
-   *
-   * @ApiDoc(
-   *  description="Gets user back from WAYF",
-   *  statusCodes={
-   *    200="Returned when successful",
-   *  }
-   * )
+   * @Post("/login")
    *
    * @param Request $request
    *   @TODO Missing description?
@@ -65,7 +58,7 @@ class LoginController extends FOSRestController {
    * @return \Symfony\Component\HttpFoundation\Response
    *   @TODO Missing description?
    */
-  public function PostLoginAction(Request $request) {
+  public function PostLogin(Request $request) {
     // Parse and verify post data from WAYF.
     $wayfService = $this->get('koba.wayf_service');
     $result = $wayfService->response();
@@ -110,5 +103,12 @@ class LoginController extends FOSRestController {
 
     // Return a reply to the end user.
     return new JsonResponse(array('message' => 'success'), 200);
+  }
+
+  /**
+   * @Get("/logout")
+   */
+  function logout() {
+
   }
 }
