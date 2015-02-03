@@ -8,7 +8,7 @@
  * it self?
  */
 
-namespace Koba\WayfBundle\Services;
+namespace Itk\WayfBundle\Services;
 
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\DependencyInjection\Container;
@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\Container;
 /**
  * Class WayfService.
  *
- * @package Itk\ApiBundle\Services
+ * @package Itk\WayfBundle\Services
  */
 class WayfService {
 

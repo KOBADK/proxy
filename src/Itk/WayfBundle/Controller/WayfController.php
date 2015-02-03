@@ -4,7 +4,7 @@
  * @TODO: Missing file description?
  */
 
-namespace Itk\ApiBundle\Controller;
+namespace Itk\WayfBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations\Get;

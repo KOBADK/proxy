@@ -1,0 +1,3 @@
+controllers:
+  resource: "@ItkWayfBundle/Controller"
+  type: annotation
