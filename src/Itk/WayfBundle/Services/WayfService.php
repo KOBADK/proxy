@@ -10,6 +10,8 @@
 
 namespace Itk\WayfBundle\Services;
 
+use Doctrine\Common\Cache\Cache;
+use Doctrine\Common\Cache\PhpFileCache;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\DependencyInjection\Container;
 
@@ -20,24 +22,30 @@ use Symfony\Component\DependencyInjection\Container;
  */
 class WayfService {
 
-  protected $container;
+  protected $cache;
   protected $templating;
 
   protected $certificate;
+  protected $assertionConsumerService;
+  protected $serviceProvider;
+
+  protected $idpMode;
+  protected $endpoints = array(
+    'test' => 'https://testbridge.wayf.dk/saml2/idp/metadata.php',
+    'qa' => 'https://betawayf.wayf.dk/saml2/idp/metadata.php',
+    'production' => 'https://wayf.wayf.dk/saml2/idp/metadata.php',
+  );
 
   /**
    * Construct.
    *
    * @param \Symfony\Component\Templating\EngineInterface $templating
+   * @param \Doctrine\Common\Cache\Cache $cache
    */
-  public function __construct(EngineInterface $templating) {
+  public function __construct(EngineInterface $templating, Cache $cache) {
     $this->templating = $templating;
+    $this->cache = $cache;
 
-
-//    $configPath = $this->container->get('kernel')->getRootDir() . '/config/';
-//    $this->config['idp_certificate'] = file_get_contents($configPath . $this->container->getParameter('wayf_idp_certificate'));
-//    $this->config['sso'] = $this->container->getParameter('wayf_sso');
-//    $this->config['privateKey'] = file_get_contents($configPath . $this->container->getParameter('wayf_private_key'));
 //    $this->config['asc'] = $this->container->getParameter('wayf_asc');
 //    $this->config['entityId'] = $this->container->getParameter('wayf_entityid');
   }
@@ -52,46 +60,49 @@ class WayfService {
    */
   public function setCertificateInformation($cert, $key) {
     $this->certificate = array(
-      'cert' => $cert,
-      'key' => $key,
+      'cert' => file_get_contents($cert),
+      'key' => file_get_contents($key),
     );
   }
 
-  /**
-   * Render XML message.
-   *
-   * @param string $view
-   *   The view to use render the template.
-   * @param array $parameters
-   *   The parameters need be the template.
-   *
-   * @return string
-   */
-  protected function render($view, array $parameters = array()) {
-    return $this->templating->render($view, $parameters);
+  public function setIdpMode($mode) {
+    $this->idpMode = $mode;
+  }
+
+  public function setAssertionConsumerService($acs) {
+    $this->assertionConsumerService = $acs;
+  }
+
+  public function setServiceProvicer($sp) {
+    $this->serviceProvider = $sp;
   }
 
   /**
-   * Generate SAML request for WAYF.
+   * Generate redirect URL with query string for login.
+   *
+   * The query string is the SAML request and signature for login at wayf.dk.
    *
    * @throws WayfException
    */
-  public function request() {
-    $id = '_' . sha1(uniqid(mt_rand(), TRUE));
-    $issue_instant = gmdate('Y-m-d\TH:i:s\Z', time());
-    $sp = $this->config['entityId'];
-    $asc = $this->config['asc'];
-    $sso = $this->config['sso'];
+  public function login() {
+    // Get identity provider metadata.
+    $idpMetadata = $this->getIpdMetadata();
 
     // Construct request.
-    $request = $this->render('WayfBundle:Default:login_request.xml.twig', $this->config);
+    $request = $this->render('ItkWayfBundle::login_request.xml.twig', array(
+      'id' => '_' . sha1(uniqid(mt_rand(), TRUE)),
+      'issueInstant' => gmdate('Y-m-d\TH:i:s\Z', time()),
+      'sso' => $idpMetadata['sso'],
+      'asc' => $this->assertionConsumerService,
+      'sp' => $this->serviceProvider,
+    ));
 
     // Construct request.
     $queryString = "SAMLRequest=" . urlencode(base64_encode(gzdeflate($request)));
     $queryString .= '&SigAlg=' . urlencode('http://www.w3.org/2000/09/xmldsig#rsa-sha1');
 
     // Get private key.
-    $key = openssl_pkey_get_private($this->config['privateKey']);
+    $key = openssl_pkey_get_private($this->certificate['key']);
     if (!$key) {
       throw new WayfException('Invalid private key used');
     }
@@ -102,7 +113,7 @@ class WayfService {
     openssl_free_key($key);
 
     // Return the URL that the user should be redirected to.
-    return $this->config['sso'] . "?" . $queryString . '&Signature=' . urlencode(base64_encode($signature));  }
+    return $idpMetadata['sso'] . "?" . $queryString . '&Signature=' . urlencode(base64_encode($signature));  }
 
   /**
    * Parse SAML response.
@@ -188,6 +199,15 @@ class WayfService {
   }
 
   /**
+   * Generate sp metadata based on configuration.
+   *
+   * @return string
+   */
+  public function getMetadata() {
+    return $this->render('WayfBundle:Default:metadata.xml.twig', $this->config);;
+  }
+
+  /**
    * Stores nameID and sessionID in drupal session.
    *
    * This information is needed to enabled logout from WAYF.dk.
@@ -204,7 +224,6 @@ class WayfService {
       'sessionIndex' => $xp->query('./saml:AuthnStatement/@SessionIndex', $assertion)->item(0)->value,
     );
   }
-
 
   /**
    * Extract SAML attributes.
@@ -326,12 +345,68 @@ class WayfService {
   }
 
   /**
-   * Generate sp metadata based on configuration.
+   * Get IDP metadata information.
+   *
+   * @return array|mixed
+   *    The Single Sign On and Single Logout urls and the IDP public certificate.
+   *
+   * @throws \Itk\WayfBundle\Services\WayfException
+   *   If the IDP do not return any data.
+   */
+  protected function getIpdMetadata() {
+    $cache_key = 'ipd_' . $this->idpMode;
+    $this->cache->setNamespace('itk_wayf.cache');
+
+    // Try to get cached information.
+    if (($info = $this->cache->fetch($cache_key)) === FALSE) {
+      // Data not found in cache, so try to download it.
+      @$metadata = file_get_contents($this->endpoints[$this->idpMode]);
+      if ($metadata === FALSE) {
+        throw new WayfException('An error occurred, WAYF metadata service not available.');
+      }
+      else {
+        // Parse the XML metadata document.
+        $xml = simplexml_load_string($metadata);
+        $xml->registerXPathNamespace('md', 'urn:oasis:names:tc:SAML:2.0:metadata');
+        $xml->registerXPathNamespace('ds', 'http://www.w3.org/2000/09/xmldsig#');
+
+        $SsoDescriptor = '/md:EntityDescriptor/md:IDPSSODescriptor';
+        $binding = 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect';
+
+        // Get Single Sign On and logout urls.
+        $sso = $xml->xpath("$SsoDescriptor/md:SingleSignOnService[@Binding='$binding']/@Location");
+        $slo = $xml->xpath("$SsoDescriptor/md:SingleLogoutService[@Binding='$binding']/@Location");
+
+        // Get certificate data.
+        $cert = $xml->xpath("$SsoDescriptor/md:KeyDescriptor[@use='signing']/ds:KeyInfo/ds:X509Data/ds:X509Certificate");
+
+        // Set information form the meta-date.
+        $info = array(
+          'cert' => (string) $cert[0],
+          'sso' => (string) $sso[0]['Location'],
+          'slo' => (string) $slo[0]['Location'],
+        );
+
+        // Save the information in the cache.
+        $this->cache->save($cache_key, $info);
+      }
+    }
+
+    return $info;
+  }
+
+  /**
+   * Render XML message.
+   *
+   * @param string $view
+   *   The view to use render the template.
+   * @param array $parameters
+   *   The parameters need be the template.
    *
    * @return string
    */
-  function getMetadata() {
-    return $this->render('WayfBundle:Default:metadata.xml.twig', $this->config);;
+  protected function render($view, array $parameters = array()) {
+    return $this->templating->render($view, $parameters);
   }
 }
 

@@ -37,12 +37,13 @@ class WayfController extends Controller {
     $wayfService = $this->get('itk.wayf_service');
 
     // Get the base64 encode message as an location URL.
-    $location = $wayfService->request();
+    $location = $wayfService->login();
 
     // Create new response location to redirect the user.
     $response = new Response();
     $response->headers->set('location', $location);
-    $response->send();
+
+    return $this->redirect($location, 301);
   }
 
   /**
