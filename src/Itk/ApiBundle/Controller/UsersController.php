@@ -11,6 +11,8 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Delete;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -65,19 +67,30 @@ class UsersController extends FOSRestController {
    * @Get("")
    *
    * @ApiDoc(
+   *  resource = true,
    *  description="Get all users",
    *  statusCodes={
    *    200="Returned when successful"
    *  }
    * )
    *
+   * @QueryParam(name="offset", requirements="\d+", nullable=true, description="Offset from which to start listing notes.")
+   * @QueryParam(name="limit", requirements="\d+", default="2", description="How many notes to return.")
+   *
+   * @param Request $request the request object
+   * @param ParamFetcherInterface $paramFetcher param fetcher service
+   *
    * @return \Symfony\Component\HttpFoundation\Response
    *   @TODO Missing description?
    */
-  public function getUsers() {
+  public function getUsers(Request $request, ParamFetcherInterface $paramFetcher) {
     $usersService = $this->get('koba.users_service');
 
-    $result = $usersService->getAllUsers();
+    $offset = $paramFetcher->get('offset');
+    $start = empty($offset) ? 0 : $offset + 1;
+    $limit = $paramFetcher->get('limit');
+
+    $result = $usersService->fetchUsers($start, $limit);
 
     $context = new SerializationContext();
     $context->setGroups(array('user'));
@@ -159,7 +172,7 @@ class UsersController extends FOSRestController {
     $result = $usersService->getUserRoles($id);
 
     $context = new SerializationContext();
-    $context->setGroups(array('user'));
+    $context->setGroups(array('role'));
     $view = $this->view($result['data'], $result['status']);
     $view->setSerializationContext($context);
     return $this->handleView($view);

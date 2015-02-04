@@ -70,8 +70,9 @@ sensio_framework_extra:
     view: { annotations: false }
 
 fos_rest:
-     view:
-         view_response_listener: force
+    param_fetcher_listener: true
+    view:
+        view_response_listener: force
 
 fos_http_cache:
     cache_control:

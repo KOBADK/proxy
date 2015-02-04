@@ -56,8 +56,6 @@ class Role implements RoleInterface {
    * @ORM\ManyToMany(targetEntity="Resource", mappedBy="roles")
    *
    * @Assert\Collection
-   *
-   * @Groups({"role"})
    **/
   protected $resources;
 
@@ -67,8 +65,6 @@ class Role implements RoleInterface {
    * @ORM\ManyToMany(targetEntity="User", mappedBy="roles")
    *
    * @Assert\Collection
-   *
-   * @Groups({"role"})
    **/
   protected $users;
 

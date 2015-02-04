@@ -1,0 +1,47 @@
+<form role="form">
+	<!-- Key -->
+	<fieldset disabled>
+		<div class="form-group">
+			<label for="index" class="control-label">ID</label>
+			<input type="text" class="form-control" id="index" placeholder="API Key" data-ng-model="user.uuid">
+			<span class="help-block">The UUID is automatically generated.</span>
+		</div>
+
+
+		<!-- Name -->
+		<div class="form-group">
+			<label for="name">Name</label>
+			<input type="text" class="form-control" id="name" placeholder="Enter Name" data-ng-model="user.name">
+		</div>
+
+
+		<!-- Email -->
+		<div class="form-group">
+			<label for="email">Email</label>
+			<input type="text" class="form-control" id="email" placeholder="Enter email" data-ng-model="user.mail">
+		</div>
+	</fieldset>
+
+	<!-- Active -->
+	<div class="form-group">
+		<label for="email">Status</label>
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" value="" id="active" data-ng-model="user.status">
+				Active
+			</label>
+		</div>
+	</div>
+
+	<!-- Roles -->
+	<div class="form-group">
+		<label for="email">User Roles</label>
+		<div class="checkbox" data-ng-repeat="(key, role) in roles">
+			<label>
+				<input type="checkbox" value="" id="" ng-checked="false">
+				<strong>{{ role.title }}</strong> - {{ role.description }}
+			</label>
+		</div>
+	</div>
+
+</form>

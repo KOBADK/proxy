@@ -78,7 +78,10 @@ class RolesController extends FOSRestController {
 
     $result = $rolesService->getAllRoles();
 
+    $context = new SerializationContext();
+    $context->setGroups(array('role'));
     $view = $this->view($result['data'], $result['status']);
+    $view->setSerializationContext($context);
     return $this->handleView($view);
   }
 
