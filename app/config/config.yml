@@ -113,8 +113,3 @@ nelmio_api_doc:
                 xml:                 application/xml
             method:               format_param # One of "format_param"; "accept_header"
             default_format:       json
-
-Itk:
-    wayf:
-        certificate: ''
-        certificate_key: ''

@@ -25,7 +25,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 /**
- * @Route("/auth/wayf")
+ * @Route("/wayf")
  */
 class WayfController extends Controller {
   /**
