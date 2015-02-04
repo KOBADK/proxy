@@ -20,29 +20,41 @@ use Symfony\Component\DependencyInjection\Container;
  */
 class WayfService {
 
-  protected $config;
   protected $container;
   protected $templating;
 
+  protected $certificate;
 
   /**
    * Construct.
    *
    * @param \Symfony\Component\Templating\EngineInterface $templating
-   * @param \Symfony\Component\DependencyInjection\Container $container
    */
-  public function __construct(EngineInterface $templating, Container $container) {
+  public function __construct(EngineInterface $templating) {
     $this->templating = $templating;
 
-    // @todo: Change to use setters.
-    $this->container = $container;
 
-    $configPath = $this->container->get('kernel')->getRootDir() . '/config/';
-    $this->config['idp_certificate'] = file_get_contents($configPath . $this->container->getParameter('wayf_idp_certificate'));
-    $this->config['sso'] = $this->container->getParameter('wayf_sso');
-    $this->config['privateKey'] = file_get_contents($configPath . $this->container->getParameter('wayf_private_key'));
-    $this->config['asc'] = $this->container->getParameter('wayf_asc');
-    $this->config['entityId'] = $this->container->getParameter('wayf_entityid');
+//    $configPath = $this->container->get('kernel')->getRootDir() . '/config/';
+//    $this->config['idp_certificate'] = file_get_contents($configPath . $this->container->getParameter('wayf_idp_certificate'));
+//    $this->config['sso'] = $this->container->getParameter('wayf_sso');
+//    $this->config['privateKey'] = file_get_contents($configPath . $this->container->getParameter('wayf_private_key'));
+//    $this->config['asc'] = $this->container->getParameter('wayf_asc');
+//    $this->config['entityId'] = $this->container->getParameter('wayf_entityid');
+  }
+
+  /**
+   * Set certificate information.
+   *
+   * @param string $cert
+   *   The file path to the RSA certificate.
+   * @param string $key
+   *   The key to un-lock the certificate.
+   */
+  public function setCertificateInformation($cert, $key) {
+    $this->certificate = array(
+      'cert' => $cert,
+      'key' => $key,
+    );
   }
 
   /**

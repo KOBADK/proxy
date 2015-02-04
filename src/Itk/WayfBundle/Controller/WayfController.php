@@ -31,8 +31,6 @@ class WayfController extends Controller {
   /**
    * Tries to login the use by redirect the use to the WAYF SingleSignOn service.
    *
-   * The function
-   *
    * @Get("/login")
    */
   public function getLoginAction() {

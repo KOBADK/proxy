@@ -3,7 +3,6 @@
   <services>
     <service id="itk.wayf_service" class="Itk\WayfBundle\Services\WayfService">
       <argument type="service" id="templating"/>
-      <argument type="service" id="service_container"/>
     </service>
   </services>
 </container>

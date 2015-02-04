@@ -20,24 +20,21 @@ class Configuration implements ConfigurationInterface {
    */
   public function getConfigTreeBuilder() {
     $treeBuilder = new TreeBuilder();
-    $rootNode = $treeBuilder->root('itk');
+    $rootNode = $treeBuilder->root('itk_wayf');
 
     // Try to load the self sign test certificate.
-    $sslDirectories = array(__DIR__.'/Ressource/ssl');
+    $sslDirectories = array(__DIR__ . '/../Resources/ssl');
     $locator = new FileLocator($sslDirectories);
-    $certificate = $locator->locate('selfSigned.cert', null, TRUE);
-    $key = $locator->locate('selfSigned.key', null, TRUE);
+    $certificate = $locator->locate('selfSigned.cert', NULL, TRUE);
+    $key = $locator->locate('selfSigned.key', NULL, TRUE);
 
     $rootNode
       ->children()
-        ->arrayNode('wayf')
+        ->arrayNode('certificate')
+          ->addDefaultsIfNotSet()
           ->children()
-            ->scalarNode('certificate')
-              ->defaultValue($certificate)
-            ->end()
-            ->scalarNode('certificate_key')
-              ->defaultValue($key)
-            ->end()
+            ->scalarNode('cert')->defaultValue($certificate)->end()
+            ->scalarNode('key')->defaultValue($key)->end()
           ->end()
         ->end()
       ->end();
