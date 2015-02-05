@@ -124,19 +124,14 @@ class WayfService {
    *
    * The query string is the SAML request and signature for login at wayf.dk.
    *
-   * @throws WayfException
+   * @return string
+   *   The URL to redirect the user to.
+   *
+   * @throws \Itk\WayfBundle\Services\WayfException
    */
   public function login() {
     // Get identity provider metadata.
     $idpMetadata = $this->getIpdMetadata();
-
-//    $scoping = '';
-//    foreach ($providerids as $provider) {
-//      $scoping .= "<samlp:IDPEntry ProviderID=\"$provider\"/>";
-//    }
-//    if ($scoping) {
-//      $scoping = '<samlp:Scoping><samlp:IDPList>' . $scoping . '</samlp:IDPList></samlp:Scoping>';
-//    }
 
     // Construct request.
     $request = $this->render('ItkWayfBundle::login_request.xml.twig', array(
@@ -195,16 +190,23 @@ class WayfService {
   }
 
   /**
-   * Logout using the current session information.
+   * Logout out the user at WAYF.
    *
-   * @TODO: Can we use sessions?
+   * @return string
+   *   The URL to redirect the user to.
    *
-   * @throws \Itk\ApiBundle\Services\SPortoException
+   * @throws \Itk\WayfBundle\Services\WayfException
    */
   public function logout() {
+    // Get identity provider metadata.
     $idpMetadata = $this->getIpdMetadata();
 
+    // Get Id's stored from the login request. They are used to identify the
+    // user at wayf.dk.
     $ids = $this->session->get('itk_wayf');
+    if (!isset($ids['sessionIndex']) || !isset($ids['nameId'])) {
+      throw new WayfException('The logout request is missing session information.');
+    }
 
     // Construct request.
     $request = $this->render('ItkWayfBundle::logout_request.xml.twig', array(
@@ -240,18 +242,38 @@ class WayfService {
     return $idpMetadata['slo'] . "?" . $query . '&Signature=' . urlencode(base64_encode($signature));
   }
 
+  public function loggedOut() {
+    // Check if response exists.
+    if (!isset($_GET['SAMLResponse'])) {
+      return FALSE;
+    }
+
+    $response = gzinflate(base64_decode($_GET['SAMLResponse']));
+    $document = new \DOMDocument();
+    $document->loadXML($response);
+
+    $xpath = new \DomXPath($document);
+    $xpath->registerNamespace('samlp', 'urn:oasis:names:tc:SAML:2.0:protocol');
+
+    $node = $xpath->query('/samlp:LogoutResponse/samlp:Status/samlp:StatusCode')->item(0);
+    $statuCode = $node->getAttribute('Value');
+
+    return array(
+      'status' => preg_match('/Success$/', $statuCode),
+      'response' => $response,
+    );
+  }
+
   /**
    * Check if the user is logged in.
-   *
-   * @TODO: can we use session this way?
    *
    * As we don't know if the user is logged in we simply check if session WAYF
    * variable exists for the user. This don't grantee that the user is logged
    * into WAYF, but it's the best we have.
    */
   public function isLoggedIn() {
-    $ids = $_SESSION['wayf_dk_login'];
-    return (isset($ids['sessionIndex']) && isset($ids['nameID']));
+    $ids = $this->session->get('itk_wayf');
+    return (isset($ids['sessionIndex']) && isset($ids['nameId']));
   }
 
   /**
@@ -341,6 +363,7 @@ class WayfService {
     else {
       $context = $xpath->query('/samlp:Response')->item(0);
     }
+
     // Get signature and digest value.
     $signatureValue = base64_decode($xpath->query('ds:Signature/ds:SignatureValue', $context)
         ->item(0)->textContent);

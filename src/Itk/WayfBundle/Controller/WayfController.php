@@ -13,6 +13,9 @@ use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\View\View;
+use Itk\WayfBundle\Event\WayfEvents;
+use Itk\WayfBundle\Event\WayfLoggedInEvent;
+use Itk\WayfBundle\Event\WayfLoggedOutEvent;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -63,43 +66,9 @@ class WayfController extends Controller {
     $wayfService = $this->get('itk.wayf_service');
     $result = $wayfService->consume();
 
-//    // Set needed attributes.
-//    $mail = $result['attributes']['mail'][0];
-//    $firstName = $result['attributes']['gn'][0];
-//    $lastName = $result['attributes']['sn'][0];
-//
-//    // @TODO: Should is be configurable which attribute to use?
-//    preg_match('/\d{10}$/', $result['attributes']['schacPersonalUniqueID'][0], $uniqueId);
-//    $uniqueId = reset($uniqueId);
-//
-//    // @TODO: HASH unique id
-//
-//    // @TODO: If first user, give ROLE_ADMIN
-//
-//    // Save data to user entity.
-//    $userService = $this->container->get('koba.users_service');
-//    $user = $userService->getUserByUniqueId($uniqueId);
-//
-//    if (!$user) {
-//      $user = new User();
-//      $user->setUniqueId($uniqueId);
-//    }
-//
-//    $user->setName($firstName . " " . $lastName);
-//    $user->setMail($mail);
-//    $user->setStatus(true);
-//
-//    // Persist user to database.
-//    $this->getDoctrine()->getManager()->persist($user);
-//    $this->getDoctrine()->getManager()->flush();
-//
-//    // Set session token
-//    $token = new UsernamePasswordToken($user, null, 'main', array('ROLE_ADMIN'));
-//    $this->get('security.token_storage')->setToken($token);
-//
-//    // Dispatch the login event
-//    $event = new InteractiveLoginEvent($request, $token);
-//    $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
+    // Send WAYF logged in event.
+    $event = new WayfLoggedInEvent($result['response'], $result['attributes']);
+    $this->get('event_dispatcher')->dispatch(WayfEvents::WAYF_LOGGED_IN, $event);
 
     // Return a reply to the end user.
     return new JsonResponse(array('message' => 'success'), 200);
@@ -113,15 +82,27 @@ class WayfController extends Controller {
    * @return \Symfony\Component\HttpFoundation\RedirectResponse
    *   Redirect to WAYF login with status 303 (see other).
    */
-  function logout() {
+  function logout(Request $request) {
     $wayfService = $this->get('itk.wayf_service');
 
-    // Get the base64 encode message as an location URL.
-    $location = $wayfService->logout();
+    // Check if the is a logout callback from WAYF. This is a little hack as
+    // wayf.dk don't supports POST callback on logout.
+    $result = $wayfService->loggedOut();
+    if ($result) {
+      // Send WAYF logged out event.
+      $event = new WayfLoggedOutEvent($result['response'], $result['status']);
+      $this->get('event_dispatcher')->dispatch(WayfEvents::WAYF_LOGGED_OUT, $event);
 
-    // Redirect the user to the WAYF logout location. We send an 303 (See other)
-    // status code, which is not allowed to be cached by browser.
-    return $this->redirect($location, 303);
+      return new JsonResponse(array('message' => 'logged out success'), $result['status']);
+    }
+    else {
+      // Get the base64 encode message as an location URL.
+      $location = $wayfService->logout();
+
+      // Redirect the user to the WAYF logout location. We send an 303 (See other)
+      // status code, which is not allowed to be cached by browser.
+      return $this->redirect($location, 303);
+    }
   }
 
   /**

@@ -57,7 +57,7 @@ class Configuration implements ConfigurationInterface {
         ->children()
           ->scalarNode('logoutUrl')
             ->isRequired()
-            ->info('The url to return to when logged out.')
+            ->info('The url to return to when logged out (wayf/logout).')
           ->end()
           ->scalarNode('organizationName')
             ->isRequired()

@@ -124,7 +124,7 @@ itk_wayf:
         - 'sikker-adgang.dk'
 
     serviceProviderMetadata:
-        logoutUrl: 'http://koba2.vm'
+        logoutUrl: 'http://koba2.vm/auth/wayf/logout'
         organizationName: 'KOBA test'
         organizationDisplayName: 'Koba test unit'
         organizationUrl: 'http://koba2.vm'
