@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
   <services>
-    <service id="itk._wayf_cache" class="Doctrine\Common\Cache\PhpFileCache">
+    <service id="itk.wayf_cache" class="Doctrine\Common\Cache\PhpFileCache">
       <argument>%kernel.cache_dir%</argument>
     </service>
     <service id="itk.wayf_service" class="Itk\WayfBundle\Services\WayfService">
       <argument type="service" id="templating"/>
-      <argument type="service" id="itk._wayf_cache"/>
+      <argument type="service" id="session"/>
+      <argument type="service" id="itk.wayf_cache"/>
     </service>
   </services>
 </container>

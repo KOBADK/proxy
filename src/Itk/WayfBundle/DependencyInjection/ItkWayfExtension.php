@@ -44,5 +44,8 @@ class ItkWayfExtension extends Extension {
 
     // Set metadata about the current site.
     $serviceDefintion->addMethodCall('setServiceProviderMetadata', array($config['serviceProviderMetadata']));
+
+    // Set scoping.
+    $serviceDefintion->addMethodCall('setScoping', array($config['scoping']));
   }
 }
