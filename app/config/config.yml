@@ -113,3 +113,16 @@ nelmio_api_doc:
                 xml:                 application/xml
             method:               format_param # One of "format_param"; "accept_header"
             default_format:       json
+
+itk_wayf:
+    idp:
+        acs: 'http://koba.vm/auth/wayf/login'
+        sp: 'http://koba.vm'
+
+    serviceProviderMetadata:
+        logoutUrl: 'http://koba.vm'
+        organizationName: 'KOBA test'
+        organizationDisplayName: 'Koba test unit'
+        organizationUrl: 'http://koba.vm'
+        contactName: 'Admin'
+        contactMail: 'design@mkb.aarhus.dk'

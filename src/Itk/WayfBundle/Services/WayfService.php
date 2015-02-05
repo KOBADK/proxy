@@ -3,9 +3,6 @@
  * @file
  * Handles communication with WAYF.dk identity provider to allow single sign on
  * and single sign of.
- *
- * @TODO: Where is the redirects handle in routes? Should this be a bundle in
- * it self?
  */
 
 namespace Itk\WayfBundle\Services;
@@ -28,6 +25,7 @@ class WayfService {
   protected $certificate;
   protected $assertionConsumerService;
   protected $serviceProvider;
+  protected $serviceProviderMetadata;
 
   protected $idpMode;
   protected $endpoints = array(
@@ -45,9 +43,6 @@ class WayfService {
   public function __construct(EngineInterface $templating, Cache $cache) {
     $this->templating = $templating;
     $this->cache = $cache;
-
-//    $this->config['asc'] = $this->container->getParameter('wayf_asc');
-//    $this->config['entityId'] = $this->container->getParameter('wayf_entityid');
   }
 
   /**
@@ -65,16 +60,46 @@ class WayfService {
     );
   }
 
+  /**
+   * Set identity provider mode.
+   *
+   * @param $mode
+   *   The mode to use can be 'test', 'qa' and 'production'.
+   */
   public function setIdpMode($mode) {
     $this->idpMode = $mode;
   }
 
+  /**
+   * Set the assertion consumer service URL.
+   *
+   * This is the callback tha wayf post's information about the logged in user.
+   *
+   * @param $acs
+   *   The URL to post back to.
+   */
   public function setAssertionConsumerService($acs) {
     $this->assertionConsumerService = $acs;
   }
 
+  /**
+   * Set the service provider.
+   *
+   * @param $sp
+   *   This would normally be the domain name for the current domain.
+   */
   public function setServiceProvicer($sp) {
     $this->serviceProvider = $sp;
+  }
+
+  /**
+   * Set the metadata required to generate this sites metadata.
+   *
+   * @param array $metadata
+   *
+   */
+  public function setServiceProviderMetadata(array $metadata) {
+    $this->serviceProviderMetadata = $metadata;
   }
 
   /**
@@ -88,12 +113,21 @@ class WayfService {
     // Get identity provider metadata.
     $idpMetadata = $this->getIpdMetadata();
 
+    // @TODO: Add support for scoping?
+//    $scoping = '';
+//    foreach ($providerids as $provider) {
+//      $scoping .= "<samlp:IDPEntry ProviderID=\"$provider\"/>";
+//    }
+//    if ($scoping) {
+//      $scoping = '<samlp:Scoping><samlp:IDPList>' . $scoping . '</samlp:IDPList></samlp:Scoping>';
+//    }
+
     // Construct request.
     $request = $this->render('ItkWayfBundle::login_request.xml.twig', array(
       'id' => '_' . sha1(uniqid(mt_rand(), TRUE)),
       'issueInstant' => gmdate('Y-m-d\TH:i:s\Z', time()),
       'sso' => $idpMetadata['sso'],
-      'asc' => $this->assertionConsumerService,
+      'acs' => $this->assertionConsumerService,
       'sp' => $this->serviceProvider,
     ));
 
@@ -199,12 +233,24 @@ class WayfService {
   }
 
   /**
-   * Generate sp metadata based on configuration.
+   * Generate service provider metadata based on configuration.
    *
    * @return string
+   *   The metadata XML.
    */
   public function getMetadata() {
-    return $this->render('WayfBundle:Default:metadata.xml.twig', $this->config);;
+    return $this->render('ItkWayfBundle::metadata.xml.twig', array(
+      'sp' => $this->serviceProvider,
+      'cert' => preg_replace('/-{5}\w+\s\w+-{5}/', '', $this->certificate['cert']),
+      'acs' => $this->assertionConsumerService,
+      'logoutUrl' => $this->serviceProviderMetadata['logoutUrl'],
+      'organizationName' => $this->serviceProviderMetadata['organizationName'],
+      'organizationDisplayName' => $this->serviceProviderMetadata['organizationDisplayName'],
+      'organizationUrl' => $this->serviceProviderMetadata['organizationUrl'],
+      'organizationLanguage' => $this->serviceProviderMetadata['organizationLanguage'],
+      'contactName' => $this->serviceProviderMetadata['contactName'],
+      'contactMail' => $this->serviceProviderMetadata['contactMail'],
+    ));
   }
 
   /**
@@ -309,7 +355,7 @@ class WayfService {
     $issues = array();
     // Verify destination.
     $destination = $xp->query('/samlp:Response/@Destination')->item(0)->value;
-    if ($destination != NULL && $destination != $this->config['asc']) {
+    if ($destination != NULL && $destination != $this->config['acs']) {
       // Destination is optional.
       $issues[] = "Destination: $destination is not here; message not destined for us";
     }
@@ -345,7 +391,7 @@ class WayfService {
   }
 
   /**
-   * Get IDP metadata information.
+   * Get identity provider metadata information.
    *
    * @return array|mixed
    *    The Single Sign On and Single Logout urls and the IDP public certificate.
@@ -393,6 +439,26 @@ class WayfService {
     }
 
     return $info;
+  }
+
+
+  /**
+   * Import organizations from the WAYF service.
+   *
+   * @TODO: Make this not Drupal.... use cache
+   */
+  function wayf_dk_login_organizations_list() {
+    $feed_url = variable_get('wayf_dk_login_organizations_list_url', WAYF_DK_LOGIN_ORGANIZATIONS_LIST_URL);
+    $content = file_get_contents($feed_url);
+    $data = json_decode($content, TRUE);
+
+    $data['https://testidp.wayf.dk/module.php/core/loginuserpass.php'] = array(
+      'da' => 'WAYF test-institution (IDP)',
+      'en' => 'WAYF test-institution (IDP)',
+      'schacHomeOrganization' => 'testidp.wayf.dk',
+    );
+
+//    variable_set('wayf_dk_login_organizations_list', $data);
   }
 
   /**

@@ -107,4 +107,15 @@ class WayfController extends Controller {
   function logout() {
 
   }
+
+  /**
+   * @Get("/metadata")
+   */
+  function metadata() {
+    $wayfService = $this->get('itk.wayf_service');
+
+    $response = new Response($wayfService->getMetadata());
+    $response->headers->set('Content-Type', 'text/xml');
+    return $response;
+  }
 }

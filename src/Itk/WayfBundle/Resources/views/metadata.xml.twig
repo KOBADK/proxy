@@ -1,29 +1,29 @@
-<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" entityID="{% entityid %}">
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" entityID="{{ sp }}">
     <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:1.1:protocol urn:oasis:names:tc:SAML:2.0:protocol">
         <md:KeyDescriptor use="signing">
             <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
                 <ds:X509Data>
-                    <ds:X509Certificate>{% cert %}</ds:X509Certificate>
+                    <ds:X509Certificate>{{ cert }}</ds:X509Certificate>
                 </ds:X509Data>
             </ds:KeyInfo>
         </md:KeyDescriptor>
         <md:KeyDescriptor use="encryption">
             <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
                 <ds:X509Data>
-                    <ds:X509Certificate>{% cert %}</ds:X509Certificate>
+                    <ds:X509Certificate>{{ cert }}</ds:X509Certificate>
                 </ds:X509Data>
             </ds:KeyInfo>
         </md:KeyDescriptor>
-        <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="{%  logout_redirect %}"/>
-        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="{% asc %}" index="0"/>
+        <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="{{ logoutUrl }}"/>
+        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="{{ acs }}" index="0"/>
     </md:SPSSODescriptor>
     <md:Organization>
-        <md:OrganizationName xml:lang="{% organization.language %}">{$this->config['organization']['name']}</md:OrganizationName>
-        <md:OrganizationDisplayName xml:lang="{% organization.language %}">{$this->config['organization']['displayname']}</md:OrganizationDisplayName>
-        <md:OrganizationURL xml:lang="{% organization.language %}">{$this->config['organization']['url']}</md:OrganizationURL>
+        <md:OrganizationName xml:lang="{{ organizationLanguage }}">{{ organizationName }}</md:OrganizationName>
+        <md:OrganizationDisplayName xml:lang="{{ organizationLanguage }}">{{ organizationDisplayName }}</md:OrganizationDisplayName>
+        <md:OrganizationURL xml:lang="{{ organizationLanguage }}">{{ organizationUrl }}</md:OrganizationURL>
     </md:Organization>
     <md:ContactPerson contactType="technical">
-        <md:GivenName>{$this->config['contact']['name']}</md:GivenName>
-        <md:EmailAddress>{$this->config['contact']['mail']}</md:EmailAddress>
+        <md:GivenName>{{ contactName }}</md:GivenName>
+        <md:EmailAddress>{{ contactMail }}</md:EmailAddress>
     </md:ContactPerson>
 </md:EntityDescriptor>
