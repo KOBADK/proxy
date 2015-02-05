@@ -37,12 +37,10 @@ class WayfController extends Controller {
     $wayfService = $this->get('itk.wayf_service');
 
     // Get the base64 encode message as an location URL.
-    $location = $wayfService->request();
+    $location = $wayfService->login();
 
-    // Create new response location to redirect the user.
-    $response = new Response();
-    $response->headers->set('location', $location);
-    $response->send();
+    // Redirect the user to the WAYF login location.
+    return $this->redirect($location, 307);
   }
 
   /**
@@ -108,5 +106,16 @@ class WayfController extends Controller {
    */
   function logout() {
 
+  }
+
+  /**
+   * @Get("/metadata")
+   */
+  function metadata() {
+    $wayfService = $this->get('itk.wayf_service');
+
+    $response = new Response($wayfService->getMetadata());
+    $response->headers->set('Content-Type', 'text/xml');
+    return $response;
   }
 }

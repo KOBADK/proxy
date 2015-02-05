@@ -3,13 +3,12 @@
  * @file
  * Handles communication with WAYF.dk identity provider to allow single sign on
  * and single sign of.
- *
- * @TODO: Where is the redirects handle in routes? Should this be a bundle in
- * it self?
  */
 
 namespace Itk\WayfBundle\Services;
 
+use Doctrine\Common\Cache\Cache;
+use Doctrine\Common\Cache\PhpFileCache;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\DependencyInjection\Container;
 
@@ -20,26 +19,30 @@ use Symfony\Component\DependencyInjection\Container;
  */
 class WayfService {
 
-  protected $container;
+  protected $cache;
   protected $templating;
 
   protected $certificate;
+  protected $assertionConsumerService;
+  protected $serviceProvider;
+  protected $serviceProviderMetadata;
+
+  protected $idpMode;
+  protected $endpoints = array(
+    'test' => 'https://testbridge.wayf.dk/saml2/idp/metadata.php',
+    'qa' => 'https://betawayf.wayf.dk/saml2/idp/metadata.php',
+    'production' => 'https://wayf.wayf.dk/saml2/idp/metadata.php',
+  );
 
   /**
    * Construct.
    *
    * @param \Symfony\Component\Templating\EngineInterface $templating
+   * @param \Doctrine\Common\Cache\Cache $cache
    */
-  public function __construct(EngineInterface $templating) {
+  public function __construct(EngineInterface $templating, Cache $cache) {
     $this->templating = $templating;
-
-
-//    $configPath = $this->container->get('kernel')->getRootDir() . '/config/';
-//    $this->config['idp_certificate'] = file_get_contents($configPath . $this->container->getParameter('wayf_idp_certificate'));
-//    $this->config['sso'] = $this->container->getParameter('wayf_sso');
-//    $this->config['privateKey'] = file_get_contents($configPath . $this->container->getParameter('wayf_private_key'));
-//    $this->config['asc'] = $this->container->getParameter('wayf_asc');
-//    $this->config['entityId'] = $this->container->getParameter('wayf_entityid');
+    $this->cache = $cache;
   }
 
   /**
@@ -52,46 +55,88 @@ class WayfService {
    */
   public function setCertificateInformation($cert, $key) {
     $this->certificate = array(
-      'cert' => $cert,
-      'key' => $key,
+      'cert' => file_get_contents($cert),
+      'key' => file_get_contents($key),
     );
   }
 
   /**
-   * Render XML message.
+   * Set identity provider mode.
    *
-   * @param string $view
-   *   The view to use render the template.
-   * @param array $parameters
-   *   The parameters need be the template.
-   *
-   * @return string
+   * @param $mode
+   *   The mode to use can be 'test', 'qa' and 'production'.
    */
-  protected function render($view, array $parameters = array()) {
-    return $this->templating->render($view, $parameters);
+  public function setIdpMode($mode) {
+    $this->idpMode = $mode;
   }
 
   /**
-   * Generate SAML request for WAYF.
+   * Set the assertion consumer service URL.
+   *
+   * This is the callback tha wayf post's information about the logged in user.
+   *
+   * @param $acs
+   *   The URL to post back to.
+   */
+  public function setAssertionConsumerService($acs) {
+    $this->assertionConsumerService = $acs;
+  }
+
+  /**
+   * Set the service provider.
+   *
+   * @param $sp
+   *   This would normally be the domain name for the current domain.
+   */
+  public function setServiceProvicer($sp) {
+    $this->serviceProvider = $sp;
+  }
+
+  /**
+   * Set the metadata required to generate this sites metadata.
+   *
+   * @param array $metadata
+   *
+   */
+  public function setServiceProviderMetadata(array $metadata) {
+    $this->serviceProviderMetadata = $metadata;
+  }
+
+  /**
+   * Generate redirect URL with query string for login.
+   *
+   * The query string is the SAML request and signature for login at wayf.dk.
    *
    * @throws WayfException
    */
-  public function request() {
-    $id = '_' . sha1(uniqid(mt_rand(), TRUE));
-    $issue_instant = gmdate('Y-m-d\TH:i:s\Z', time());
-    $sp = $this->config['entityId'];
-    $asc = $this->config['asc'];
-    $sso = $this->config['sso'];
+  public function login() {
+    // Get identity provider metadata.
+    $idpMetadata = $this->getIpdMetadata();
+
+    // @TODO: Add support for scoping?
+//    $scoping = '';
+//    foreach ($providerids as $provider) {
+//      $scoping .= "<samlp:IDPEntry ProviderID=\"$provider\"/>";
+//    }
+//    if ($scoping) {
+//      $scoping = '<samlp:Scoping><samlp:IDPList>' . $scoping . '</samlp:IDPList></samlp:Scoping>';
+//    }
 
     // Construct request.
-    $request = $this->render('WayfBundle:Default:login_request.xml.twig', $this->config);
+    $request = $this->render('ItkWayfBundle::login_request.xml.twig', array(
+      'id' => '_' . sha1(uniqid(mt_rand(), TRUE)),
+      'issueInstant' => gmdate('Y-m-d\TH:i:s\Z', time()),
+      'sso' => $idpMetadata['sso'],
+      'acs' => $this->assertionConsumerService,
+      'sp' => $this->serviceProvider,
+    ));
 
     // Construct request.
     $queryString = "SAMLRequest=" . urlencode(base64_encode(gzdeflate($request)));
     $queryString .= '&SigAlg=' . urlencode('http://www.w3.org/2000/09/xmldsig#rsa-sha1');
 
     // Get private key.
-    $key = openssl_pkey_get_private($this->config['privateKey']);
+    $key = openssl_pkey_get_private($this->certificate['key']);
     if (!$key) {
       throw new WayfException('Invalid private key used');
     }
@@ -102,7 +147,7 @@ class WayfService {
     openssl_free_key($key);
 
     // Return the URL that the user should be redirected to.
-    return $this->config['sso'] . "?" . $queryString . '&Signature=' . urlencode(base64_encode($signature));  }
+    return $idpMetadata['sso'] . "?" . $queryString . '&Signature=' . urlencode(base64_encode($signature));  }
 
   /**
    * Parse SAML response.
@@ -188,6 +233,27 @@ class WayfService {
   }
 
   /**
+   * Generate service provider metadata based on configuration.
+   *
+   * @return string
+   *   The metadata XML.
+   */
+  public function getMetadata() {
+    return $this->render('ItkWayfBundle::metadata.xml.twig', array(
+      'sp' => $this->serviceProvider,
+      'cert' => preg_replace('/-{5}\w+\s\w+-{5}/', '', $this->certificate['cert']),
+      'acs' => $this->assertionConsumerService,
+      'logoutUrl' => $this->serviceProviderMetadata['logoutUrl'],
+      'organizationName' => $this->serviceProviderMetadata['organizationName'],
+      'organizationDisplayName' => $this->serviceProviderMetadata['organizationDisplayName'],
+      'organizationUrl' => $this->serviceProviderMetadata['organizationUrl'],
+      'organizationLanguage' => $this->serviceProviderMetadata['organizationLanguage'],
+      'contactName' => $this->serviceProviderMetadata['contactName'],
+      'contactMail' => $this->serviceProviderMetadata['contactMail'],
+    ));
+  }
+
+  /**
    * Stores nameID and sessionID in drupal session.
    *
    * This information is needed to enabled logout from WAYF.dk.
@@ -204,7 +270,6 @@ class WayfService {
       'sessionIndex' => $xp->query('./saml:AuthnStatement/@SessionIndex', $assertion)->item(0)->value,
     );
   }
-
 
   /**
    * Extract SAML attributes.
@@ -290,7 +355,7 @@ class WayfService {
     $issues = array();
     // Verify destination.
     $destination = $xp->query('/samlp:Response/@Destination')->item(0)->value;
-    if ($destination != NULL && $destination != $this->config['asc']) {
+    if ($destination != NULL && $destination != $this->config['acs']) {
       // Destination is optional.
       $issues[] = "Destination: $destination is not here; message not destined for us";
     }
@@ -326,12 +391,88 @@ class WayfService {
   }
 
   /**
-   * Generate sp metadata based on configuration.
+   * Get identity provider metadata information.
+   *
+   * @return array|mixed
+   *    The Single Sign On and Single Logout urls and the IDP public certificate.
+   *
+   * @throws \Itk\WayfBundle\Services\WayfException
+   *   If the IDP do not return any data.
+   */
+  protected function getIpdMetadata() {
+    $cache_key = 'ipd_' . $this->idpMode;
+    $this->cache->setNamespace('itk_wayf.cache');
+
+    // Try to get cached information.
+    if (($info = $this->cache->fetch($cache_key)) === FALSE) {
+      // Data not found in cache, so try to download it.
+      @$metadata = file_get_contents($this->endpoints[$this->idpMode]);
+      if ($metadata === FALSE) {
+        throw new WayfException('An error occurred, WAYF metadata service not available.');
+      }
+      else {
+        // Parse the XML metadata document.
+        $xml = simplexml_load_string($metadata);
+        $xml->registerXPathNamespace('md', 'urn:oasis:names:tc:SAML:2.0:metadata');
+        $xml->registerXPathNamespace('ds', 'http://www.w3.org/2000/09/xmldsig#');
+
+        $SsoDescriptor = '/md:EntityDescriptor/md:IDPSSODescriptor';
+        $binding = 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect';
+
+        // Get Single Sign On and logout urls.
+        $sso = $xml->xpath("$SsoDescriptor/md:SingleSignOnService[@Binding='$binding']/@Location");
+        $slo = $xml->xpath("$SsoDescriptor/md:SingleLogoutService[@Binding='$binding']/@Location");
+
+        // Get certificate data.
+        $cert = $xml->xpath("$SsoDescriptor/md:KeyDescriptor[@use='signing']/ds:KeyInfo/ds:X509Data/ds:X509Certificate");
+
+        // Set information form the meta-date.
+        $info = array(
+          'cert' => (string) $cert[0],
+          'sso' => (string) $sso[0]['Location'],
+          'slo' => (string) $slo[0]['Location'],
+        );
+
+        // Save the information in the cache.
+        $this->cache->save($cache_key, $info);
+      }
+    }
+
+    return $info;
+  }
+
+
+  /**
+   * Import organizations from the WAYF service.
+   *
+   * @TODO: Make this not Drupal.... use cache
+   */
+  function wayf_dk_login_organizations_list() {
+    $feed_url = variable_get('wayf_dk_login_organizations_list_url', WAYF_DK_LOGIN_ORGANIZATIONS_LIST_URL);
+    $content = file_get_contents($feed_url);
+    $data = json_decode($content, TRUE);
+
+    $data['https://testidp.wayf.dk/module.php/core/loginuserpass.php'] = array(
+      'da' => 'WAYF test-institution (IDP)',
+      'en' => 'WAYF test-institution (IDP)',
+      'schacHomeOrganization' => 'testidp.wayf.dk',
+    );
+
+//    variable_set('wayf_dk_login_organizations_list', $data);
+  }
+
+  /**
+   * Render XML message.
+   *
+   * @param string $view
+   *   The view to use render the template.
+   * @param array $parameters
+   *   The parameters need be the template.
    *
    * @return string
    */
-  function getMetadata() {
-    return $this->render('WayfBundle:Default:metadata.xml.twig', $this->config);;
+  protected function render($view, array $parameters = array()) {
+    return $this->templating->render($view, $parameters);
   }
 }
 

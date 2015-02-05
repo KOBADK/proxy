@@ -29,6 +29,20 @@ class ItkWayfExtension extends Extension {
 
     // Inject the configuration into the service.
     $serviceDefintion = $container->getDefinition('itk.wayf_service');
+
+    // Set certificates.
     $serviceDefintion->addMethodCall('setCertificateInformation', array($config['certificate']['cert'], $config['certificate']['key']));
+
+    // Set operation mode.
+    $serviceDefintion->addMethodCall('setIdpMode', array($config['mode']));
+
+    // Set AssertionConsumerService (acs).
+    $serviceDefintion->addMethodCall('setAssertionConsumerService', array($config['idp']['acs']));
+
+    // Set Service Provider ID (site url).
+    $serviceDefintion->addMethodCall('setServiceProvicer', array($config['idp']['sp']));
+
+    // Set metadata about the current site.
+    $serviceDefintion->addMethodCall('setServiceProviderMetadata', array($config['serviceProviderMetadata']));
   }
 }
