@@ -31,6 +31,7 @@ security:
     access_control:
         - { path: ^/auth/wayf/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/auth/wayf/metadata$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/auth/wayf/logout$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/logget_out$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }

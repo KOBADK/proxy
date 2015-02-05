@@ -202,22 +202,26 @@ class WayfService {
    * @throws \Itk\ApiBundle\Services\SPortoException
    */
   public function logout() {
-    $id = '_' . sha1(uniqid(mt_rand(), TRUE));
-    $issue_instant = gmdate('Y-m-d\TH:i:s\Z', time());
-    $sp = $this->config['entityid'];
-    $slo = $this->config['slo'];
+    $idpMetadata = $this->getIpdMetadata();
 
-    $ids = $_SESSION['wayf_dk_login'];
+    $ids = $this->session->get('itk_wayf');
 
     // Construct request.
-    $request = $this->render('WayfBundle:Default:logout_request.xml.twig', $this->config);
+    $request = $this->render('ItkWayfBundle::logout_request.xml.twig', array(
+      'id' => '_' . sha1(uniqid(mt_rand(), TRUE)),
+      'issueInstant' => gmdate('Y-m-d\TH:i:s\Z', time()),
+      'sp' => $this->serviceProvider,
+      'slo' => $idpMetadata['slo'],
+      'nameId' => $ids['nameId'],
+      'sessionIndex' => $ids['sessionIndex'],
+    ));
 
     // Construct request.
     $query = "SAMLRequest=" . urlencode(base64_encode(gzdeflate($request)));;
     $query .= '&SigAlg=' . urlencode('http://www.w3.org/2000/09/xmldsig#rsa-sha1');
 
     // Get private key.
-    $key = openssl_pkey_get_private($this->config['private_key']);
+    $key = openssl_pkey_get_private($this->certificate['key']);
     if (!$key) {
       throw new WayfException('Invalid private key used');
     }
@@ -230,10 +234,10 @@ class WayfService {
     // Remove session information to end redirect loop in logout endpoint. This
     // assumes that we get logged out at WAYF. This is not optimal, but the best
     // we have.
-    unset($_SESSION['wayf_dk_login']);
+    $this->session->remove('itk_wayf');
 
     // Return the URL that the user should be redirected to.
-    return $slo . "?" . $query . '&Signature=' . urlencode(base64_encode($signature));
+    return $idpMetadata['slo'] . "?" . $query . '&Signature=' . urlencode(base64_encode($signature));
   }
 
   /**
@@ -283,7 +287,7 @@ class WayfService {
     $assertion = $xpath->query('/samlp:Response/saml:Assertion')->item(0);
 
     $this->session->set('itk_wayf', array(
-      'nameID' => $xpath->query('./saml:Subject/saml:NameID', $assertion)->item(0)->nodeValue,
+      'nameId' => $xpath->query('./saml:Subject/saml:NameID', $assertion)->item(0)->nodeValue,
       'sessionIndex' => $xpath->query('./saml:AuthnStatement/@SessionIndex', $assertion)->item(0)->value,
     ));
   }
