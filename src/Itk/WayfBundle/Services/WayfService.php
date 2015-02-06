@@ -233,11 +233,6 @@ class WayfService {
     openssl_sign($query, $signature, $key, OPENSSL_ALGO_SHA1);
     openssl_free_key($key);
 
-    // Remove session information to end redirect loop in logout endpoint. This
-    // assumes that we get logged out at WAYF. This is not optimal, but the best
-    // we have.
-    $this->session->remove('itk_wayf');
-
     // Return the URL that the user should be redirected to.
     return $idpMetadata['slo'] . "?" . $query . '&Signature=' . urlencode(base64_encode($signature));
   }
@@ -258,8 +253,15 @@ class WayfService {
     $node = $xpath->query('/samlp:LogoutResponse/samlp:Status/samlp:StatusCode')->item(0);
     $statuCode = $node->getAttribute('Value');
 
+    $status = preg_match('/Success$/', $statuCode);
+    if ($status) {
+      // Remove session information about the users status af WAYF, as the user
+      // is logged out.
+      $this->session->remove('itk_wayf');
+    }
+
     return array(
-      'status' => preg_match('/Success$/', $statuCode),
+      'status' => $status,
       'response' => $response,
     );
   }
