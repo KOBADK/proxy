@@ -1,0 +1,30 @@
+application:
+    environment:
+        php:
+            version: 5.5.14
+        timezone: 'Europe/Copenhagen'
+
+    apache2:
+        modules: ['rewrite']
+            sites:
+                symfony_app:
+                    web_root: 'web/'
+                    host: 'local.dev'
+
+    project_setup:
+        before:
+            - composer install
+            - php app/console doctrine:database:create
+            - php app/console doctrine:schema:update --force
+
+tools:
+    sensiolabs_security_checker: true
+
+
+build:
+    tests:
+        override:
+            - command: 'phpunit --coverage-clover=some-file'
+                coverage:
+                    file: 'some-file'
+                    format: 'php-clover'
