@@ -9,6 +9,8 @@ namespace Koba\MainBundle\Services;
 use Koba\MainBundle\Entity\Resource;
 use Koba\MainBundle\EntityRepositories\ResourceRepository;
 use Itk\ApiBundle\Services\ExchangeService;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Intl\Exception\NotImplementedException;
 
 /**
  * Class ResourceService
@@ -55,7 +57,7 @@ class ResourceService {
     $resource = $this->resourceRepository->findOneById($id);
 
     if (!$resource) {
-      // TODO: Throw exception.
+      throw new NotFoundHttpException('Resource not found.');
     }
 
     return $resource;
@@ -64,8 +66,6 @@ class ResourceService {
   /**
    * Create a resource
    *
-   * @TODO: Implement this!
-   *
    * @param \Koba\MainBundle\Entity\Resource $resource
    *   The resource to create.
    *
@@ -73,20 +73,22 @@ class ResourceService {
    *   Success.
    */
   public function createResource(Resource $resource) {
+    throw new NotImplementedException('not implemented');
+
     /*
     $validation = $this->helperService->validateResource($resource);
     if ($validation['status'] !== 200) {
       return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
     }
 
-    if ($this->resourcesRepository->findOneByMail($resource->getMail())) {
-      return $this->helperService->generateResponse(409, null, array('message' => 'resource already exists'));
+    if ($this->resourceRepository->findOneByMail($resource->getMail())) {
+      // @TODO: Throw meaningfull exception.
+      //return $this->helperService->generateResponse(409, null, array('message' => 'resource already exists'));
     }
 
     $result = $this->exchangeService->getResource($resource->getMail());
 
     return $result;
     */
-    return null;
   }
 }

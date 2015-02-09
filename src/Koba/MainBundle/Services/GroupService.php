@@ -9,6 +9,7 @@ namespace Koba\MainBundle\Services;
 use Koba\MainBundle\EntityRepositories\UserRepository;
 use Koba\MainBundle\EntityRepositories\GroupRepository;
 use Koba\MainBundle\Entity\Group;
+use Symfony\Component\Intl\Exception\NotImplementedException;
 
 /**
  * Class GroupService
@@ -44,13 +45,15 @@ class GroupService {
    * @TODO: implement this!
    */
   public function getGroup($id) {
-/*    $role = $this->rolesRepository->findOneById($id);
+    throw new NotImplementedException('not implemented');
 
-    if (!$role) {
-      return $this->helperService->generateResponse(404, null, array('message' => 'role not found'));
-    }
+    /*    $role = $this->rolesRepository->findOneById($id);
 
-    return $this->helperService->generateResponse(200, $role);*/
+        if (!$role) {
+          return $this->helperService->generateResponse(404, null, array('message' => 'role not found'));
+        }
+
+        return $this->helperService->generateResponse(200, $role);*/
   }
 
   /**
@@ -62,9 +65,11 @@ class GroupService {
    * @TODO: implement this!
    */
   public function getAllGroups() {
-/*    $roles = $this->rolesRepository->findAll();
+    throw new NotImplementedException('not implemented');
 
-    return $this->helperService->generateResponse(200, $roles);*/
+    /*    $roles = $this->rolesRepository->findAll();
+
+        return $this->helperService->generateResponse(200, $roles);*/
   }
 
   /**
@@ -75,24 +80,28 @@ class GroupService {
    *
    * @return boolean
    *   Success?
+   *
+   * @TODO: Implement this!
    */
   public function createRole(Group $group) {
-/*    $validation = $this->helperService->validateRole($role);
-    if ($validation['status'] !== 200) {
-      return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
-    }
+    throw new NotImplementedException('not implemented');
 
-    if ($this->rolesRepository->findOneByTitle($role->getTitle())) {
-      return $this->helperService->generateResponse(409, null, array('message' => 'a role with that title already exists'));
-    }
+    /*    $validation = $this->helperService->validateRole($role);
+        if ($validation['status'] !== 200) {
+          return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
+        }
 
-    // Persist the new role.
-    $this->em->persist($role);
+        if ($this->rolesRepository->findOneByTitle($role->getTitle())) {
+          return $this->helperService->generateResponse(409, null, array('message' => 'a role with that title already exists'));
+        }
 
-    // Update db.
-    $this->em->flush();
+        // Persist the new role.
+        $this->em->persist($role);
 
-    return $this->helperService->generateResponse(204);*/
+        // Update db.
+        $this->em->flush();
+
+        return $this->helperService->generateResponse(204);*/
   }
 
   /**
@@ -105,8 +114,12 @@ class GroupService {
    *
    * @return boolean
    *   Success?
+   *
+   * @TODO: Implement this!
    */
   public function updateRole($id, Group $updatedGroup) {
+    throw new NotImplementedException('not implemented');
+
 /*    $role = $this->rolesRepository->findOneById($id);
 
     if (!$role) {

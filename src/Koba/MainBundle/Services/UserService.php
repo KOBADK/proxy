@@ -9,6 +9,7 @@ namespace Koba\MainBundle\Services;
 use Koba\MainBundle\EntityRepositories\GroupRepository;
 use Koba\MainBundle\EntityRepositories\UserRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Intl\Exception\NotImplementedException;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
@@ -140,7 +141,7 @@ class UserService {
    *   Success?
    */
   public function addRoleToUser($userId, Group $group) {
-    // TODO: Fix validation.
+    // @TODO: Fix validation.
 /*    $validation = $this->helperService->validateRole($group);
     if ($validation['status'] !== 200) {
       return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
@@ -159,7 +160,8 @@ class UserService {
     }
 
     if ($user->getGroups()->contains($group)) {
-      // TODO: throw correct exception.
+      // @TODO: throw meaningful exception.
+      throw new NotImplementedException('incorrect exception');
       //return $this->helperService->generateResponse(409, null, array('message' => 'user already has that role'));
     }
 
@@ -194,8 +196,8 @@ class UserService {
     }
 
     if (!$user->getGroups()->contains($group)) {
-      // TODO: throw meaningful exception.
-
+      // @TODO: throw meaningful exception.
+      throw new NotImplementedException('incorrect exception');
       //return $this->helperService->generateResponse(409, null, array('message' => 'user does not have that role'));
     }
 

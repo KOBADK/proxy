@@ -128,7 +128,7 @@ class ResourcesController extends FOSRestController {
       return $this->handleView($view);
     }
 
-    // TODO: Implement this!
+    // @TODO: Implement this!
 
     $view = $this->view('not implemented', 500);
     return $this->handleView($view);
