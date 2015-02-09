@@ -11,16 +11,10 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Delete;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
-use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use JMS\Serializer\SerializationContext;
-use Doctrine\DBAL\Types\BooleanType;
 
 /**
  * @Route("/users")
@@ -51,11 +45,11 @@ class UsersController extends FOSRestController {
   public function getUser($id) {
     $userService = $this->get('koba.user_service');
 
-    $result = $userService->getUser($id);
+    $user = $userService->getUser($id);
 
     $context = new SerializationContext();
     $context->setGroups(array('user'));
-    $view = $this->view($result['data'], $result['status']);
+    $view = $this->view($user, 200);
     $view->setSerializationContext($context);
     return $this->handleView($view);
   }
@@ -82,11 +76,11 @@ class UsersController extends FOSRestController {
   public function getUsers(Request $request) {
     $userService = $this->get('koba.user_service');
 
-    $result = $userService->getAllUsers();
+    $users = $userService->getAllUsers();
 
     $context = new SerializationContext();
     $context->setGroups(array('user'));
-    $view = $this->view($result['data'], $result['status']);
+    $view = $this->view($users, 200);
     $view->setSerializationContext($context);
     return $this->handleView($view);
   }
@@ -133,9 +127,9 @@ class UsersController extends FOSRestController {
     }
 
     // Update user
-    $result = $userService->setUserStatus($id, $user['status']);
+    $userService->setUserStatus($id, $user['status']);
 
-    $view = $this->view($result['data'], $result['status']);
+    $view = $this->view(null, 204);
     return $this->handleView($view);
   }
 
@@ -164,11 +158,11 @@ class UsersController extends FOSRestController {
   public function getUserGroups($id) {
     $userService = $this->get('koba.user_service');
 
-    $result = $userService->getUserGroups($id);
+    $groups = $userService->getUserGroups($id);
 
     $context = new SerializationContext();
     $context->setGroups(array('group'));
-    $view = $this->view($result['data'], $result['status']);
+    $view = $this->view($groups, 200);
     $view->setSerializationContext($context);
     return $this->handleView($view);
   }
@@ -217,10 +211,9 @@ class UsersController extends FOSRestController {
       return $this->handleView($view);
     }
 
-    // Add role to user
-    $result = $userService->addGroupToUser($id, $group);
+    $userService->addGroupToUser($id, $group);
 
-    $view = $this->view($result['data'], $result['status']);
+    $view = $this->view(null, 204);
     return $this->handleView($view);
   }
 
@@ -256,10 +249,9 @@ class UsersController extends FOSRestController {
   public function deleteUserRole($id, $gid) {
     $userService = $this->get('koba.user_service');
 
-    // Remove role from user.
-    $result = $userService->removeGroupFromUser($id, $gid);
+    $userService->removeGroupFromUser($id, $gid);
 
-    $view = $this->view($result['data'], $result['status']);
+    $view = $this->view(null, 204);
     return $this->handleView($view);
   }
 
@@ -288,11 +280,11 @@ class UsersController extends FOSRestController {
   public function getUserBookings($id) {
     $userService = $this->get('koba.user_service');
 
-    $result = $userService->getUserBookings($id);
+    $bookings = $userService->getUserBookings($id);
 
     $context = new SerializationContext();
     $context->setGroups(array('booking'));
-    $view = $this->view($result['data'], $result['status']);
+    $view = $this->view($bookings, 200);
     $view->setSerializationContext($context);
     return $this->handleView($view);
   }
