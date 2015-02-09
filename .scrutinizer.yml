@@ -4,12 +4,6 @@ application:
             version: 5.5.14
         timezone: 'Europe/Copenhagen'
 
-before_commands:
-    - sudo service start mysql || true
-    - composer install
-    - php app/console doctrine:database:create
-    - php app/console doctrine:schema:update --force
-
 tools:
     external_code_coverage: false
     php_analyzer: true
@@ -115,6 +109,42 @@ checks:
         deprecated_code_usage: true
         no_debug_code: true
         code_rating: true
+        verify_access_scope_valid: true
+        useless_calls: true
+        use_statement_alias_conflict: true
+        use_self_instead_of_fqcn: true
+        unused_properties: true
+        unused_parameters: true
+        single_namespace_per_use: true
+        side_effects_or_types: true
+        security_vulnerabilities: true
+        return_doc_comment_if_not_inferrable: true
+        require_scope_for_methods: true
+        require_php_tag_first: true
+        remove_trailing_whitespace: true
+        prefer_while_loop_over_for_loop: true
+        precedence_mistakes: true
+        precedence_in_conditions: true
+        parameter_non_unique: true
+        overriding_private_members: true
+        one_class_per_file: true
+        no_unnecessary_function_call_in_for_loop: true
+        no_non_implemented_abstract_methods: true
+        no_property_on_interface: true
+        no_mixed_inline_html: true
+        no_exit: true
+        no_duplicate_arguments: true
+        newline_at_end_of_file: true
+        missing_arguments: true
+        instanceof_class_exists: true
+        function_in_camel_caps: true
+        fix_php_opening_tag: true
+        fix_linefeed: true
+        deadlock_detection_in_loops: true
+        catch_class_exists: true
+        avoid_usage_of_logical_operators: true
+        avoid_entity_manager_injection: true
+        assignment_of_null_return: true
 
 coding_style:
     php:
