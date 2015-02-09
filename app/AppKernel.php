@@ -24,9 +24,10 @@ class AppKernel extends Kernel
             new Hautelook\TemplatedUriBundle\HautelookTemplatedUriBundle(),
             new Bazinga\Bundle\RestExtraBundle\BazingaRestExtraBundle(),
             new Koba\MainBundle\KobaMainBundle(),
-            new Koba\AdminBundle\KobaAdminBundle(),
+            //new Koba\AdminBundle\KobaAdminBundle(),
             new Koba\ApiBundle\KobaApiBundle(),
-            new Itk\ApiBundle\ItkApiBundle(),
+            //new Itk\ApiBundle\ItkApiBundle(),
+            new Itk\ExchangeBundle\ItkExchangeBundle(),
             new Itk\WayfBundle\ItkWayfBundle(),
         );
 

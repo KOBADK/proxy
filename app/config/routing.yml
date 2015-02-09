@@ -2,9 +2,9 @@ itk_api:
     resource: "@KobaApiBundle/Resources/config/routing.yml"
     prefix:   /api
 
-itk_admin:
-    resource: "@KobaAdminBundle/Resources/config/routing.yml"
-    prefix:   /admin
+#itk_admin:
+#    resource: "@KobaAdminBundle/Resources/config/routing.yml"
+#    prefix:   /admin
 
 itk_wayf:
     resource: "@ItkWayfBundle/Resources/config/routing.yml"

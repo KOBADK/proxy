@@ -144,11 +144,11 @@ class Booking {
   /**
    * Set user
    *
-   * @param \Itk\ApiBundle\Entity\User $user
+   * @param \Koba\MainBundle\Entity\User $user
    *
    * @return Booking
    */
-  public function setUser(\Itk\ApiBundle\Entity\User $user = NULL) {
+  public function setUser(\Koba\MainBundle\Entity\User $user = NULL) {
     $this->user = $user;
 
     return $this;
@@ -157,7 +157,7 @@ class Booking {
   /**
    * Get user
    *
-   * @return \Itk\ApiBundle\Entity\User
+   * @return \Koba\MainBundle\Entity\User
    */
   public function getUser() {
     return $this->user;
