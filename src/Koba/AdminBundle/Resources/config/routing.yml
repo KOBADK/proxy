@@ -1,0 +1,3 @@
+controllers:
+  resource: "@KobaAdminBundle/Controller"
+  type: annotation

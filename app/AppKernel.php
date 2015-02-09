@@ -8,6 +8,7 @@ class AppKernel extends Kernel
     public function registerBundles()
     {
         $bundles = array(
+            // Vendors
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
@@ -23,7 +24,12 @@ class AppKernel extends Kernel
             new Bazinga\Bundle\HateoasBundle\BazingaHateoasBundle(),
             new Hautelook\TemplatedUriBundle\HautelookTemplatedUriBundle(),
             new Bazinga\Bundle\RestExtraBundle\BazingaRestExtraBundle(),
-            new Itk\ApiBundle\ItkApiBundle(),
+
+            // Own
+            new Koba\MainBundle\KobaMainBundle(),
+            new Koba\ApiBundle\KobaApiBundle(),
+            new Koba\AdminBundle\KobaAdminBundle(),
+            new Itk\ExchangeBundle\ItkExchangeBundle(),
             new Itk\WayfBundle\ItkWayfBundle(),
         );
 
