@@ -4,17 +4,16 @@ application:
             version: 5.5.14
         timezone: 'Europe/Copenhagen'
 
-    project_setup:
-        before:
-            - sudo service start mysql || true
-            - composer install
-            - php app/console doctrine:database:create
-            - php app/console doctrine:schema:update --force
+before_commands:
+    - sudo service start mysql || true
+    - composer install
+    - php app/console doctrine:database:create
+    - php app/console doctrine:schema:update --force
 
 tools:
     external_code_coverage: false
     php_analyzer: true
-    php_cpd: true
+    php_cpd: false
     php_loc: true
     php_mess_detector: true
     php_pdepend: true
@@ -25,6 +24,16 @@ tools:
         use_native_config: false
         config:
             laxcomma: true
+
+    php_cs_fixer:
+        extensions:
+            - php
+        command: php-cs-fixer
+            enabled: true
+            filter:
+                paths: ["app/src/*"]
+            config:
+                level: all
 
 filter:
     excluded_paths:
