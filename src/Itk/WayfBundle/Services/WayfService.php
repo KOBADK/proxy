@@ -159,7 +159,8 @@ class WayfService {
     openssl_free_key($key);
 
     // Return the URL that the user should be redirected to.
-    return $idpMetadata['sso'] . "?" . $queryString . '&Signature=' . urlencode(base64_encode($signature));  }
+    return $idpMetadata['sso'] . "?" . $queryString . '&Signature=' . urlencode(base64_encode($signature));
+  }
 
   /**
    * Parse SAML response (Assertion Consumer Service).
@@ -219,7 +220,7 @@ class WayfService {
     ));
 
     // Construct request.
-    $query = "SAMLRequest=" . urlencode(base64_encode(gzdeflate($request)));;
+    $query = "SAMLRequest=" . urlencode(base64_encode(gzdeflate($request)));
     $query .= '&SigAlg=' . urlencode('http://www.w3.org/2000/09/xmldsig#rsa-sha1');
 
     // Get private key.
@@ -372,8 +373,8 @@ class WayfService {
     $digestValue = base64_decode($xpath->query('ds:Signature/ds:SignedInfo/ds:Reference/ds:DigestValue', $context)
         ->item(0)->textContent);
 
-    $signature = $xpath->query("ds:Signature", $context)->item(0);
-    $signedInfo = $xpath->query("ds:SignedInfo", $signature)
+    $signature = $xpath->query('ds:Signature', $context)->item(0);
+    $signedInfo = $xpath->query('ds:SignedInfo', $signature)
       ->item(0)
       ->C14N(TRUE, FALSE);
     $signature->parentNode->removeChild($signature);
@@ -381,7 +382,7 @@ class WayfService {
 
     // Get IdP certificate.
     $idpMetadata = $this->getIpdMetadata();
-    $publicKey = openssl_get_publickey("-----BEGIN CERTIFICATE-----\n" . chunk_split($idpMetadata['cert'], 64) . "-----END CERTIFICATE-----");
+    $publicKey = openssl_get_publickey("-----BEGIN CERTIFICATE-----\n" . chunk_split($idpMetadata['cert'], 64) . '-----END CERTIFICATE-----');
 
     if (!$publicKey) {
       throw new WayfException('Invalid public key used');
@@ -408,7 +409,7 @@ class WayfService {
     $destination = $xpath->query('/samlp:Response/@Destination')->item(0)->value;
     if ($destination != NULL && $destination != $this->assertionConsumerService) {
       // Destination is optional.
-      $issues[] = "Destination: $destination is not here; message not destined for us";
+      $issues[] = 'Destination: ' . $destination . ' is not here; message not destined for us';
     }
 
     // Verify timestamps.
@@ -416,27 +417,32 @@ class WayfService {
     $aShortWhileAgo = gmdate('Y-m-d\TH:i:s\Z', time() - $skew);
     $inAShortWhile = gmdate('Y-m-d\TH:i:s\Z', time() + $skew);
     $assertion = $xpath->query('/samlp:Response/saml:Assertion')->item(0);
+
     $subjectConfirmationDataNotBefore = $xpath->query('./saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@NotBefore', $assertion);
     if ($subjectConfirmationDataNotBefore->length && $aShortWhileAgo < $subjectConfirmationDataNotBefore->item(0)->value) {
       $issues[] = 'SubjectConfirmation not valid yet';
     }
+
     $subjectConfirmationDataNotOnOrAfter = $xpath->query('./saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@NotOnOrAfter', $assertion);
     if ($subjectConfirmationDataNotOnOrAfter->length && $inAShortWhile >= $subjectConfirmationDataNotOnOrAfter->item(0)->value) {
       $issues[] = 'SubjectConfirmation too old';
     }
-    $conditionsNotBefore = $xpath->query('./saml:Conditions/@NotBefore', $assertion);
 
+    $conditionsNotBefore = $xpath->query('./saml:Conditions/@NotBefore', $assertion);
     if ($conditionsNotBefore->length && $aShortWhileAgo > $conditionsNotBefore->item(0)->value) {
       $issues[] = 'Assertion Conditions not yet valid';
     }
+
     $conditionsNotOnOrAfter = $xpath->query('./saml:Conditions/@NotOnOrAfter', $assertion);
     if ($conditionsNotOnOrAfter->length && $aShortWhileAgo >= $conditionsNotOnOrAfter->item(0)->value) {
       $issues[] = 'Assertions Condition too old';
     }
+
     $authStatementSessionNotOnOrAfter = $xpath->query('./saml:AuthStatement/@SessionNotOnOrAfter', $assertion);
     if ($authStatementSessionNotOnOrAfter->length && $aShortWhileAgo >= $authStatementSessionNotOnOrAfter->item(0)->value) {
       $issues[] = 'AuthnStatement Session too old';
     }
+
     if (!empty($issues)) {
       throw new WayfException('Problems detected with response. ' . PHP_EOL . 'Issues: ' . PHP_EOL . implode(PHP_EOL, $issues));
     }
@@ -472,11 +478,11 @@ class WayfService {
         $binding = 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect';
 
         // Get Single Sign On and logout urls.
-        $sso = $xml->xpath("$SsoDescriptor/md:SingleSignOnService[@Binding='$binding']/@Location");
-        $slo = $xml->xpath("$SsoDescriptor/md:SingleLogoutService[@Binding='$binding']/@Location");
+        $sso = $xml->xpath($SsoDescriptor . "/md:SingleSignOnService[@Binding='$binding']/@Location");
+        $slo = $xml->xpath($SsoDescriptor . "/md:SingleLogoutService[@Binding='$binding']/@Location");
 
         // Get certificate data.
-        $cert = $xml->xpath("$SsoDescriptor/md:KeyDescriptor[@use='signing']/ds:KeyInfo/ds:X509Data/ds:X509Certificate");
+        $cert = $xml->xpath($SsoDescriptor . "/md:KeyDescriptor[@use='signing']/ds:KeyInfo/ds:X509Data/ds:X509Certificate");
 
         // Set information form the meta-date.
         $info = array(

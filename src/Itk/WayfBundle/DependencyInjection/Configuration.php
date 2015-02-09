@@ -28,10 +28,6 @@ class Configuration implements ConfigurationInterface {
     $certificate = $locator->locate('selfSigned.cert', NULL, TRUE);
     $key = $locator->locate('selfSigned.key', NULL, TRUE);
 
-    // Try to build default asc (HACK).
-    $sp = ($_SERVER['SERVER_PORT'] == 80 ? 'http://' : 'https://') . $_SERVER['SERVER_NAME'];
-    $asc =  $sp . $_SERVER['REDIRECT_URL'];
-
     $rootNode
       ->children()
         ->enumNode('mode')
