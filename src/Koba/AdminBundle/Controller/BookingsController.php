@@ -1,18 +1,14 @@
 <?php
 /**
  * @file
- * @TODO: Missing file description?
- *
- * @TODO: Generally defined the date format used in all the code and make it an
- * constance or an parameters.xml option.
+ * Contains bookings controller for /admin.
  */
 
-namespace Itk\ApiBundle\Controller;
+namespace Koba\MainBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -26,19 +22,22 @@ use Symfony\Component\Security\Acl\Exception\Exception;
  */
 class BookingsController extends FOSRestController {
   /**
-   * @TODO Missing function description + @see api documentation?
+   * Get all bookings
    *
    * @Get("")
    *
    * @ApiDoc(
-   *  description="Get all bookings",
-   *  statusCodes={
-   *    200="Success"
-   *  }
+   *   description="Get all bookings",
+   *   statusCodes={
+   *     200="Success"
+   *   },
+   *   tags={
+   *     "no_tests"
+   *   }
    * )
    *
    * @return \Symfony\Component\HttpFoundation\Response
-   *   @TODO Missing description?
+   *   Response object.
    */
   public function getBookings() {
     $bookingsService = $this->get('koba.bookings_service');
@@ -50,53 +49,59 @@ class BookingsController extends FOSRestController {
   }
 
   /**
-   * @TODO Missing function description + @see api documentation?
+   * Get booking by id
    *
-   * @Post("")
+   * @Get("/{id}")
    *
    * @ApiDoc(
-   *   description="Create a booking for a user",
-   *   input={
-   *     "class"="\Itk\ApiBundle\Entity\Booking"
-   *   },
+   *   description="Get booking by id",
    *   statusCodes={
-   *     200="Success (No content)",
-   *     400="Validation errors",
-   *     404={
-   *       "User not found",
-   *       "Resource not found"
-   *     }
+   *     200="Success",
+   *     404="Booking not found"
    *   },
    *   tags={
-   *     "not_implemented",
    *     "no_tests"
    *   }
    * )
    *
-   * @param Request $request
-   *   @TODO Missing description?
+   * @param integer $id
+   *   Id of the booking.
+   *
    * @return \Symfony\Component\HttpFoundation\Response
-   *   @TODO Missing description?
+   *   Response object.
    */
-  public function postUserBooking(Request $request) {
+  public function getBooking($id) {
     $bookingsService = $this->get('koba.bookings_service');
 
-    $serializer = $this->get('jms_serializer');
-
-    // Deserialize input
-    try {
-      $booking = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Booking', $request->get('_format'));
-    } catch (\Exception $e) {
-      $view = $this->view(array('message' => 'invalid input'), 400);
-      return $this->handleView($view);
-    }
-
-    $booking->setStartDateTimeFromUnixTimestamp($booking->getStartDateTime());
-    $booking->setEndDateTimeFromUnixTimestamp($booking->getEndDateTime());
-
-    $result = $bookingsService->createBooking($booking);
+    $result = $bookingsService->getBooking($id);
 
     $view = $this->view($result['data'], $result['status']);
+    return $this->handleView($view);
+  }
+
+  /**
+   * Delete a booking
+   *
+   * @Delete('/{id}')
+   *
+   * @ApiDoc(
+   *   description="Get booking by id",
+   *   statusCodes={
+   *     204="Success"
+   *   },
+   *   tags={
+   *     "no_tests",
+   *     "not_implemented"
+   *   }
+   * )
+   *
+   * @param integer $id
+   *   Id of the booking to delete.
+   * @return \Symfony\Component\HttpFoundation\Response
+   *   Response object.
+   */
+  public function deleteBooking($id) {
+    $view = $this->view('not implemented', 500);
     return $this->handleView($view);
   }
 }

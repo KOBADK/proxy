@@ -37,7 +37,7 @@ class ExtendedWebTestCase extends WebTestCase {
   protected function fakeLogin($client, $userID) {
     $container = $client->getContainer();
 
-    $user = $container->get('doctrine')->getRepository('ItkApiBundle:User')
+    $user = $container->get('doctrine')->getRepository('KobaMainBundle:User')
       ->findOneById($userID);
 
     $token = new UsernamePasswordToken(
