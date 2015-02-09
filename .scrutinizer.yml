@@ -4,13 +4,6 @@ application:
             version: 5.5.14
         timezone: 'Europe/Copenhagen'
 
-    apache2:
-        modules: ['rewrite']
-            sites:
-                symfony_app:
-                    web_root: 'web/'
-                    host: 'local.dev'
-
     project_setup:
         before:
             - composer install
