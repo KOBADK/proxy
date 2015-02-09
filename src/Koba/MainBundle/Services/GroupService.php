@@ -8,6 +8,7 @@ namespace Koba\MainBundle\Services;
 
 use Koba\MainBundle\EntityRepositories\UserRepository;
 use Koba\MainBundle\EntityRepositories\GroupRepository;
+use Koba\MainBundle\Entity\Group;
 
 /**
  * Class GroupService
@@ -32,15 +33,17 @@ class GroupService {
   }
 
   /**
-   * Get the role with $id
+   * Get the group with $id
    *
-   * @param $id
-   *   @TODO Missing description?
+   * @param integer $id
+   *   Id of the group.
    *
-   * @return array
-   *   @TODO Missing description?
+   * @return Group
+   *   The group found.
+   *
+   * @TODO: implement this!
    */
-  public function getRole($id) {
+  public function getGroup($id) {
 /*    $role = $this->rolesRepository->findOneById($id);
 
     if (!$role) {
@@ -51,27 +54,29 @@ class GroupService {
   }
 
   /**
-   * Get all roles
+   * Get all groups.
    *
    * @return array
-   *   @TODO Missing description?
+   *   Array of groups.
+   *
+   * @TODO: implement this!
    */
-  public function getAllRoles() {
+  public function getAllGroups() {
 /*    $roles = $this->rolesRepository->findAll();
 
     return $this->helperService->generateResponse(200, $roles);*/
   }
 
   /**
-   * Create a role.
+   * Create a group.
    *
-   * @param Role $role The role class to create. Should contain title and description.
-   *   @TODO Missing description?
+   * @param Group $group
+   *   The group class to create. Should contain title and description.
    *
-   * @return array
-   *   @TODO Missing description?
+   * @return boolean
+   *   Success?
    */
-  public function createRole(Role $role) {
+  public function createRole(Group $group) {
 /*    $validation = $this->helperService->validateRole($role);
     if ($validation['status'] !== 200) {
       return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
@@ -91,17 +96,17 @@ class GroupService {
   }
 
   /**
-   * Update a role.
+   * Update a group.
    *
-   * @param $id
-   *   @TODO Missing description?
-   * @param Role $updatedRole
-   *   @TODO Missing description?
+   * @param integer $id
+   *   Group id.
+   * @param Group $updatedGroup
+   *   The updated group.
    *
-   * @return array
-   *   @TODO Missing description?
+   * @return boolean
+   *   Success?
    */
-  public function updateRole($id, Role $updatedRole) {
+  public function updateRole($id, Group $updatedGroup) {
 /*    $role = $this->rolesRepository->findOneById($id);
 
     if (!$role) {

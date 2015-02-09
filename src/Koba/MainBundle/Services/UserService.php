@@ -8,6 +8,8 @@ namespace Koba\MainBundle\Services;
 
 use Koba\MainBundle\EntityRepositories\GroupRepository;
 use Koba\MainBundle\EntityRepositories\UserRepository;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
  * Class UserService
@@ -16,23 +18,23 @@ use Koba\MainBundle\EntityRepositories\UserRepository;
  */
 class UserService {
   protected $userRepository;
-  protected $roleRepository;
+  protected $groupRepository;
 
   /**
    * Constructor.
    *
    * @param UserRepository $userRepository
    *   The user repository.
-   * @paramGroupRepository $groupRepository
+   * @param GroupRepository $groupRepository
    *   The group repository.
    */
   function __construct(UserRepository $userRepository, GroupRepository $groupRepository) {
     $this->userRepository = $userRepository;
-    $this->roleRepository = $groupRepository;
+    $this->groupRepository = $groupRepository;
   }
 
   /**
-   * Get a user with $id
+   * Get a user with $id.
    *
    * @param $id
    *   Id of the user.
@@ -44,7 +46,7 @@ class UserService {
     $user = $this->userRepository->findOneById($id);
 
     if (!$user) {
-      // TODO: Throw exception.
+      throw new NotFoundHttpException('User not found.');
     }
 
     return $user;
@@ -63,14 +65,14 @@ class UserService {
     $user = $this->userRepository->findOneByUniqueId($uniqueId);
 
     if (!$user) {
-      // TODO: Throw exception.
+      throw new NotFoundHttpException('User not found.');
     }
 
     return $user;
   }
 
   /**
-   * Get all users
+   * Get all users.
    *
    * @return array
    *   Array of users.
@@ -80,145 +82,145 @@ class UserService {
   }
 
   /**
-   * Update user status
+   * Update a user's status
    *
    * @param integer $id user id
-   *   @TODO Missing description?
+   *   Id of the user.
    * @param boolean $status user status
-   *   @TODO Missing description?
+   *   Status.
    *
-   * @return array
-   *   @TODO Missing description?
+   * @return boolean
+   *   Success?
    */
   public function setUserStatus($id, $status) {
-/*    $user = $this->userRepository->findOneById($id);
+    $user = $this->userRepository->findOneById($id);
 
     if (!$user) {
-      return $this->helperService->generateResponse(404, null, array('errors' => 'user not found'));
+      throw new NotFoundHttpException('User not found.');
     }
 
     if (!is_bool($status)) {
-      return $this->helperService->generateResponse(400, null, array('errors' => 'status is not a boolean'));
+      throw new ValidatorException('Status is not a boolean');
     }
 
     $user->setStatus($status);
 
-    $validation = $this->helperService->validateUser($user);
-    if ($validation['status'] !== 200) {
-      return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
-    }
+    $this->userRepository->getEntityManager()->flush();
 
-    $this->em->flush();
-
-    return $this->helperService->generateResponse(204);*/
+    return true;
   }
 
   /**
-   * Get a user's roles
+   * Get a user's groups.
    *
    * @param $id
-   *   @TODO Missing description?
+   *   Id of the user.
    * @return array
-   *   @TODO Missing description?
+   *   Array of groups.
    */
-  public function getUserRoles($id) {
+  public function getUserGroups($id) {
     $user = $this->userRepository->findOneById($id);
 
     if (!$user) {
-      return $this->helperService->generateResponse(404, null, array('message' => 'user not found'));
+      throw new NotFoundHttpException('User not found.');
     }
 
-    return $this->helperService->generateResponse(200, $user->getRoles());
+    return $user->getGroups();
   }
 
   /**
-   * Add a role to a user
+   * Add a group to a user
    *
    * @param integer $userId
-   *   @TODO Missing description?
-   * @param Role $role
-   *   @TODO Missing description?
+   *   Id of the user.
+   * @param Group $group
+   *   Group to add.
    *
-   * @return array
+   * @return boolean
+   *   Success?
    */
-  public function addRoleToUser($userId, $role) {
-    $validation = $this->helperService->validateRole($role);
+  public function addRoleToUser($userId, Group $group) {
+    // TODO: Fix validation.
+/*    $validation = $this->helperService->validateRole($group);
     if ($validation['status'] !== 200) {
       return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
     }
-
+*/
     $user = $this->userRepository->findOneById($userId);
 
     if (!$user) {
-      return $this->helperService->generateResponse(404, null, array('message' => 'user not found'));
+      throw new NotFoundHttpException('User not found.');
     }
 
-    $role = $this->roleRepository->findOneById($role->getId());
+    $group = $this->groupRepository->findOneById($group->getId());
 
-    if (!$role) {
-      return $this->helperService->generateResponse(404, null, array('message' => 'role not found'));
+    if (!$group) {
+      throw new NotFoundHttpException('Group not found.');
     }
 
-    if ($user->getRoles()->contains($role)) {
-      return $this->helperService->generateResponse(409, null, array('message' => 'user already has that role'));
+    if ($user->getGroups()->contains($group)) {
+      // TODO: throw correct exception.
+      //return $this->helperService->generateResponse(409, null, array('message' => 'user already has that role'));
     }
 
-    $user->addRole($role);
-    $this->em->flush();
+    $user->addGroup($group);
+    $this->userRepository->getEntityManager()->flush();
 
-    return $this->helperService->generateResponse(204);
+    return true;
   }
 
   /**
-   * Remove a role from a user
+   * Remove a group from a user.
    *
-   * @param $userId
-   *   @TODO Missing description?
-   * @param $roleId
-   *   @TODO Missing description?
+   * @param $uid
+   *   Id of the user.
+   * @param $gid
+   *   Id of the group.
    *
-   * @return array
-   *   @TODO Missing description?
+   * @return boolean
+   *   Success?
    */
-  public function removeRoleFromUser($userId, $roleId) {
-/*    $user = $this->userRepository->findOneById($userId);
+  public function removeRoleFromUser($uid, $gid) {
+    $user = $this->userRepository->findOneById($uid);
 
     if (!$user) {
-      return $this->helperService->generateResponse(404, null, array('message' => 'user not found'));
+      throw new NotFoundHttpException('User not found.');
     }
 
-    $role = $this->roleRepository->findOneById($roleId);
+    $group = $this->groupRepository->findOneById($gid);
 
-    if (!$role) {
-      return $this->helperService->generateResponse(404, null, array('message' => 'role not found'));
+    if (!$group) {
+      throw new NotFoundHttpException('Group not found.');
     }
 
-    if (!$user->getRoles()->contains($role)) {
-      return $this->helperService->generateResponse(409, null, array('message' => 'user does not have that role'));
+    if (!$user->getGroups()->contains($group)) {
+      // TODO: throw meaningful exception.
+
+      //return $this->helperService->generateResponse(409, null, array('message' => 'user does not have that role'));
     }
 
-    $user->removeRole($role);
-    $this->em->flush();
+    $user->removeGroup($group);
+    $this->userRepository->getEntityManager()->flush();
 
-    return $this->helperService->generateResponse(204);*/
+    return true;
   }
 
   /**
    * Returns a user's bookings
    *
    * @param $id
-   *   @TODO Missing description?
+   *   Id of the user.
    *
    * @return array
-   *   @TODO Missing description?
+   *   Array of bookings.
    */
   public function getUserBookings($id) {
-/*    $user = $this->userRepository->findOneById($id);
+    $user = $this->userRepository->findOneById($id);
 
     if (!$user) {
-      return $this->helperService->generateResponse(404, null, array('message' => 'user not found'));
+      throw new NotFoundHttpException('User not found.');
     }
 
-    return $this->helperService->generateResponse(200, $user->getBookings());*/
+    return $user->getBookings();
   }
 }

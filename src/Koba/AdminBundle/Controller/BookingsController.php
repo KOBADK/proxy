@@ -4,7 +4,7 @@
  * Contains bookings controller for /admin.
  */
 
-namespace Koba\MainBundle\Controller;
+namespace Koba\AdminBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -94,6 +94,8 @@ class BookingsController extends FOSRestController {
    *     "not_implemented"
    *   }
    * )
+   *
+   * @TODO: Not implemented!
    *
    * @param integer $id
    *   Id of the booking to delete.

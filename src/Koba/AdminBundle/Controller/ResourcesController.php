@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * @TODO: Missing file description?
+ * Contains the resources controller for /admin.
  */
 
-namespace Itk\ApiBundle\Controller;
+namespace Koba\AdminBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -23,7 +23,7 @@ use JMS\Serializer\SerializationContext;
  */
 class ResourcesController extends FOSRestController {
   /**
-   * @TODO Missing function description + @see api documentation?
+   * Get all resources.
    *
    * @Get("")
    *
@@ -38,12 +38,12 @@ class ResourcesController extends FOSRestController {
    * )
    *
    * @return \Symfony\Component\HttpFoundation\Response
-   *   @TODO Missing description?
+   *   Response object.
    */
   public function getResources() {
-    $resourcesService = $this->get('koba.resources_service');
+    $resourceService = $this->get('koba.resource_service');
 
-    $result = $resourcesService->getAllResources();
+    $result = $resourceService->getAllResources();
 
     $context = new SerializationContext();
     $context->setGroups(array('resource'));
@@ -53,7 +53,7 @@ class ResourcesController extends FOSRestController {
   }
 
   /**
-   * @TODO Missing function description + @see api documentation?
+   * Get resource by id.
    *
    * @Get("/{id}")
    *
@@ -72,15 +72,15 @@ class ResourcesController extends FOSRestController {
    * )
    *
    * @param integer $id the id of the user
-   *   @TODO Missing description?
+   *   Id of the resource.
    *
    * @return \Symfony\Component\HttpFoundation\Response
-   *   @TODO Missing description?
+   *   Response object.
    */
   public function getResource($id) {
-    $resourcesService = $this->get('koba.resources_service');
+    $resourceService = $this->get('koba.resource_service');
 
-    $result = $resourcesService->getResource($id);
+    $result = $resourceService->getResource($id);
 
     $context = new SerializationContext();
     $context->setGroups(array('resource'));
@@ -90,14 +90,14 @@ class ResourcesController extends FOSRestController {
   }
 
   /**
-   * @TODO Missing function description + @see api documentation?
+   * Create a new resource
    *
    * @Post("")
    *
    * @ApiDoc(
    *   description="Create a resource",
    *   input={
-   *     "class"="\Itk\ApiBundle\Entity\Resource",
+   *     "class"="\Koba\MainBundle\Entity\Resource",
    *     "groups"={"resource_create"}
    *   },
    *   statusCodes={
@@ -111,27 +111,59 @@ class ResourcesController extends FOSRestController {
    * )
    *
    * @param Request $request
-   *   @TODO Missing description?
+   *   Request object.
    *
    * @return View|\Symfony\Component\HttpFoundation\Response
-   *   @TODO Missing description?
+   *   Response object.
    */
   public function postResource(Request $request) {
-    $resourcesService = $this->get('koba.resources_service');
+    $resourceService = $this->get('koba.resource_service');
     $serializer = $this->get('jms_serializer');
 
     // Deserialize input
     try {
-      $resource = $serializer->deserialize($request->getContent(), 'Itk\ApiBundle\Entity\Resource', $request->get('_format'));
+      $resource = $serializer->deserialize($request->getContent(), 'Koba\MainBundle\Entity\Resource', $request->get('_format'));
     } catch (\Exception $e) {
       $view = $this->view(array('message' => 'invalid input'), 400);
       return $this->handleView($view);
     }
 
-    // Add role to user
-    $result = $resourcesService->createResource($resource);
+    // TODO: Implement this!
 
-    $view = $this->view($result['data'], $result['status']);
+    $view = $this->view('not implemented', 500);
+    return $this->handleView($view);
+  }
+
+  /**
+   * Delete a resource.
+   *
+   * @Delete("")
+   *
+   * @ApiDoc(
+   *   description="Delete a resource",
+   *   requirements={
+   *     {"name"="id", "dataType"="integer", "requirement"="\d+"}
+   *   },
+   *   statusCodes={
+   *     204="Success (No content)",
+   *     404="Resource not found"
+   *   },
+   *   tags={
+   *     "not_implemented",
+   *     "no_tests"
+   *   }
+   * )
+   *
+   * @param integer $id
+   *   Id of the resource to delete.
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   *   Response object.
+   *
+   * @TODO: Implement this!
+   */
+  public function deleteResource($id) {
+    $view = $this->view('not implemented', 500);
     return $this->handleView($view);
   }
 }
