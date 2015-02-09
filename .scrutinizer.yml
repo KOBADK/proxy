@@ -4,12 +4,12 @@ application:
             version: 5.5.14
         timezone: 'Europe/Copenhagen'
 
-project_setup:
-    before:
-        - sudo service start mysql || true
-        - composer install
-        - php app/console doctrine:database:create
-        - php app/console doctrine:schema:update --force
+    project_setup:
+        before:
+            - sudo service start mysql || true
+            - composer install
+            - php app/console doctrine:database:create
+            - php app/console doctrine:schema:update --force
 
 tools:
     external_code_coverage: false
