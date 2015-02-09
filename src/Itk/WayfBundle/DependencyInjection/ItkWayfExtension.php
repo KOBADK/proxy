@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * @TODO: Missing file description?
+ * Ensures that the configuration is loaded into the WAYF service.
  */
 
 namespace Itk\WayfBundle\DependencyInjection;

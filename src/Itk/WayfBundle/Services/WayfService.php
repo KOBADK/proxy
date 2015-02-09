@@ -144,7 +144,7 @@ class WayfService {
     ));
 
     // Construct request.
-    $queryString = "SAMLRequest=" . urlencode(base64_encode(gzdeflate($request)));
+    $queryString = 'SAMLRequest=' . urlencode(base64_encode(gzdeflate($request)));
     $queryString .= '&SigAlg=' . urlencode('http://www.w3.org/2000/09/xmldsig#rsa-sha1');
 
     // Get private key.
@@ -154,12 +154,12 @@ class WayfService {
     }
 
     // Sign the request.
-    $signature = "";
+    $signature = '';
     openssl_sign($queryString, $signature, $key, OPENSSL_ALGO_SHA1);
     openssl_free_key($key);
 
     // Return the URL that the user should be redirected to.
-    return $idpMetadata['sso'] . "?" . $queryString . '&Signature=' . urlencode(base64_encode($signature));
+    return $idpMetadata['sso'] . '?' . $queryString . '&Signature=' . urlencode(base64_encode($signature));
   }
 
   /**
@@ -220,7 +220,7 @@ class WayfService {
     ));
 
     // Construct request.
-    $query = "SAMLRequest=" . urlencode(base64_encode(gzdeflate($request)));
+    $query = 'SAMLRequest=' . urlencode(base64_encode(gzdeflate($request)));
     $query .= '&SigAlg=' . urlencode('http://www.w3.org/2000/09/xmldsig#rsa-sha1');
 
     // Get private key.
@@ -230,12 +230,12 @@ class WayfService {
     }
 
     // Sign the request.
-    $signature = "";
+    $signature = '';
     openssl_sign($query, $signature, $key, OPENSSL_ALGO_SHA1);
     openssl_free_key($key);
 
     // Return the URL that the user should be redirected to.
-    return $idpMetadata['slo'] . "?" . $query . '&Signature=' . urlencode(base64_encode($signature));
+    return $idpMetadata['slo'] . '?' . $query . '&Signature=' . urlencode(base64_encode($signature));
   }
 
   public function loggedOut() {
@@ -329,7 +329,7 @@ class WayfService {
   protected function extractAttributes(\DOMXPath $xpath) {
     $res = array();
     // Grab attributes from Attribute Statement.
-    $attributes = $xpath->query("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute");
+    $attributes = $xpath->query('/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute');
     foreach ($attributes as $attribute) {
       $values = array();
       $attributeValues = $xpath->query('./saml:AttributeValue', $attribute);

@@ -27,6 +27,7 @@ class WayfLoggedOutEvent extends Event {
    */
   public function __construct($response, $status) {
     $this->message = $response;
+    $this->status = $status;
   }
 
   /**

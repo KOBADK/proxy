@@ -39,7 +39,7 @@ class WayfController extends Controller {
    * @return \Symfony\Component\HttpFoundation\RedirectResponse
    *   Redirect to WAYF login with status 303 (see other).
    */
-  public function getLogin() {
+  public function login() {
     $wayfService = $this->get('itk.wayf_service');
 
     // Get the base64 encode message as an location URL.
@@ -55,13 +55,10 @@ class WayfController extends Controller {
    *
    * @Post("/login")
    *
-   * @param Request $request
-   *   Symfony request.
-   *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   JSON response with the
    */
-  public function assertionConsumerService(Request $request) {
+  public function assertionConsumerService() {
     // Parse and verify post data from WAYF.
     $wayfService = $this->get('itk.wayf_service');
     $result = $wayfService->consume();
@@ -78,16 +75,13 @@ class WayfController extends Controller {
    * Send logout request to WAYF.
    *
    * @Get("/logout")
-
-   * @param \Symfony\Component\HttpFoundation\Request $request
-   *   Symfony request.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
    *   Redirect to WAYF login with status 303 (see other). If the request
    *   contains the SAML response it will return a JSON response with the
    *   status.
    */
-  function logout(Request $request) {
+  function logout() {
     $wayfService = $this->get('itk.wayf_service');
 
     // Check if the is a logout callback from WAYF. This is a little hack as
