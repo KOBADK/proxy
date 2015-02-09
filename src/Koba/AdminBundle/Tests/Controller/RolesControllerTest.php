@@ -1,27 +1,27 @@
 <?php
 
-namespace Itk\ApiBundle\Tests\Controller;
+namespace Koba\AdminBundle\Tests\Controller;
 
-use Itk\ApiBundle\ExtendedWebTestCase;
+use Koba\AdminBundle\Tests\ExtendedWebTestCase;
 
 /**
- * Class RolesControllerTest
+ * Class GroupsControllerTest
  *
- * Tests for RolesController.
+ * Tests for GroupsController.
  *
- * @package Itk\ApiBundle\Tests\Controller
+ * @package Koba\AdminBundle\Tests\Controller
  */
-class RolesControllerTest extends ExtendedWebTestCase {
+class GroupsControllerTest extends ExtendedWebTestCase {
   /**
    * GetAll:
    * - get all
    * Expect: 200, json response
    */
-  public function testGetAllRoles() {
+  public function testGetAllGroups() {
     $client = $this->baseSetup();
 
     // Assert valid json response.
-    $client->request('GET', '/api/roles');
+    $client->request('GET', '/admin/groups');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 200);
     $array = (array) json_decode($response->getContent());
@@ -29,201 +29,201 @@ class RolesControllerTest extends ExtendedWebTestCase {
   }
 
   /**
-   * Get existing role
+   * Get existing group
    * Expect: 200
    */
-  public function testGetRoleExists() {
+  public function testGetGroupExists() {
     $client = $this->baseSetup();
 
     // Assert valid json response.
-    $client->request('GET', '/api/roles/1');
+    $client->request('GET', '/admin/groups/1');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 200);
   }
 
   /**
-   * Get non-existing role
+   * Get non-existing group
    * Expect: 404
    */
-  public function testGetRoleNotExists() {
+  public function testGetGroupNotExists() {
     $client = $this->baseSetup();
 
     // Assert valid json response.
-    $client->request('GET', '/api/roles/100');
+    $client->request('GET', '/admin/groups/100');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 404);
   }
 
   /**
-   * Update role
+   * Update group
    * Expect: 204
    */
-  public function testPutRoleSuccess() {
+  public function testPutGroupSuccess() {
     $client = $this->baseSetup();
 
     // Assert valid json response.
-    $client->request('GET', '/api/roles/1');
+    $client->request('GET', '/admin/groups/1');
     $response = $client->getResponse();
-    $role = json_decode($response->getContent());
+    $group = json_decode($response->getContent());
 
-    $role->title = 'fiskfisk';
-    $role->description = 'faksfaks';
+    $group->title = 'fiskfisk';
+    $group->description = 'faksfaks';
 
-    $client->request('PUT', '/api/roles/1', array(), array(), array(), json_encode($role));
+    $client->request('PUT', '/admin/groups/1', array(), array(), array(), json_encode($group));
     $response = $client->getResponse();
     $this->assertEmptyResponse($response, 204);
 
     // Assert valid json response.
-    $client->request('GET', '/api/roles/1');
+    $client->request('GET', '/admin/groups/1');
     $response = $client->getResponse();
-    $roleUpdated = json_decode($response->getContent());
+    $groupUpdated = json_decode($response->getContent());
 
-    $this->assertEquals($role->title, $roleUpdated->title);
-    $this->assertEquals($role->description, $roleUpdated->description);
+    $this->assertEquals($group->title, $groupUpdated->title);
+    $this->assertEquals($group->description, $groupUpdated->description);
   }
 
 
   /**
-   * Update role errors
+   * Update group errors
    * Expect: 400
    */
-  public function testPutRoleErrorValidation() {
+  public function testPutGroupErrorValidation() {
     $client = $this->baseSetup();
 
     // Assert valid json response.
-    $client->request('GET', '/api/roles/1');
+    $client->request('GET', '/admin/groups/1');
     $response = $client->getResponse();
-    $role = json_decode($response->getContent());
+    $group = json_decode($response->getContent());
 
-    $role->title = null;
+    $group->title = null;
 
-    $client->request('PUT', '/api/roles/1', array(), array(), array(), json_encode($role));
+    $client->request('PUT', '/admin/groups/1', array(), array(), array(), json_encode($group));
     $response = $client->getResponse();
     $this->assertEmptyResponse($response, 400);
   }
 
 
   /**
-   * Update role errors
+   * Update group errors
    * Expect: 404
    */
-  public function testPutRoleErrorNotFound() {
+  public function testPutGroupErrorNotFound() {
     $client = $this->baseSetup();
 
     // Assert valid json response.
-    $client->request('GET', '/api/roles/1');
+    $client->request('GET', '/admin/groups/1');
     $response = $client->getResponse();
-    $role = json_decode($response->getContent());
+    $group = json_decode($response->getContent());
 
-    $client->request('PUT', '/api/roles/1000', array(), array(), array(), json_encode($role));
+    $client->request('PUT', '/admin/groups/1000', array(), array(), array(), json_encode($group));
     $response = $client->getResponse();
     $this->assertEmptyResponse($response, 404);
   }
 
   /**
-   * Create role
+   * Create group
    * Expect: 204
    */
-  public function testPostRoleSuccess() {
+  public function testPostGroupSuccess() {
     $client = $this->baseSetup();
 
     // Assert valid json response.
-    $client->request('GET', '/api/roles');
+    $client->request('GET', '/admin/groups');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 200);
     $array = (array) json_decode($response->getContent());
     $this->assertEquals(5, count($array));
 
-    $role = array(
+    $group = array(
       "title" => "fisk",
       "description" => "and stuff"
     );
 
-    $client->request('POST', '/api/roles', array(), array(), array(), json_encode($role));
+    $client->request('POST', '/admin/groups', array(), array(), array(), json_encode($group));
     $response = $client->getResponse();
     $this->assertEmptyResponse($response, 204);
 
     // Assert valid json response.
-    $client->request('GET', '/api/roles');
+    $client->request('GET', '/admin/groups');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 200);
     $array = (array) json_decode($response->getContent());
     $this->assertEquals(6, count($array));
 
     // Assert valid json response.
-    $client->request('GET', '/api/roles/6');
+    $client->request('GET', '/admin/groups/6');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 200);
   }
 
   /**
-   * Create role with title taken
+   * Create group with title taken
    * Expect: 409 conflict
    */
-  public function testPostRoleErrorDuplicate() {
+  public function testPostGroupErrorDuplicate() {
     $client = $this->baseSetup();
 
     // Assert valid json response.
-    $client->request('GET', '/api/roles');
+    $client->request('GET', '/admin/groups');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 200);
     $array = (array) json_decode($response->getContent());
     $this->assertEquals(5, count($array));
 
-    $role = array(
+    $group = array(
       "title" => "Anonym",
       "description" => "and stuff"
     );
 
-    $client->request('POST', '/api/roles', array(), array(), array(), json_encode($role));
+    $client->request('POST', '/admin/groups', array(), array(), array(), json_encode($group));
     $response = $client->getResponse();
     $this->assertEmptyResponse($response, 409);
 
     // Assert valid json response.
-    $client->request('GET', '/api/roles');
+    $client->request('GET', '/admin/groups');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 200);
     $array = (array) json_decode($response->getContent());
     $this->assertEquals(5, count($array));
 
     // Assert valid json response.
-    $client->request('GET', '/api/roles/6');
+    $client->request('GET', '/admin/groups/6');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 404);
   }
 
   /**
-   * Create role validation error
+   * Create group validation error
    * Expect: 400 validation error
    */
-  public function testPostRoleErrorValidation() {
+  public function testPostGroupErrorValidation() {
     $client = $this->baseSetup();
 
     // Assert valid json response.
-    $client->request('GET', '/api/roles');
+    $client->request('GET', '/admin/groups');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 200);
     $array = (array) json_decode($response->getContent());
     $this->assertEquals(5, count($array));
 
-    $role = array(
+    $group = array(
       "title" => null,
       "description" => "and stuff"
     );
 
-    $client->request('POST', '/api/roles', array(), array(), array(), json_encode($role));
+    $client->request('POST', '/admin/groups', array(), array(), array(), json_encode($group));
     $response = $client->getResponse();
     $this->assertEmptyResponse($response, 400);
 
     // Assert valid json response.
-    $client->request('GET', '/api/roles');
+    $client->request('GET', '/admin/groups');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 200);
     $array = (array) json_decode($response->getContent());
     $this->assertEquals(5, count($array));
 
     // Assert valid json response.
-    $client->request('GET', '/api/roles/6');
+    $client->request('GET', '/admin/groups/6');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 404);
   }

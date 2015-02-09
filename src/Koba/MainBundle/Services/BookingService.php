@@ -11,6 +11,8 @@ use Koba\MainBundle\Entity\Booking;
 use Koba\MainBundle\EntityRepositories\BookingRepository;
 use Koba\MainBundle\EntityRepositories\ResourceRepository;
 use Koba\MainBundle\EntityRepositories\UserRepository;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Intl\Exception\NotImplementedException;
 
 /**
  * Class BookingService.
@@ -46,7 +48,7 @@ class BookingService {
    * Get all bookings.
    *
    * @return array
-   *   Array of Bookings
+   *   Array of bookings.
    */
   public function getAllBookings() {
     $bookings = $this->bookingRepository->findAll();
@@ -55,17 +57,38 @@ class BookingService {
   }
 
   /**
+   * Get booking by id.
+   *
+   * @param $id
+   *   Id of the booking.
+   *
+   * @returns Booking
+   *   The found booking.
+   */
+  public function getBooking($id) {
+    $booking = $this->bookingRepository->findOneById($id);
+
+    if (!$booking) {
+      throw new NotFoundHttpException('Booking not found.');
+    }
+
+    return $booking;
+  }
+
+  /**
    * Create a booking for a user.
    *
+   * @param Booking $booking
+   *   The booking to create.
+   *
+   * @return boolean
+   *   Success?
+   *
    * @TODO: Implement this!
-   *
-   * @param Booking $booking booking
-   *   @TODO Missing description?
-   *
-   * @return array
-   *   @TODO Missing description?
    */
-  public function createBooking($booking) {
+  public function createBooking(Booking $booking) {
+    return new NotImplementedException('not implemented');
+
 /*    $validation = $this->helperService->validateBooking($booking);
     if ($validation['status'] !== 200) {
       return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);

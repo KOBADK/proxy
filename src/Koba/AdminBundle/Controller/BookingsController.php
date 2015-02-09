@@ -13,16 +13,13 @@ use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Acl\Exception\Exception;
 
 /**
  * @Route("/bookings")
  */
 class BookingsController extends FOSRestController {
   /**
-   * Get all bookings
+   * Get all bookings.
    *
    * @Get("")
    *
@@ -42,9 +39,9 @@ class BookingsController extends FOSRestController {
   public function getBookings() {
     $bookingsService = $this->get('koba.bookings_service');
 
-    $result = $bookingsService->getAllBookings();
+    $bookings = $bookingsService->getAllBookings();
 
-    $view = $this->view($result['data'], $result['status']);
+    $view = $this->view($bookings, 200);
     return $this->handleView($view);
   }
 
@@ -73,21 +70,22 @@ class BookingsController extends FOSRestController {
   public function getBooking($id) {
     $bookingsService = $this->get('koba.bookings_service');
 
-    $result = $bookingsService->getBooking($id);
+    $booking = $bookingsService->getBooking($id);
 
-    $view = $this->view($result['data'], $result['status']);
+    $view = $this->view($booking, 200);
     return $this->handleView($view);
   }
 
   /**
-   * Delete a booking
+   * Delete a booking.
    *
    * @Delete('/{id}')
    *
    * @ApiDoc(
-   *   description="Get booking by id",
+   *   description="Delete booking by id",
    *   statusCodes={
-   *     204="Success"
+   *     204="Success",
+   *     404="Booking not found"
    *   },
    *   tags={
    *     "no_tests",
@@ -95,12 +93,13 @@ class BookingsController extends FOSRestController {
    *   }
    * )
    *
-   * @TODO: Not implemented!
-   *
    * @param integer $id
    *   Id of the booking to delete.
+   *
    * @return \Symfony\Component\HttpFoundation\Response
    *   Response object.
+   *
+   * @TODO: Not implemented!
    */
   public function deleteBooking($id) {
     $view = $this->view('not implemented', 500);

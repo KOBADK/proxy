@@ -1,15 +1,15 @@
 <?php
 
-namespace Itk\ApiBundle\Tests\Controller;
+namespace Koba\AdminBundle\Tests\Controller;
 
-use Itk\ApiBundle\ExtendedWebTestCase;
+use Koba\AdminBundle\Tests\ExtendedWebTestCase;
 
 /**
  * Class UsersControllerTest
  *
  * Tests for UsersController
  *
- * @package Itk\ApiBundle\Tests\Controller
+ * @package Koba\AdminBundle\Tests\Controller
  */
 class UsersControllerTest extends ExtendedWebTestCase {
   /**
@@ -21,7 +21,7 @@ class UsersControllerTest extends ExtendedWebTestCase {
     $client = $this->baseSetup();
 
     // Assert valid json response.
-    $client->request('GET', '/api/users');
+    $client->request('GET', '/admin/users');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 200);
   }
@@ -35,7 +35,7 @@ class UsersControllerTest extends ExtendedWebTestCase {
     $client = $this->baseSetup();
 
     // Assert valid json response.
-    $client->request('GET', '/api/users/3');
+    $client->request('GET', '/admin/users/3');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 404);
   }
@@ -49,7 +49,7 @@ class UsersControllerTest extends ExtendedWebTestCase {
     $client = $this->baseSetup();
 
     // Assert valid json response.
-    $client->request('GET', '/api/users/1');
+    $client->request('GET', '/admin/users/1');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 200);
   }
@@ -65,7 +65,7 @@ class UsersControllerTest extends ExtendedWebTestCase {
     $status = array(
       'status' => false
     );
-    $client->request('PUT', '/api/users/3/status', array(), array(), array(), json_encode($status));
+    $client->request('PUT', '/admin/users/3/status', array(), array(), array(), json_encode($status));
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 404);
   }
@@ -83,7 +83,7 @@ class UsersControllerTest extends ExtendedWebTestCase {
         'fisk' => 'faks'
       )
     );
-    $client->request('PUT', '/api/users/2/status', array(), array(), array(), json_encode($status));
+    $client->request('PUT', '/admin/users/2/status', array(), array(), array(), json_encode($status));
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 400);
   }
@@ -99,7 +99,7 @@ class UsersControllerTest extends ExtendedWebTestCase {
   public function testUpdateSuccess() {
     $client = $this->baseSetup();
 
-    $client->request('GET', '/api/users/1');
+    $client->request('GET', '/admin/users/1');
     $response = $client->getResponse();
     $user = json_decode($response->getContent());
     $this->assertEquals(true, $user->status);
@@ -108,11 +108,11 @@ class UsersControllerTest extends ExtendedWebTestCase {
       'status' => false
     );
 
-    $client->request('PUT', '/api/users/1/status', array(), array(), array(), json_encode($status));
+    $client->request('PUT', '/admin/users/1/status', array(), array(), array(), json_encode($status));
     $response = $client->getResponse();
     $this->assertEmptyResponse($response, 204);
 
-    $client->request('GET', '/api/users/1');
+    $client->request('GET', '/admin/users/1');
     $response = $client->getResponse();
     $user = json_decode($response->getContent());
 
@@ -120,83 +120,83 @@ class UsersControllerTest extends ExtendedWebTestCase {
   }
 
   /**
-   * Get User Roles: 3 cases
-   * - Get user 1 roles
-   *   Expect 200: 1 role
-   * - Get user 2 roles
-   *   Expect 200: 2 roles
+   * Get User Groups: 3 cases
+   * - Get user 1 groups
+   *   Expect 200: 1 group
+   * - Get user 2 groups
+   *   Expect 200: 2 groups
    * - Get user 3
    *   Expect 404
    */
-  public function testGetUserRoles() {
+  public function testGetUserGroups() {
     $client = $this->baseSetup();
 
-    $client->request('GET', '/api/users/1/roles');
+    $client->request('GET', '/admin/users/1/groups');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 200);
 
     $array = (array) json_decode($response->getContent());
     $this->assertEquals(1, count($array));
 
-    $client->request('GET', '/api/users/2/roles');
+    $client->request('GET', '/admin/users/2/groups');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 200);
 
     $array = (array) json_decode($response->getContent());
     $this->assertEquals(2, count($array));
 
-    $client->request('GET', '/api/users/3/roles');
+    $client->request('GET', '/admin/users/3/groups');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 404);
   }
 
   /**
-   * Post User Role:
-   * - get user 1 roles
-   * - get role 5
-   * - add role 5 to user 1
-   * - check that the role has been added
+   * Post User Group:
+   * - get user 1 groups
+   * - get group 5
+   * - add group 5 to user 1
+   * - check that the group has been added
    */
-  public function testPostUserRole() {
+  public function testPostUserGroup() {
     $client = $this->baseSetup();
 
-    $client->request('GET', '/api/users/1/roles');
+    $client->request('GET', '/admin/users/1/groups');
     $response = $client->getResponse();
     $array = (array) json_decode($response->getContent());
     $this->assertEquals(1, count($array));
 
-    $client->request('GET', '/api/roles/5');
-    $role = $client->getResponse()->getContent();
+    $client->request('GET', '/admin/groups/5');
+    $group = $client->getResponse()->getContent();
 
-    $client->request('POST', '/api/users/1/roles', array(), array(), array(), $role);
+    $client->request('POST', '/admin/users/1/groups', array(), array(), array(), $group);
     $response = $client->getResponse();
     $this->assertEmptyResponse($response, 204);
 
-    $client->request('GET', '/api/users/1/roles');
+    $client->request('GET', '/admin/users/1/groups');
     $response = $client->getResponse();
     $array = (array) json_decode($response->getContent());
     $this->assertEquals(2, count($array));
   }
 
   /**
-   * Delete user role
-   * - get user 1 roles
-   * - delete role 2
-   * - check that the role has been deleted
+   * Delete user group
+   * - get user 1 groups
+   * - delete group 2
+   * - check that the group has been deleted
    */
-  public function testDeleteUserRole() {
+  public function testDeleteUserGroup() {
     $client = $this->baseSetup();
 
-    $client->request('GET', '/api/users/1/roles');
+    $client->request('GET', '/admin/users/1/groups');
     $response = $client->getResponse();
     $array = (array) json_decode($response->getContent());
     $this->assertEquals(1, count($array));
 
-    $client->request('DELETE', '/api/users/1/roles/2');
+    $client->request('DELETE', '/admin/users/1/groups/2');
     $response = $client->getResponse();
     $this->assertEmptyResponse($response, 204);
 
-    $client->request('GET', '/api/users/1/roles');
+    $client->request('GET', '/admin/users/1/groups');
     $response = $client->getResponse();
     $array = (array) json_decode($response->getContent());
     $this->assertEquals(0, count($array));
@@ -210,7 +210,7 @@ class UsersControllerTest extends ExtendedWebTestCase {
   public function testGetUserBookings() {
     $client = $this->baseSetup();
 
-    $client->request('GET', '/api/users/1/bookings');
+    $client->request('GET', '/admin/users/1/bookings');
     $response = $client->getResponse();
     $this->assertJsonResponse($response, 200);
 

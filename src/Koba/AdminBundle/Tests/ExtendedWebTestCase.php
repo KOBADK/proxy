@@ -1,13 +1,13 @@
 <?php
 
-namespace Itk\ApiBundle;
+namespace Koba\AdminBundle\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Itk\ApiBundle\Entity\User;
-use Itk\ApiBundle\Entity\Role;
-use Itk\ApiBundle\Entity\Resource;
+use Koba\MainBundle\Entity\User;
+use Koba\MainBundle\Entity\Group;
+use Koba\MainBundle\Entity\Resource;
+use Koba\MainBundle\Entity\Booking;
 use Doctrine\ORM\EntityManager;
-use Itk\ApiBundle\Entity\Booking;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
@@ -29,6 +29,8 @@ class ExtendedWebTestCase extends WebTestCase {
   }
 
   /**
+   * Logs the user in.
+   *
    * TODO: Fix this!
    *
    * @param $client
