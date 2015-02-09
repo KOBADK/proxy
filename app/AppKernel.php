@@ -23,10 +23,10 @@ class AppKernel extends Kernel
             new Bazinga\Bundle\HateoasBundle\BazingaHateoasBundle(),
             new Hautelook\TemplatedUriBundle\HautelookTemplatedUriBundle(),
             new Bazinga\Bundle\RestExtraBundle\BazingaRestExtraBundle(),
+          //new Itk\ApiBundle\ItkApiBundle(),
             new Koba\MainBundle\KobaMainBundle(),
-            //new Koba\AdminBundle\KobaAdminBundle(),
             new Koba\ApiBundle\KobaApiBundle(),
-            //new Itk\ApiBundle\ItkApiBundle(),
+          //new Koba\AdminBundle\KobaAdminBundle(),
             new Itk\ExchangeBundle\ItkExchangeBundle(),
             new Itk\WayfBundle\ItkWayfBundle(),
         );

@@ -10,7 +10,7 @@ security:
 
     providers:
         users:
-            entity: { class: ItkApiBundle:User, property: id }
+            entity: { class: KobaMainBundle:User, property: id }
 
     firewalls:
         dev:
