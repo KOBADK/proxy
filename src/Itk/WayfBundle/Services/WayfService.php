@@ -9,6 +9,7 @@ namespace Itk\WayfBundle\Services;
 
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\PhpFileCache;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\DependencyInjection\Container;
 
@@ -19,13 +20,16 @@ use Symfony\Component\DependencyInjection\Container;
  */
 class WayfService {
 
-  protected $cache;
   protected $templating;
+  protected $session;
+  protected $cache;
 
   protected $certificate;
   protected $assertionConsumerService;
   protected $serviceProvider;
   protected $serviceProviderMetadata;
+  protected $scoping;
+
 
   protected $idpMode;
   protected $endpoints = array(
@@ -38,10 +42,12 @@ class WayfService {
    * Construct.
    *
    * @param \Symfony\Component\Templating\EngineInterface $templating
+   * @param \Symfony\Component\HttpFoundation\Session\Session $session
    * @param \Doctrine\Common\Cache\Cache $cache
    */
-  public function __construct(EngineInterface $templating, Cache $cache) {
+  public function __construct(EngineInterface $templating, Session $session, Cache $cache) {
     $this->templating = $templating;
+    $this->session = $session;
     $this->cache = $cache;
   }
 
@@ -103,24 +109,29 @@ class WayfService {
   }
 
   /**
+   * Set scoping.
+   *
+   * This is used to limit the list of identity providers af wayf.dk
+   *
+   * @param array $scope
+   */
+  public function setScoping(array $scope) {
+    $this->scoping = $scope;
+  }
+
+  /**
    * Generate redirect URL with query string for login.
    *
    * The query string is the SAML request and signature for login at wayf.dk.
    *
-   * @throws WayfException
+   * @return string
+   *   The URL to redirect the user to.
+   *
+   * @throws \Itk\WayfBundle\Services\WayfException
    */
   public function login() {
     // Get identity provider metadata.
     $idpMetadata = $this->getIpdMetadata();
-
-    // @TODO: Add support for scoping?
-//    $scoping = '';
-//    foreach ($providerids as $provider) {
-//      $scoping .= "<samlp:IDPEntry ProviderID=\"$provider\"/>";
-//    }
-//    if ($scoping) {
-//      $scoping = '<samlp:Scoping><samlp:IDPList>' . $scoping . '</samlp:IDPList></samlp:Scoping>';
-//    }
 
     // Construct request.
     $request = $this->render('ItkWayfBundle::login_request.xml.twig', array(
@@ -129,10 +140,11 @@ class WayfService {
       'sso' => $idpMetadata['sso'],
       'acs' => $this->assertionConsumerService,
       'sp' => $this->serviceProvider,
+      'scoping' => $this->scoping,
     ));
 
     // Construct request.
-    $queryString = "SAMLRequest=" . urlencode(base64_encode(gzdeflate($request)));
+    $queryString = 'SAMLRequest=' . urlencode(base64_encode(gzdeflate($request)));
     $queryString .= '&SigAlg=' . urlencode('http://www.w3.org/2000/09/xmldsig#rsa-sha1');
 
     // Get private key.
@@ -142,94 +154,129 @@ class WayfService {
     }
 
     // Sign the request.
-    $signature = "";
+    $signature = '';
     openssl_sign($queryString, $signature, $key, OPENSSL_ALGO_SHA1);
     openssl_free_key($key);
 
     // Return the URL that the user should be redirected to.
-    return $idpMetadata['sso'] . "?" . $queryString . '&Signature=' . urlencode(base64_encode($signature));  }
+    return $idpMetadata['sso'] . '?' . $queryString . '&Signature=' . urlencode(base64_encode($signature));
+  }
 
   /**
-   * Parse SAML response.
+   * Parse SAML response (Assertion Consumer Service).
    *
    * @return array
    *   Response.
    */
-  public function response() {
+  public function consume() {
     // Handle SAML response.
     $response = base64_decode($_POST['SAMLResponse']);
 
     $document = new \DOMDocument();
     $document->loadXML($response);
 
-    $xp = new \DomXPath($document);
-    $xp->registerNamespace('ds', 'http://www.w3.org/2000/09/xmldsig#');
-    $xp->registerNamespace('samlp', 'urn:oasis:names:tc:SAML:2.0:protocol');
-    $xp->registerNamespace('saml', 'urn:oasis:names:tc:SAML:2.0:assertion');
+    $xpath = new \DomXPath($document);
+    $xpath->registerNamespace('ds', 'http://www.w3.org/2000/09/xmldsig#');
+    $xpath->registerNamespace('samlp', 'urn:oasis:names:tc:SAML:2.0:protocol');
+    $xpath->registerNamespace('saml', 'urn:oasis:names:tc:SAML:2.0:assertion');
 
-    $this->verifySignature($xp, TRUE);
-    $this->validateResponse($xp);
+    $this->verifySignature($xpath, TRUE);
+    $this->validateResponse($xpath);
+    $this->storeSessionInformation($xpath);
 
     return array(
-      'attributes' => $this->extractAttributes($xp),
+      'attributes' => $this->extractAttributes($xpath),
       'response' => $response,
     );
   }
 
   /**
-   * Logout using the current session information.
+   * Logout out the user at WAYF.
    *
-   * @TODO: Can we use sessions?
+   * @return string
+   *   The URL to redirect the user to.
    *
-   * @throws \Itk\ApiBundle\Services\SPortoException
+   * @throws \Itk\WayfBundle\Services\WayfException
    */
   public function logout() {
-    $id = '_' . sha1(uniqid(mt_rand(), TRUE));
-    $issue_instant = gmdate('Y-m-d\TH:i:s\Z', time());
-    $sp = $this->config['entityid'];
-    $slo = $this->config['slo'];
+    // Get identity provider metadata.
+    $idpMetadata = $this->getIpdMetadata();
 
-    $ids = $_SESSION['wayf_dk_login'];
+    // Get Id's stored from the login request. They are used to identify the
+    // user at wayf.dk.
+    $ids = $this->session->get('itk_wayf');
+    if (!isset($ids['sessionIndex']) || !isset($ids['nameId'])) {
+      throw new WayfException('The logout request is missing session information.');
+    }
 
     // Construct request.
-    $request = $this->render('WayfBundle:Default:logout_request.xml.twig', $this->config);
+    $request = $this->render('ItkWayfBundle::logout_request.xml.twig', array(
+      'id' => '_' . sha1(uniqid(mt_rand(), TRUE)),
+      'issueInstant' => gmdate('Y-m-d\TH:i:s\Z', time()),
+      'sp' => $this->serviceProvider,
+      'slo' => $idpMetadata['slo'],
+      'nameId' => $ids['nameId'],
+      'sessionIndex' => $ids['sessionIndex'],
+    ));
 
     // Construct request.
-    $query = "SAMLRequest=" . urlencode(base64_encode(gzdeflate($request)));;
+    $query = 'SAMLRequest=' . urlencode(base64_encode(gzdeflate($request)));
     $query .= '&SigAlg=' . urlencode('http://www.w3.org/2000/09/xmldsig#rsa-sha1');
 
     // Get private key.
-    $key = openssl_pkey_get_private($this->config['private_key']);
+    $key = openssl_pkey_get_private($this->certificate['key']);
     if (!$key) {
       throw new WayfException('Invalid private key used');
     }
 
     // Sign the request.
-    $signature = "";
+    $signature = '';
     openssl_sign($query, $signature, $key, OPENSSL_ALGO_SHA1);
     openssl_free_key($key);
 
-    // Remove session information to end redirect loop in logout endpoint. This
-    // assumes that we get logged out at WAYF. This is not optimal, but the best
-    // we have.
-    unset($_SESSION['wayf_dk_login']);
-
     // Return the URL that the user should be redirected to.
-    return $slo . "?" . $query . '&Signature=' . urlencode(base64_encode($signature));
+    return $idpMetadata['slo'] . '?' . $query . '&Signature=' . urlencode(base64_encode($signature));
+  }
+
+  public function loggedOut() {
+    // Check if response exists.
+    if (!isset($_GET['SAMLResponse'])) {
+      return FALSE;
+    }
+
+    $response = gzinflate(base64_decode($_GET['SAMLResponse']));
+    $document = new \DOMDocument();
+    $document->loadXML($response);
+
+    $xpath = new \DomXPath($document);
+    $xpath->registerNamespace('samlp', 'urn:oasis:names:tc:SAML:2.0:protocol');
+
+    $node = $xpath->query('/samlp:LogoutResponse/samlp:Status/samlp:StatusCode')->item(0);
+    $statuCode = $node->getAttribute('Value');
+
+    $status = preg_match('/Success$/', $statuCode);
+    if ($status) {
+      // Remove session information about the users status af WAYF, as the user
+      // is logged out.
+      $this->session->remove('itk_wayf');
+    }
+
+    return array(
+      'status' => $status,
+      'response' => $response,
+    );
   }
 
   /**
    * Check if the user is logged in.
-   *
-   * @TODO: can we use session this way?
    *
    * As we don't know if the user is logged in we simply check if session WAYF
    * variable exists for the user. This don't grantee that the user is logged
    * into WAYF, but it's the best we have.
    */
   public function isLoggedIn() {
-    $ids = $_SESSION['wayf_dk_login'];
-    return (isset($ids['sessionIndex']) && isset($ids['nameID']));
+    $ids = $this->session->get('itk_wayf');
+    return (isset($ids['sessionIndex']) && isset($ids['nameId']));
   }
 
   /**
@@ -254,39 +301,38 @@ class WayfService {
   }
 
   /**
-   * Stores nameID and sessionID in drupal session.
+   * Stores nameID and sessionID in current session.
    *
    * This information is needed to enabled logout from WAYF.dk.
    *
-   * @TODO: can we use session this way?
-   *
-   * @param $xp
-   *   xp : samlresponse
+   * @param \DOMXPath $xpath
+   *   Xpath object with the current response.
    */
-  protected function storeSessionInformation($xp) {
-    $assertion = $xp->query('/samlp:Response/saml:Assertion')->item(0);
-    $_SESSION['wayf_dk_login'] = array(
-      'nameID' => $xp->query('./saml:Subject/saml:NameID', $assertion)->item(0)->nodeValue,
-      'sessionIndex' => $xp->query('./saml:AuthnStatement/@SessionIndex', $assertion)->item(0)->value,
-    );
+  protected function storeSessionInformation(\DOMXPath $xpath) {
+    $assertion = $xpath->query('/samlp:Response/saml:Assertion')->item(0);
+
+    $this->session->set('itk_wayf', array(
+      'nameId' => $xpath->query('./saml:Subject/saml:NameID', $assertion)->item(0)->nodeValue,
+      'sessionIndex' => $xpath->query('./saml:AuthnStatement/@SessionIndex', $assertion)->item(0)->value,
+    ));
   }
 
   /**
-   * Extract SAML attributes.
+   * Extract SAML assertion attributes.
    *
-   * @param \DomXPath $xp
-   *   Response.
+   * @param \DOMXPath $xpath
+   *   Xpath object with the current response.
    *
    * @return array
    *   Array with attributes.
    */
-  protected function extractAttributes($xp) {
+  protected function extractAttributes(\DOMXPath $xpath) {
     $res = array();
-    // Grab attributes from AttributeSattement.
-    $attributes = $xp->query("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute");
+    // Grab attributes from Attribute Statement.
+    $attributes = $xpath->query('/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute');
     foreach ($attributes as $attribute) {
       $values = array();
-      $attributeValues = $xp->query('./saml:AttributeValue', $attribute);
+      $attributeValues = $xpath->query('./saml:AttributeValue', $attribute);
       foreach ($attributeValues as $attributeValue) {
         $values[] = $attributeValue->textContent;
       }
@@ -298,46 +344,50 @@ class WayfService {
   /**
    * Verify signature.
    *
-   * @param \DomXPath $xp
-   *   Response.
-   *
+   * @param \DomXPath $xpath
+   *   Xpath object with the current response.
    * @param bool $assertion
-   *   Should assertsions be checked.
+   *   Should assertion be checked.
    *
    * @throws WayfException
    */
-  protected function verifySignature($xp, $assertion = TRUE) {
-    $status = $xp->query('/samlp:Response/samlp:Status/samlp:StatusCode/@Value')
+  protected function verifySignature(\DOMXPath $xpath, $assertion = TRUE) {
+    $status = $xpath->query('/samlp:Response/samlp:Status/samlp:StatusCode/@Value')
       ->item(0)->value;
     if ($status != 'urn:oasis:names:tc:SAML:2.0:status:Success') {
-      $statusMessage = $xp->query('/samlp:Response/samlp:Status/samlp:StatusMessage')
+      $statusMessage = $xpath->query('/samlp:Response/samlp:Status/samlp:StatusMessage')
         ->item(0);
       throw new WayfException('Invalid samlp response<br/>' . $statusMessage->C14N(TRUE, FALSE));
     }
 
     if ($assertion) {
-      $context = $xp->query('/samlp:Response/saml:Assertion')->item(0);
+      $context = $xpath->query('/samlp:Response/saml:Assertion')->item(0);
     }
     else {
-      $context = $xp->query('/samlp:Response')->item(0);
+      $context = $xpath->query('/samlp:Response')->item(0);
     }
+
     // Get signature and digest value.
-    $signatureValue = base64_decode($xp->query('ds:Signature/ds:SignatureValue', $context)
+    $signatureValue = base64_decode($xpath->query('ds:Signature/ds:SignatureValue', $context)
         ->item(0)->textContent);
-    $digestValue = base64_decode($xp->query('ds:Signature/ds:SignedInfo/ds:Reference/ds:DigestValue', $context)
+    $digestValue = base64_decode($xpath->query('ds:Signature/ds:SignedInfo/ds:Reference/ds:DigestValue', $context)
         ->item(0)->textContent);
-    $signedElement = $context;
-    $signature = $xp->query("ds:Signature", $signedElement)->item(0);
-    $signedInfo = $xp->query("ds:SignedInfo", $signature)
+
+    $signature = $xpath->query('ds:Signature', $context)->item(0);
+    $signedInfo = $xpath->query('ds:SignedInfo', $signature)
       ->item(0)
       ->C14N(TRUE, FALSE);
     $signature->parentNode->removeChild($signature);
-    $canonicalXml = $signedElement->C14N(TRUE, FALSE);
+    $canonicalXml = $context->C14N(TRUE, FALSE);
+
     // Get IdP certificate.
-    $publicKey = openssl_get_publickey($this->config['idp_certificate']);
+    $idpMetadata = $this->getIpdMetadata();
+    $publicKey = openssl_get_publickey("-----BEGIN CERTIFICATE-----\n" . chunk_split($idpMetadata['cert'], 64) . '-----END CERTIFICATE-----');
+
     if (!$publicKey) {
       throw new WayfException('Invalid public key used');
     }
+
     // Verify signature.
     if (!((sha1($canonicalXml, TRUE) == $digestValue) && @openssl_verify($signedInfo, $signatureValue, $publicKey) == 1)) {
       throw new WayfException('Error verifying incoming SAMLResponse');
@@ -347,44 +397,52 @@ class WayfService {
   /**
    * Function validateResponse.
    *
-   * @param \DomXPath $xp
-   *   Response.
+   * @param \DomXPath $xpath
+   *   Xpath object with the current response.
+   *
    * @throws WayfException
    */
-  protected function validateResponse($xp) {
+  protected function validateResponse(\DOMXPath $xpath) {
     $issues = array();
+
     // Verify destination.
-    $destination = $xp->query('/samlp:Response/@Destination')->item(0)->value;
-    if ($destination != NULL && $destination != $this->config['acs']) {
+    $destination = $xpath->query('/samlp:Response/@Destination')->item(0)->value;
+    if ($destination != NULL && $destination != $this->assertionConsumerService) {
       // Destination is optional.
-      $issues[] = "Destination: $destination is not here; message not destined for us";
+      $issues[] = 'Destination: ' . $destination . ' is not here; message not destined for us';
     }
+
     // Verify timestamps.
     $skew = 120;
     $aShortWhileAgo = gmdate('Y-m-d\TH:i:s\Z', time() - $skew);
     $inAShortWhile = gmdate('Y-m-d\TH:i:s\Z', time() + $skew);
-    $assertion = $xp->query('/samlp:Response/saml:Assertion')->item(0);
-    $subjectConfirmationDataNotBefore = $xp->query('./saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@NotBefore', $assertion);
+    $assertion = $xpath->query('/samlp:Response/saml:Assertion')->item(0);
+
+    $subjectConfirmationDataNotBefore = $xpath->query('./saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@NotBefore', $assertion);
     if ($subjectConfirmationDataNotBefore->length && $aShortWhileAgo < $subjectConfirmationDataNotBefore->item(0)->value) {
       $issues[] = 'SubjectConfirmation not valid yet';
     }
-    $subjectConfirmationDataNotOnOrAfter = $xp->query('./saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@NotOnOrAfter', $assertion);
+
+    $subjectConfirmationDataNotOnOrAfter = $xpath->query('./saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@NotOnOrAfter', $assertion);
     if ($subjectConfirmationDataNotOnOrAfter->length && $inAShortWhile >= $subjectConfirmationDataNotOnOrAfter->item(0)->value) {
       $issues[] = 'SubjectConfirmation too old';
     }
-    $conditionsNotBefore = $xp->query('./saml:Conditions/@NotBefore', $assertion);
 
+    $conditionsNotBefore = $xpath->query('./saml:Conditions/@NotBefore', $assertion);
     if ($conditionsNotBefore->length && $aShortWhileAgo > $conditionsNotBefore->item(0)->value) {
       $issues[] = 'Assertion Conditions not yet valid';
     }
-    $conditionsNotOnOrAfter = $xp->query('./saml:Conditions/@NotOnOrAfter', $assertion);
+
+    $conditionsNotOnOrAfter = $xpath->query('./saml:Conditions/@NotOnOrAfter', $assertion);
     if ($conditionsNotOnOrAfter->length && $aShortWhileAgo >= $conditionsNotOnOrAfter->item(0)->value) {
       $issues[] = 'Assertions Condition too old';
     }
-    $authStatementSessionNotOnOrAfter = $xp->query('./saml:AuthStatement/@SessionNotOnOrAfter', $assertion);
+
+    $authStatementSessionNotOnOrAfter = $xpath->query('./saml:AuthStatement/@SessionNotOnOrAfter', $assertion);
     if ($authStatementSessionNotOnOrAfter->length && $aShortWhileAgo >= $authStatementSessionNotOnOrAfter->item(0)->value) {
       $issues[] = 'AuthnStatement Session too old';
     }
+
     if (!empty($issues)) {
       throw new WayfException('Problems detected with response. ' . PHP_EOL . 'Issues: ' . PHP_EOL . implode(PHP_EOL, $issues));
     }
@@ -420,11 +478,11 @@ class WayfService {
         $binding = 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect';
 
         // Get Single Sign On and logout urls.
-        $sso = $xml->xpath("$SsoDescriptor/md:SingleSignOnService[@Binding='$binding']/@Location");
-        $slo = $xml->xpath("$SsoDescriptor/md:SingleLogoutService[@Binding='$binding']/@Location");
+        $sso = $xml->xpath($SsoDescriptor . "/md:SingleSignOnService[@Binding='$binding']/@Location");
+        $slo = $xml->xpath($SsoDescriptor . "/md:SingleLogoutService[@Binding='$binding']/@Location");
 
         // Get certificate data.
-        $cert = $xml->xpath("$SsoDescriptor/md:KeyDescriptor[@use='signing']/ds:KeyInfo/ds:X509Data/ds:X509Certificate");
+        $cert = $xml->xpath($SsoDescriptor . "/md:KeyDescriptor[@use='signing']/ds:KeyInfo/ds:X509Data/ds:X509Certificate");
 
         // Set information form the meta-date.
         $info = array(
@@ -444,21 +502,18 @@ class WayfService {
 
   /**
    * Import organizations from the WAYF service.
-   *
-   * @TODO: Make this not Drupal.... use cache
    */
-  function wayf_dk_login_organizations_list() {
-    $feed_url = variable_get('wayf_dk_login_organizations_list_url', WAYF_DK_LOGIN_ORGANIZATIONS_LIST_URL);
-    $content = file_get_contents($feed_url);
-    $data = json_decode($content, TRUE);
+  public function getOrganizations() {
+    $cache_key = 'ipd_organizations' . $this->idpMode;
+    $this->cache->setNamespace('itk_wayf.cache');
 
-    $data['https://testidp.wayf.dk/module.php/core/loginuserpass.php'] = array(
-      'da' => 'WAYF test-institution (IDP)',
-      'en' => 'WAYF test-institution (IDP)',
-      'schacHomeOrganization' => 'testidp.wayf.dk',
-    );
-
-//    variable_set('wayf_dk_login_organizations_list', $data);
+    // Try to get cached information.
+    if (($info = $this->cache->fetch($cache_key)) === FALSE) {
+      $content = file_get_contents('https://wayf.wayf.dk/module.php/wayf/idpTilTjeneste.php');
+      $info = json_decode($content, TRUE);
+      $this->cache->save($cache_key, $info);
+    }
+    return $info;
   }
 
   /**

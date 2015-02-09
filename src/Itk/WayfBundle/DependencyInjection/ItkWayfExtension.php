@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * @TODO: Missing file description?
+ * Ensures that the configuration is loaded into the WAYF service.
  */
 
 namespace Itk\WayfBundle\DependencyInjection;
@@ -44,5 +44,8 @@ class ItkWayfExtension extends Extension {
 
     // Set metadata about the current site.
     $serviceDefintion->addMethodCall('setServiceProviderMetadata', array($config['serviceProviderMetadata']));
+
+    // Set scoping.
+    $serviceDefintion->addMethodCall('setScoping', array($config['scoping']));
   }
 }

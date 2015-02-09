@@ -1,0 +1,15 @@
+application:
+    environment:
+        php:
+            version: 5.5.14
+        timezone: 'Europe/Copenhagen'
+
+    project_setup:
+        before:
+            - composer install
+            - php app/console doctrine:database:create
+            - php app/console doctrine:schema:update --force
+
+tools:
+    sensiolabs_security_checker: true
+

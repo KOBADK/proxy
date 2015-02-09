@@ -117,13 +117,17 @@ nelmio_api_doc:
 
 itk_wayf:
     idp:
-        acs: 'http://koba.vm/auth/wayf/login'
-        sp: 'http://koba.vm'
+        acs: 'http://koba2.vm/auth/wayf/login'
+        sp: 'http://koba2.vm'
+
+    scoping:
+        - 'testidp.wayf.dk'
+        - 'sikker-adgang.dk'
 
     serviceProviderMetadata:
-        logoutUrl: 'http://koba.vm'
+        logoutUrl: 'http://koba2.vm/auth/wayf/logout'
         organizationName: 'KOBA test'
         organizationDisplayName: 'Koba test unit'
-        organizationUrl: 'http://koba.vm'
+        organizationUrl: 'http://koba2.vm'
         contactName: 'Admin'
         contactMail: 'design@mkb.aarhus.dk'

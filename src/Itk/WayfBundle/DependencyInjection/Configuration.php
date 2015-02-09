@@ -28,10 +28,6 @@ class Configuration implements ConfigurationInterface {
     $certificate = $locator->locate('selfSigned.cert', NULL, TRUE);
     $key = $locator->locate('selfSigned.key', NULL, TRUE);
 
-    // Try to build default asc (HACK).
-    $sp = ($_SERVER['SERVER_PORT'] == 80 ? 'http://' : 'https://') . $_SERVER['SERVER_NAME'];
-    $asc =  $sp . $_SERVER['REDIRECT_URL'];
-
     $rootNode
       ->children()
         ->enumNode('mode')
@@ -57,7 +53,7 @@ class Configuration implements ConfigurationInterface {
         ->children()
           ->scalarNode('logoutUrl')
             ->isRequired()
-            ->info('The url to return to when logged out.')
+            ->info('The url to return to when logged out (wayf/logout).')
           ->end()
           ->scalarNode('organizationName')
             ->isRequired()
@@ -85,6 +81,11 @@ class Configuration implements ConfigurationInterface {
             ->info('The tecnical contact persons email.')
           ->end()
         ->end()
+      ->end()
+      ->arrayNode('scoping')
+        ->defaultValue(array('testidp.wayf.dk', 'sikker-adgang.dk'))
+        ->prototype('scalar')->end()
+        ->info('This is used to limit the list of identity providers af wayf.dk.')
       ->end()
       ->arrayNode('certificate')
           ->addDefaultsIfNotSet()
