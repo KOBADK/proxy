@@ -21,6 +21,11 @@ tools:
     php_sim: true
     sensiolabs_security_checker: true
 
+    js_hint:
+        use_native_config: false
+        config:
+            laxcomma: true
+
 filter:
     excluded_paths:
         - 'app/*'
