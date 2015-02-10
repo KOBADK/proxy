@@ -7,7 +7,7 @@ use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\MaxDepth;
 use JMS\Serializer\Annotation\XmlRoot;
 
-use Symfony\Component\Validator\Constraints AS Assert;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A user group. Used to decide which resources a user has access to.

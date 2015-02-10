@@ -89,7 +89,8 @@ class BookingService {
   public function createBooking(Booking $booking) {
     return new NotImplementedException('not implemented');
 
-/*    $validation = $this->helperService->validateBooking($booking);
+    /*
+    $validation = $this->helperService->validateBooking($booking);
     if ($validation['status'] !== 200) {
       return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
     }
@@ -115,6 +116,7 @@ class BookingService {
     $this->em->persist($booking);
     $this->em->flush();
 
-    return $this->exchangeService->sendBookingRequest($booking);*/
+    return $this->exchangeService->sendBookingRequest($booking);
+    */
   }
 }

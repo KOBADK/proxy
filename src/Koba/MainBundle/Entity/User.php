@@ -7,7 +7,7 @@ use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\XmlRoot;
 
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints AS Assert;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A user. Is hooked up with a mail in the Exchange system.

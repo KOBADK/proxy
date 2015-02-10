@@ -120,7 +120,8 @@ class GroupService {
   public function updateRole($id, Group $updatedGroup) {
     throw new NotImplementedException('not implemented');
 
-/*    $role = $this->rolesRepository->findOneById($id);
+    /*
+    $role = $this->rolesRepository->findOneById($id);
 
     if (!$role) {
       return $this->helperService->generateResponse(404, null, array('message' => 'role not found'));
@@ -139,6 +140,7 @@ class GroupService {
     $this->em->merge($updatedRole);
     $this->em->flush();
 
-    return $this->helperService->generateResponse(204);*/
+    return $this->helperService->generateResponse(204);
+    */
   }
 }

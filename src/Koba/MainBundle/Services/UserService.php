@@ -142,11 +142,12 @@ class UserService {
    */
   public function addRoleToUser($userId, Group $group) {
     // @TODO: Fix validation.
-/*    $validation = $this->helperService->validateRole($group);
+    /*
+    $validation = $this->helperService->validateRole($group);
     if ($validation['status'] !== 200) {
       return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
     }
-*/
+    */
     $user = $this->userRepository->findOneById($userId);
 
     if (!$user) {
