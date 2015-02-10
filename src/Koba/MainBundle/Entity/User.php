@@ -269,10 +269,10 @@ class User implements UserInterface, \Serializable {
    * This should be the encoded password. On authentication, a plain-text
    * password will be salted, encoded, and then compared to this value.
    *
-   * @return string The password
+   * @return null|string
+   *   The password
    */
   public function getPassword() {
-    // TODO: Implement getPassword() method.
     return NULL;
   }
 
@@ -281,10 +281,10 @@ class User implements UserInterface, \Serializable {
    *
    * This can return null if the password was not encoded using a salt.
    *
-   * @return string|null The salt
+   * @return null|string
+   *   The salt
    */
   public function getSalt() {
-    // TODO: Implement getSalt() method.
     return NULL;
   }
 
@@ -294,7 +294,7 @@ class User implements UserInterface, \Serializable {
    * @return string The username
    */
   public function getUsername() {
-    return $this->getId();
+    return (string) $this->getId();
   }
 
   /**
@@ -304,13 +304,13 @@ class User implements UserInterface, \Serializable {
    * the plain-text password is stored on this object.
    */
   public function eraseCredentials() {
+
   }
 
   /**
    * Get groups
    *
    * @return array
-   *
    *
    * @TODO: Extend to return different roles.
    */
@@ -329,6 +329,8 @@ class User implements UserInterface, \Serializable {
 
   /**
    * @see \Serializable::unserialize()
+   *
+   * @param $serialized
    */
   public function unserialize($serialized) {
     list (
