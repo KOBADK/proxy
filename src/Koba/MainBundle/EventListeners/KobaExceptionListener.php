@@ -63,8 +63,6 @@ class KobaExceptionListener {
         // Send the modified response object to the event
         $event->setResponse($response);
       }
-
-      // TODO: Handle other exceptions.
     }
   }
 }

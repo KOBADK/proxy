@@ -47,7 +47,7 @@ class UserService {
     $user = $this->userRepository->findOneById($id);
 
     if (!$user) {
-      throw new NotFoundHttpException('User not found.', null, 404);
+      throw new NotFoundHttpException('User not found.', NULL, 404);
     }
 
     return $user;
@@ -66,7 +66,7 @@ class UserService {
     $user = $this->userRepository->findOneByUniqueId($uniqueId);
 
     if (!$user) {
-      throw new NotFoundHttpException('User not found.', null, 404);
+      throw new NotFoundHttpException('User not found.', NULL, 404);
     }
 
     return $user;
@@ -97,7 +97,7 @@ class UserService {
     $user = $this->userRepository->findOneById($id);
 
     if (!$user) {
-      throw new NotFoundHttpException('User not found.', null, 404);
+      throw new NotFoundHttpException('User not found.', NULL, 404);
     }
 
     if (!is_bool($status)) {
@@ -145,25 +145,25 @@ class UserService {
     /*
     $validation = $this->helperService->validateRole($group);
     if ($validation['status'] !== 200) {
-      return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
+      return $this->helperService->generateResponse($validation['status'], NULL, $validation['errors']);
     }
     */
     $user = $this->userRepository->findOneById($userId);
 
     if (!$user) {
-      throw new NotFoundHttpException('User not found.', null, 404);
+      throw new NotFoundHttpException('User not found.', NULL, 404);
     }
 
     $group = $this->groupRepository->findOneById($group->getId());
 
     if (!$group) {
-      throw new NotFoundHttpException('Group not found.', null, 404);
+      throw new NotFoundHttpException('Group not found.', NULL, 404);
     }
 
     if ($user->getGroups()->contains($group)) {
       // @TODO: throw meaningful exception.
       throw new NotImplementedException('incorrect exception');
-      //return $this->helperService->generateResponse(409, null, array('message' => 'user already has that role'));
+      //return $this->helperService->generateResponse(409, NULL, array('message' => 'user already has that role'));
     }
 
     $user->addGroup($group);
@@ -187,19 +187,19 @@ class UserService {
     $user = $this->userRepository->findOneById($uid);
 
     if (!$user) {
-      throw new NotFoundHttpException('User not found.', null, 404);
+      throw new NotFoundHttpException('User not found.', NULL, 404);
     }
 
     $group = $this->groupRepository->findOneById($gid);
 
     if (!$group) {
-      throw new NotFoundHttpException('Group not found.', null, 404);
+      throw new NotFoundHttpException('Group not found.', NULL, 404);
     }
 
     if (!$user->getGroups()->contains($group)) {
       // @TODO: throw meaningful exception.
       throw new NotImplementedException('incorrect exception');
-      //return $this->helperService->generateResponse(409, null, array('message' => 'user does not have that role'));
+      //return $this->helperService->generateResponse(409, NULL, array('message' => 'user does not have that role'));
     }
 
     $user->removeGroup($group);
@@ -221,7 +221,7 @@ class UserService {
     $user = $this->userRepository->findOneById($id);
 
     if (!$user) {
-      throw new NotFoundHttpException('User not found.', null, 404);
+      throw new NotFoundHttpException('User not found.', NULL, 404);
     }
 
     return $user->getBookings();

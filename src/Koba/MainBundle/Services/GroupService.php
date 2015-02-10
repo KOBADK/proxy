@@ -48,7 +48,7 @@ class GroupService {
     $group = $this->groupRepository->findOneById($id);
 
     if (!$group) {
-      throw new NotFoundHttpException('Group not found', null, 404);
+      throw new NotFoundHttpException('Group not found', NULL, 404);
     }
 
     return $group;
@@ -80,11 +80,11 @@ class GroupService {
 
     /*    $validation = $this->helperService->validateRole($role);
         if ($validation['status'] !== 200) {
-          return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
+          return $this->helperService->generateResponse($validation['status'], NULL, $validation['errors']);
         }
 
         if ($this->rolesRepository->findOneByTitle($role->getTitle())) {
-          return $this->helperService->generateResponse(409, null, array('message' => 'a role with that title already exists'));
+          return $this->helperService->generateResponse(409, NULL, array('message' => 'a role with that title already exists'));
         }
 
         // Persist the new role.
@@ -116,16 +116,16 @@ class GroupService {
     $role = $this->rolesRepository->findOneById($id);
 
     if (!$role) {
-      return $this->helperService->generateResponse(404, null, array('message' => 'role not found'));
+      return $this->helperService->generateResponse(404, NULL, array('message' => 'role not found'));
     }
 
     $validation = $this->helperService->validateRole($updatedRole);
     if ($validation['status'] !== 200) {
-      return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
+      return $this->helperService->generateResponse($validation['status'], NULL, $validation['errors']);
     }
 
     if ($role->getId() !== $updatedRole->getId()) {
-      return $this->helperService->generateResponse(400, null, array('message' => 'ids do not match'));
+      return $this->helperService->generateResponse(400, NULL, array('message' => 'ids do not match'));
     }
 
     // Update db.

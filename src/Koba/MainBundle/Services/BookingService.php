@@ -69,7 +69,7 @@ class BookingService {
     $booking = $this->bookingRepository->findOneById($id);
 
     if (!$booking) {
-      throw new NotFoundHttpException('Booking not found.', null, 404);
+      throw new NotFoundHttpException('Booking not found.', NULL, 404);
     }
 
     return $booking;
@@ -92,13 +92,13 @@ class BookingService {
     /*
     $validation = $this->helperService->validateBooking($booking);
     if ($validation['status'] !== 200) {
-      return $this->helperService->generateResponse($validation['status'], null, $validation['errors']);
+      return $this->helperService->generateResponse($validation['status'], NULL, $validation['errors']);
     }
 
     $user = $this->userRepository->findOneById($booking->getUser()->getId());
 
     if (!$user) {
-      return $this->helperService->generateResponse(404, null, array('message' => 'user not found'));
+      return $this->helperService->generateResponse(404, NULL, array('message' => 'user not found'));
     }
 
     $booking->setUser($user);
@@ -106,7 +106,7 @@ class BookingService {
     $resource = $this->resourceRepository->findOneById($booking->getResource()->getId());
 
     if (!$resource) {
-      return $this->helperService->generateResponse(404, null, array('message' => 'resource not found'));
+      return $this->helperService->generateResponse(404, NULL, array('message' => 'resource not found'));
     }
 
     $booking->setResource($resource);
