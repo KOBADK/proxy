@@ -13,5 +13,12 @@ use Doctrine\ORM\EntityRepository;
  * @package Koba\MainBundle\Entity
  */
 class UserRepository extends EntityRepository {
-
+  /**
+   * Call the entity manager flush.
+   *
+   * @TODO: Is this the correct way to do this?
+   */
+  public function flush() {
+    $this->getEntityManager()->flush();
+  }
 }

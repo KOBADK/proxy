@@ -8,9 +8,11 @@ namespace Koba\MainBundle\Services;
 
 use Koba\MainBundle\Entity\GroupRepository;
 use Koba\MainBundle\Entity\UserRepository;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Intl\Exception\NotImplementedException;
 use Symfony\Component\Validator\Exception\ValidatorException;
+use Koba\MainBundle\Entity\Group;
 
 /**
  * Class UserService
@@ -140,7 +142,7 @@ class UserService {
    * @return boolean
    *   Success?
    */
-  public function addRoleToUser($userId, Group $group) {
+  public function addGroupToUser($userId, Group $group) {
     // @TODO: Fix validation.
     /*
     $validation = $this->helperService->validateRole($group);
@@ -161,13 +163,11 @@ class UserService {
     }
 
     if ($user->getGroups()->contains($group)) {
-      // @TODO: throw meaningful exception.
-      throw new NotImplementedException('incorrect exception');
-      //return $this->helperService->generateResponse(409, NULL, array('message' => 'user already has that role'));
+      throw new HttpException(409, 'User already has that group');
     }
 
     $user->addGroup($group);
-    $this->userRepository->getEntityManager()->flush();
+    $this->userRepository->flush();
 
     return TRUE;
   }
@@ -183,7 +183,7 @@ class UserService {
    * @return boolean
    *   Success?
    */
-  public function removeRoleFromUser($uid, $gid) {
+  public function removeGroupFromUser($uid, $gid) {
     $user = $this->userRepository->findOneById($uid);
 
     if (!$user) {
@@ -197,13 +197,11 @@ class UserService {
     }
 
     if (!$user->getGroups()->contains($group)) {
-      // @TODO: throw meaningful exception.
-      throw new NotImplementedException('incorrect exception');
-      //return $this->helperService->generateResponse(409, NULL, array('message' => 'user does not have that role'));
+      throw new HttpException(409, 'User does not have that group.');
     }
 
     $user->removeGroup($group);
-    $this->userRepository->getEntityManager()->flush();
+    $this->userRepository->flush();
 
     return TRUE;
   }

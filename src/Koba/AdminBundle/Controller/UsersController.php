@@ -135,7 +135,7 @@ class UsersController extends FOSRestController {
   /**
    * Get user groups.
    *
-   * @Get("/{id}/group")
+   * @Get("/{id}/groups")
    *
    * @ApiDoc(
    *   description="Get a user's groups",
@@ -169,7 +169,7 @@ class UsersController extends FOSRestController {
   /**
    * Add a group to user.
    *
-   * @Post("/{id}/roles")
+   * @Post("/{id}/groups")
    *
    * @ApiDoc(
    *   description="Add a role to a user",
@@ -204,7 +204,7 @@ class UsersController extends FOSRestController {
 
     // Deserialize input
     try {
-      $group = $serializer->deserialize($request->getContent(), 'Koba\MainBundle\Entity\Role', $request->get('_format'));
+      $group = $serializer->deserialize($request->getContent(), 'Koba\MainBundle\Entity\Group', $request->get('_format'));
     } catch (\Exception $e) {
       $view = $this->view(array('message' => 'invalid input'), 400);
       return $this->handleView($view);
@@ -219,7 +219,7 @@ class UsersController extends FOSRestController {
   /**
    * Remove group from user.
    *
-   * @Delete("/{id}/roles/{gid}")
+   * @Delete("/{id}/groups/{gid}")
    *
    * @ApiDoc(
    *   description="Remove a group from a user",
@@ -245,7 +245,7 @@ class UsersController extends FOSRestController {
    * @return View|\Symfony\Component\HttpFoundation\Response
    *   Response object.
    */
-  public function deleteUserRole($id, $gid) {
+  public function deleteUserGroup($id, $gid) {
     $userService = $this->get('koba.user_service');
 
     $userService->removeGroupFromUser($id, $gid);
