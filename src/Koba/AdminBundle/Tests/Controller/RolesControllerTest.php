@@ -135,8 +135,8 @@ class GroupsControllerTest extends ExtendedWebTestCase {
     $this->assertEquals(5, count($array));
 
     $group = array(
-      "title" => "fisk",
-      "description" => "and stuff"
+      'title' => 'fisk',
+      'description' => 'and stuff'
     );
 
     $client->request('POST', '/admin/groups', array(), array(), array(), json_encode($group));
@@ -171,8 +171,8 @@ class GroupsControllerTest extends ExtendedWebTestCase {
     $this->assertEquals(5, count($array));
 
     $group = array(
-      "title" => "Anonym",
-      "description" => "and stuff"
+      'title' => 'Anonym',
+      'description' => 'and stuff'
     );
 
     $client->request('POST', '/admin/groups', array(), array(), array(), json_encode($group));
@@ -207,8 +207,8 @@ class GroupsControllerTest extends ExtendedWebTestCase {
     $this->assertEquals(5, count($array));
 
     $group = array(
-      "title" => NULL,
-      "description" => "and stuff"
+      'title' => NULL,
+      'description' => 'and stuff'
     );
 
     $client->request('POST', '/admin/groups', array(), array(), array(), json_encode($group));

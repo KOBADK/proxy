@@ -159,8 +159,8 @@ class ExchangeService {
       BEGIN:VEVENT\r\n
       UID:" . $uid . "\r\n
       DTSTAMP:" . $timestamp . "\r\n
-      DTSTART:" . $booking->getStartDatetimeForVCard() . "\r\n
-      DTEND:" . $booking->getEndDatetimeForVCard() . "r\n
+      DTSTART:" . $booking->getStartDatetimeForVcard() . "\r\n
+      DTEND:" . $booking->getEndDatetimeForVcard() . "r\n
       SUMMARY:" . $booking->getSubject() . "\r\n
       ORGANIZER;CN=" . $this->bookingUser . ":mailto:" . $this->bookingMail . "\r\n
       DESCRIPTION:" . $booking->getDescription() . "\r\n

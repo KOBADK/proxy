@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\XmlRoot;
 
-use Symfony\Component\Validator\Constraints AS Assert;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A booking. The internal representation of a booking.
@@ -306,8 +306,8 @@ class Booking {
    *
    * @TODO: Use common date format!
    */
-  public function getStartDatetimeForVCard() {
-    return $this->startDateTime->format("Ymd\THis\Z");
+  public function getStartDatetimeForVcard() {
+    return $this->startDateTime->format('Ymd\THis\Z');
   }
 
   /**
@@ -320,8 +320,8 @@ class Booking {
    *
    * @TODO: Use common date format!
    */
-  public function getEndDatetimeForVCard() {
-    return $this->endDateTime->format("Ymd\THis\Z");
+  public function getEndDatetimeForVcard() {
+    return $this->endDateTime->format('Ymd\THis\Z');
   }
 
   /**
