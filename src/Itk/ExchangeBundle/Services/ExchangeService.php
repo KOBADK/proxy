@@ -206,7 +206,7 @@ class ExchangeService {
     $this->em->persist($resource);
 
     $user = new User();
-    $user->setStatus(true);
+    $user->setStatus(TRUE);
     $user->setMail('test@test.test');
     $user->setName('Test testesen');
     $user->setUniqueId('123');
