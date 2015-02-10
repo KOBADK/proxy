@@ -9,6 +9,7 @@ namespace Itk\WayfBundle\Services;
 
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\PhpFileCache;
+use Itk\WayfBundle\Exception\WayfException;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\DependencyInjection\Container;
@@ -127,7 +128,7 @@ class WayfService {
    * @return string
    *   The URL to redirect the user to.
    *
-   * @throws \Itk\WayfBundle\Services\WayfException
+   * @throws \Itk\WayfBundle\Exception\WayfException
    */
   public function login() {
     // Get identity provider metadata.
@@ -196,7 +197,7 @@ class WayfService {
    * @return string
    *   The URL to redirect the user to.
    *
-   * @throws \Itk\WayfBundle\Services\WayfException
+   * @throws \Itk\WayfBundle\Exception\WayfException
    */
   public function logout() {
     // Get identity provider metadata.
@@ -454,7 +455,7 @@ class WayfService {
    * @return array|mixed
    *    The Single Sign On and Single Logout urls and the IDP public certificate.
    *
-   * @throws \Itk\WayfBundle\Services\WayfException
+   * @throws \Itk\WayfBundle\Exception\WayfException
    *   If the IDP do not return any data.
    */
   protected function getIpdMetadata() {
@@ -464,7 +465,7 @@ class WayfService {
     // Try to get cached information.
     if (($info = $this->cache->fetch($cache_key)) === FALSE) {
       // Data not found in cache, so try to download it.
-      @$metadata = file_get_contents($this->endpoints[$this->idpMode]);
+      $metadata = @file_get_contents($this->endpoints[$this->idpMode]);
       if ($metadata === FALSE) {
         throw new WayfException('An error occurred, WAYF metadata service not available.');
       }
@@ -478,8 +479,8 @@ class WayfService {
         $binding = 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect';
 
         // Get Single Sign On and logout urls.
-        $sso = $xml->xpath($SsoDescriptor . "/md:SingleSignOnService[@Binding='$binding']/@Location");
-        $slo = $xml->xpath($SsoDescriptor . "/md:SingleLogoutService[@Binding='$binding']/@Location");
+        $sso = $xml->xpath($SsoDescriptor . "/md:SingleSignOnService[@Binding='" . $binding . "']/@Location");
+        $slo = $xml->xpath($SsoDescriptor . "/md:SingleLogoutService[@Binding='" . $binding . "']/@Location");
 
         // Get certificate data.
         $cert = $xml->xpath($SsoDescriptor . "/md:KeyDescriptor[@use='signing']/ds:KeyInfo/ds:X509Data/ds:X509Certificate");
@@ -529,12 +530,4 @@ class WayfService {
   protected function render($view, array $parameters = array()) {
     return $this->templating->render($view, $parameters);
   }
-}
-
-/**
- * Class WayfException
- *
- * @package Itk\ApiBundle\Services
- */
-class WayfException extends \Exception {
 }
