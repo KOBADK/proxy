@@ -33,11 +33,15 @@ class UsersController extends FOSRestController {
    * @Get("")
    *
    * @ApiDoc(
-   *  description="Get current user",
-   *  statusCodes={
-   *    200="Returned when successful",
-   *    404="Returned when no users are found"
-   *  }
+   *   description="Get current user",
+   *   statusCodes={
+   *     200="Returned when successful",
+   *     404="Returned when no users are found"
+   *   },
+   *   tags={
+   *     "not_implemented",
+   *     "no_tests"
+   *   }
    * )
    *
    * @return \Symfony\Component\HttpFoundation\Response
@@ -46,9 +50,7 @@ class UsersController extends FOSRestController {
    * // TODO: implement this!
    */
   public function getCurrentUser() {
-    $usersService = $this->get('koba.users_service');
-
-    $view = $this->view(array(), 200);
+    $view = $this->view(array('message' => 'not implemented'), 500);
     return $this->handleView($view);
   }
 }
