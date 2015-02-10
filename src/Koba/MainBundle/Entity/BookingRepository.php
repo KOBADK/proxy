@@ -8,6 +8,10 @@ namespace Koba\MainBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
+/**
+ * Class BookingRepository
+ * @package Koba\MainBundle\Entity
+ */
 class BookingRepository extends EntityRepository {
 
 }
