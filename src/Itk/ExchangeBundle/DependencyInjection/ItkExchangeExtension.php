@@ -19,10 +19,6 @@ class ItkExchangeExtension extends Extension {
    * {@inheritDoc}
    */
   public function load(array $configs, ContainerBuilder $container) {
-    // Parse configuration (config.yml).
-    $configuration = new Configuration();
-    $config = $this->processConfiguration($configuration, $configs);
-
     // Load the bundles service configurations.
     $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
     $loader->load('services.xml');

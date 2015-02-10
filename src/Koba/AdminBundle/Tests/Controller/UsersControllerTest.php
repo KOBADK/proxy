@@ -63,7 +63,7 @@ class UsersControllerTest extends ExtendedWebTestCase {
     $client = $this->baseSetup();
 
     $status = array(
-      'status' => false
+      'status' => FALSE
     );
     $client->request('PUT', '/admin/users/3/status', array(), array(), array(), json_encode($status));
     $response = $client->getResponse();
@@ -102,10 +102,10 @@ class UsersControllerTest extends ExtendedWebTestCase {
     $client->request('GET', '/admin/users/1');
     $response = $client->getResponse();
     $user = json_decode($response->getContent());
-    $this->assertEquals(true, $user->status);
+    $this->assertEquals(TRUE, $user->status);
 
     $status = array(
-      'status' => false
+      'status' => FALSE
     );
 
     $client->request('PUT', '/admin/users/1/status', array(), array(), array(), json_encode($status));
@@ -116,7 +116,7 @@ class UsersControllerTest extends ExtendedWebTestCase {
     $response = $client->getResponse();
     $user = json_decode($response->getContent());
 
-    $this->assertEquals(false, $user->status);
+    $this->assertEquals(FALSE, $user->status);
   }
 
   /**

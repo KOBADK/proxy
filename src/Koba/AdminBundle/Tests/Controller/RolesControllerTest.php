@@ -95,7 +95,7 @@ class GroupsControllerTest extends ExtendedWebTestCase {
     $response = $client->getResponse();
     $group = json_decode($response->getContent());
 
-    $group->title = null;
+    $group->title = NULL;
 
     $client->request('PUT', '/admin/groups/1', array(), array(), array(), json_encode($group));
     $response = $client->getResponse();
@@ -207,7 +207,7 @@ class GroupsControllerTest extends ExtendedWebTestCase {
     $this->assertEquals(5, count($array));
 
     $group = array(
-      "title" => null,
+      "title" => NULL,
       "description" => "and stuff"
     );
 

@@ -22,6 +22,10 @@ class Configuration implements ConfigurationInterface {
     $treeBuilder = new TreeBuilder();
     $rootNode = $treeBuilder->root('koba_api');
 
+    $rootNode
+      ->children()
+      ->end();
+
     return $treeBuilder;
   }
 }

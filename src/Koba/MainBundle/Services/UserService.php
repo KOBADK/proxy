@@ -108,7 +108,7 @@ class UserService {
 
     $this->userRepository->getEntityManager()->flush();
 
-    return true;
+    return TRUE;
   }
 
   /**
@@ -168,7 +168,7 @@ class UserService {
     $user->addGroup($group);
     $this->userRepository->getEntityManager()->flush();
 
-    return true;
+    return TRUE;
   }
 
   /**
@@ -204,7 +204,7 @@ class UserService {
     $user->removeGroup($group);
     $this->userRepository->getEntityManager()->flush();
 
-    return true;
+    return TRUE;
   }
 
   /**

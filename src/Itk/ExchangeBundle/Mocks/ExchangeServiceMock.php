@@ -31,7 +31,7 @@ class ExchangeServiceMock extends ExchangeService {
    * @param HelperService $helperService
    *   @TODO Missing description?
    */
-  function __construct(Container $container, HelperService $helperService) {
+  public function __construct(Container $container, HelperService $helperService) {
     $this->helperService = $helperService;
 
     // @todo: The service is only dependent on the container to get the entity

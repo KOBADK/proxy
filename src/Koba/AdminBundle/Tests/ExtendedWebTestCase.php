@@ -43,7 +43,7 @@ class ExtendedWebTestCase extends WebTestCase {
       ->findOneById($userID);
 
     $token = new UsernamePasswordToken(
-      $user, null, 'main', array('ROLE_ADMIN')
+      $user, NULL, 'main', array('ROLE_ADMIN')
     );
 
     // First Parameter is the actual user object.
@@ -117,14 +117,14 @@ class ExtendedWebTestCase extends WebTestCase {
     $user1->setUniqueId("user1");
     $user1->setName("Name 1");
     $user1->setMail("test1@test.test");
-    $user1->setStatus(true);
+    $user1->setStatus(TRUE);
     $em->persist($user1);
 
     $user2 = new User();
     $user2->setUniqueId("user2");
     $user2->setName("Name 2");
     $user2->setMail("test2@test.test");
-    $user2->setStatus(true);
+    $user2->setStatus(TRUE);
     $em->persist($user2);
 
     $role1 = new Role();

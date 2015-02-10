@@ -128,7 +128,7 @@ class UsersController extends FOSRestController {
     // Update user
     $userService->setUserStatus($id, $user['status']);
 
-    $view = $this->view(null, 204);
+    $view = $this->view(NULL, 204);
     return $this->handleView($view);
   }
 
@@ -212,7 +212,7 @@ class UsersController extends FOSRestController {
 
     $userService->addGroupToUser($id, $group);
 
-    $view = $this->view(null, 204);
+    $view = $this->view(NULL, 204);
     return $this->handleView($view);
   }
 
@@ -250,7 +250,7 @@ class UsersController extends FOSRestController {
 
     $userService->removeGroupFromUser($id, $gid);
 
-    $view = $this->view(null, 204);
+    $view = $this->view(NULL, 204);
     return $this->handleView($view);
   }
 
