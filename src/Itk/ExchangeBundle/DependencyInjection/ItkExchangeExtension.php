@@ -27,6 +27,12 @@ class ItkExchangeExtension extends Extension {
     $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
     $loader->load('services.xml');
 
+    // Load services overwrites when in the testing environment.
+    $env = $container->getParameter('kernel.environment');
+    if ($env === 'test') {
+      $loader->load('services_test.xml');
+    }
+
     // Inject the configuration into the service.
     $serviceDefinition = $container->getDefinition('itk.exchange_service');
 
