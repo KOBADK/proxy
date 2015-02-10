@@ -1,3 +1,4 @@
 controllers:
   resource: "@KobaAdminBundle/Controller"
   type: annotation
+  defaults: {_format: json}

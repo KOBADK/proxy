@@ -2,13 +2,17 @@
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
   <services>
     <!-- Entity repositories -->
-    <service id="koba.booking_repository" class="Koba\MainBundle\EntityRepositories\BookingRepository">
+    <service id="koba.booking_repository" class="Koba\MainBundle\Entity\BookingRepository" factory-service="doctrine.orm.default_entity_manager" factory-method="getRepository">
+      <argument>Koba\MainBundle\Entity\Booking</argument>
     </service>
-    <service id="koba.group_repository" class="Koba\MainBundle\EntityRepositories\GroupRepository">
+    <service id="koba.user_repository" class="Koba\MainBundle\Entity\UserRepository" factory-service="doctrine.orm.default_entity_manager" factory-method="getRepository">
+      <argument>Koba\MainBundle\Entity\User</argument>
     </service>
-    <service id="koba.resource_repository" class="Koba\MainBundle\EntityRepositories\ResourceRepository">
+    <service id="koba.resource_repository" class="Koba\MainBundle\Entity\ResourceRepository" factory-service="doctrine.orm.default_entity_manager" factory-method="getRepository">
+      <argument>Koba\MainBundle\Entity\Resource</argument>
     </service>
-    <service id="koba.user_repository" class="Koba\MainBundle\EntityRepositories\UserRepository">
+    <service id="koba.group_repository" class="Koba\MainBundle\Entity\GroupRepository" factory-service="doctrine.orm.default_entity_manager" factory-method="getRepository">
+      <argument>Koba\MainBundle\Entity\Group</argument>
     </service>
 
     <!-- Services -->

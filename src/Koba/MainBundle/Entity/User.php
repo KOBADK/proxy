@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints AS Assert;
 /**
  * A user. Is hooked up with a mail in the Exchange system.
  *
- * @ORM\Entity(repositoryClass="Koba\MainBundle\EntityRepositories\UserRepository")
+ * @ORM\Entity(repositoryClass="Koba\MainBundle\Entity\UserRepository")
  * @ORM\Table(name="koba_user")
  * @XmlRoot("user")
  */

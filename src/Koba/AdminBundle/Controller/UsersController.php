@@ -69,13 +69,10 @@ class UsersController extends FOSRestController {
    *  }
    * )
    *
-   * @param Request $request
-   *   Request object.
-   *
    * @return \Symfony\Component\HttpFoundation\Response
    *   Response object.
    */
-  public function getUsers(Request $request) {
+  public function getUsers() {
     $userService = $this->get('koba.user_service');
 
     $users = $userService->getAllUsers();

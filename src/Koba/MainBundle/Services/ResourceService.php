@@ -7,8 +7,8 @@
 namespace Koba\MainBundle\Services;
 
 use Koba\MainBundle\Entity\Resource;
-use Koba\MainBundle\EntityRepositories\ResourceRepository;
-use Itk\ApiBundle\Services\ExchangeService;
+use Koba\MainBundle\Entity\ResourceRepository;
+use Itk\ExchangeBundle\Services\ExchangeService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Intl\Exception\NotImplementedException;
 

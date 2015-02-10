@@ -6,11 +6,11 @@
 
 namespace Koba\MainBundle\Services;
 
-use Itk\ApiBundle\Services\ExchangeService;
+use Itk\ExchangeBundle\Services\ExchangeService;
 use Koba\MainBundle\Entity\Booking;
-use Koba\MainBundle\EntityRepositories\BookingRepository;
-use Koba\MainBundle\EntityRepositories\ResourceRepository;
-use Koba\MainBundle\EntityRepositories\UserRepository;
+use Koba\MainBundle\Entity\BookingRepository;
+use Koba\MainBundle\Entity\ResourceRepository;
+use Koba\MainBundle\Entity\UserRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Intl\Exception\NotImplementedException;
 

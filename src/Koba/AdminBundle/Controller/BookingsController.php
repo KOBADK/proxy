@@ -79,7 +79,7 @@ class BookingsController extends FOSRestController {
   /**
    * Delete a booking.
    *
-   * @Delete('/{id}')
+   * @Delete("/{id}")
    *
    * @ApiDoc(
    *   description="Delete booking by id",

@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation\XmlRoot;
 /**
  * A resource. Is hooked up with a mail in Exchange.
  *
- * @ORM\Entity(repositoryClass="Koba\MainBundle\EntityRepositories\ResourceRepository")
+ * @ORM\Entity(repositoryClass="Koba\MainBundle\Entity\ResourceRepository")
  * @ORM\Table(name="koba_resource")
  * @XmlRoot("resource")
  */

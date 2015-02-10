@@ -6,8 +6,8 @@
 
 namespace Koba\MainBundle\Services;
 
-use Koba\MainBundle\EntityRepositories\GroupRepository;
-use Koba\MainBundle\EntityRepositories\UserRepository;
+use Koba\MainBundle\Entity\GroupRepository;
+use Koba\MainBundle\Entity\UserRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Intl\Exception\NotImplementedException;
 use Symfony\Component\Validator\Exception\ValidatorException;

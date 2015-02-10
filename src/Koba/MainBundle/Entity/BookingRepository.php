@@ -4,7 +4,7 @@
  * Contains the booking repository.
  */
 
-namespace Koba\MainBundle\EntityRepositories;
+namespace Koba\MainBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 

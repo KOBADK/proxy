@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints AS Assert;
 /**
  * A user group. Used to decide which resources a user has access to.
  *
- * @ORM\Entity(repositoryClass="Koba\MainBundle\EntityRepositories\GroupRepository")
+ * @ORM\Entity(repositoryClass="Koba\MainBundle\Entity\GroupRepository")
  * @ORM\Table(name="koba_group")
  * @XmlRoot("group")
  */
