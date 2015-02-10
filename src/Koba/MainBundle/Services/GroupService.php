@@ -9,6 +9,8 @@ namespace Koba\MainBundle\Services;
 use Koba\MainBundle\Entity\UserRepository;
 use Koba\MainBundle\Entity\GroupRepository;
 use Koba\MainBundle\Entity\Group;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Intl\Exception\NotImplementedException;
 
 /**
@@ -41,19 +43,15 @@ class GroupService {
    *
    * @return Group
    *   The group found.
-   *
-   * @TODO: implement this!
    */
   public function getGroup($id) {
-    throw new NotImplementedException('not implemented');
+    $group = $this->groupRepository->findOneById($id);
 
-    /*    $role = $this->rolesRepository->findOneById($id);
+    if (!$group) {
+      throw new NotFoundHttpException('Group not found', null, 404);
+    }
 
-        if (!$role) {
-          return $this->helperService->generateResponse(404, null, array('message' => 'role not found'));
-        }
-
-        return $this->helperService->generateResponse(200, $role);*/
+    return $group;
   }
 
   /**
@@ -61,15 +59,9 @@ class GroupService {
    *
    * @return array
    *   Array of groups.
-   *
-   * @TODO: implement this!
    */
   public function getAllGroups() {
-    throw new NotImplementedException('not implemented');
-
-    /*    $roles = $this->rolesRepository->findAll();
-
-        return $this->helperService->generateResponse(200, $roles);*/
+    return $this->groupRepository->findAll();
   }
 
   /**
@@ -83,8 +75,8 @@ class GroupService {
    *
    * @TODO: Implement this!
    */
-  public function createRole(Group $group) {
-    throw new NotImplementedException('not implemented');
+  public function createGroup(Group $group) {
+    throw new HttpException(500, 'Method not implemented.');
 
     /*    $validation = $this->helperService->validateRole($role);
         if ($validation['status'] !== 200) {
@@ -117,8 +109,8 @@ class GroupService {
    *
    * @TODO: Implement this!
    */
-  public function updateRole($id, Group $updatedGroup) {
-    throw new NotImplementedException('not implemented');
+  public function updateGroup($id, Group $updatedGroup) {
+    throw new HttpException(500, 'Method not implemented.');
 
     /*
     $role = $this->rolesRepository->findOneById($id);

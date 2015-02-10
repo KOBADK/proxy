@@ -37,6 +37,7 @@
 
     <!-- Event listeners -->
     <service id="kernel.listener.koba_exception" class="Koba\MainBundle\EventListeners\KobaExceptionListener">
+      <argument type="service" id="kernel" />
       <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException"></tag>
     </service>
   </services>

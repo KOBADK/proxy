@@ -69,7 +69,7 @@ class BookingService {
     $booking = $this->bookingRepository->findOneById($id);
 
     if (!$booking) {
-      throw new NotFoundHttpException('Booking not found.');
+      throw new NotFoundHttpException('Booking not found.', null, 404);
     }
 
     return $booking;

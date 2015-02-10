@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * A booking. The internal representation of a booking.
  *
- * @ORM\Entity(repositoryClass="Koba\MainBundle\EntityBookingRepository")
+ * @ORM\Entity(repositoryClass="Koba\MainBundle\Entity\BookingRepository")
  * @ORM\Table(name="koba_booking")
  * @XmlRoot("booking")
  */

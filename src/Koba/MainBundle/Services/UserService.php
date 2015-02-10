@@ -47,7 +47,7 @@ class UserService {
     $user = $this->userRepository->findOneById($id);
 
     if (!$user) {
-      throw new NotFoundHttpException('User not found.');
+      throw new NotFoundHttpException('User not found.', null, 404);
     }
 
     return $user;
@@ -66,7 +66,7 @@ class UserService {
     $user = $this->userRepository->findOneByUniqueId($uniqueId);
 
     if (!$user) {
-      throw new NotFoundHttpException('User not found.');
+      throw new NotFoundHttpException('User not found.', null, 404);
     }
 
     return $user;
@@ -97,7 +97,7 @@ class UserService {
     $user = $this->userRepository->findOneById($id);
 
     if (!$user) {
-      throw new NotFoundHttpException('User not found.');
+      throw new NotFoundHttpException('User not found.', null, 404);
     }
 
     if (!is_bool($status)) {
@@ -151,13 +151,13 @@ class UserService {
     $user = $this->userRepository->findOneById($userId);
 
     if (!$user) {
-      throw new NotFoundHttpException('User not found.');
+      throw new NotFoundHttpException('User not found.', null, 404);
     }
 
     $group = $this->groupRepository->findOneById($group->getId());
 
     if (!$group) {
-      throw new NotFoundHttpException('Group not found.');
+      throw new NotFoundHttpException('Group not found.', null, 404);
     }
 
     if ($user->getGroups()->contains($group)) {
@@ -187,13 +187,13 @@ class UserService {
     $user = $this->userRepository->findOneById($uid);
 
     if (!$user) {
-      throw new NotFoundHttpException('User not found.');
+      throw new NotFoundHttpException('User not found.', null, 404);
     }
 
     $group = $this->groupRepository->findOneById($gid);
 
     if (!$group) {
-      throw new NotFoundHttpException('Group not found.');
+      throw new NotFoundHttpException('Group not found.', null, 404);
     }
 
     if (!$user->getGroups()->contains($group)) {
@@ -221,7 +221,7 @@ class UserService {
     $user = $this->userRepository->findOneById($id);
 
     if (!$user) {
-      throw new NotFoundHttpException('User not found.');
+      throw new NotFoundHttpException('User not found.', null, 404);
     }
 
     return $user->getBookings();

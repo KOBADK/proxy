@@ -34,7 +34,6 @@ class GroupsController extends FOSRestController {
    *     200="Returned when successful"
    *   },
    *   tags={
-   *     "not_implemented",
    *     "not_tested"
    *   }
    * )
@@ -45,11 +44,11 @@ class GroupsController extends FOSRestController {
   public function getGroups() {
     $groupService = $this->get('koba.group_service');
 
-    $result = $groupService->getAllGroups();
+    $groups = $groupService->getAllGroups();
 
     $context = new SerializationContext();
     $context->setGroups(array('group'));
-    $view = $this->view($result['data'], $result['status']);
+    $view = $this->view($groups, 200);
     $view->setSerializationContext($context);
     return $this->handleView($view);
   }
@@ -69,7 +68,6 @@ class GroupsController extends FOSRestController {
    *     404="Returned when no group is found"
    *   },
    *   tags={
-   *     "not_implemented",
    *     "not_tested"
    *   }
    * )
@@ -83,11 +81,11 @@ class GroupsController extends FOSRestController {
   public function getGroup($id) {
     $groupService = $this->get('koba.group_service');
 
-    $result = $groupService->getGroup($id);
+    $group = $groupService->getGroup($id);
 
     $context = new SerializationContext();
     $context->setGroups(array('group'));
-    $view = $this->view($result['data'], $result['status']);
+    $view = $this->view($group, 200);
     $view->setSerializationContext($context);
     return $this->handleView($view);
   }

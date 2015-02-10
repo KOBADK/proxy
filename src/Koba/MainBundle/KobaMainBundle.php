@@ -13,4 +13,5 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  * @package Koba\MainBundle
  */
 class KobaMainBundle extends Bundle {
+
 }
