@@ -108,7 +108,7 @@ class UserService {
 
     $user->setStatus($status);
 
-    $this->userRepository->getEntityManager()->flush();
+    $this->userRepository->flush();
 
     return TRUE;
   }
