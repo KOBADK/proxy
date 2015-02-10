@@ -37,7 +37,7 @@ class BookingService {
    * @param ExchangeService $exchangeService
    *   The exchange Service
    */
-  function __construct(BookingRepository $bookingRepository, UserRepository $userRepository, ResourceRepository $resourceRepository, ExchangeService $exchangeService) {
+  public function __construct(BookingRepository $bookingRepository, UserRepository $userRepository, ResourceRepository $resourceRepository, ExchangeService $exchangeService) {
     $this->bookingRepository = $bookingRepository;
     $this->userRepository = $userRepository;
     $this->resourceRepository = $resourceRepository;

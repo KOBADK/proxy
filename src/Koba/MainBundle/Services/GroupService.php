@@ -28,7 +28,7 @@ class GroupService {
    * @param UserRepository $userRepository
    *   The user repository.
    */
-  function __construct(GroupRepository $groupRepository, UserRepository $userRepository) {
+  public function __construct(GroupRepository $groupRepository, UserRepository $userRepository) {
     $this->groupRepository = $groupRepository;
     $this->userRepository = $userRepository;
   }
