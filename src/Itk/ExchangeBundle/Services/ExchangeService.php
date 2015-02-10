@@ -47,7 +47,7 @@ class ExchangeService {
     // manager and parameters?
     $this->container = $container;
 
-    // @TODO: Inject "EntityManager $em" -> "@doctrine.orm.entity_manager" so
+    // @TODO: Inject 'EntityManager $em' -> '@doctrine.orm.entity_manager' so
     // it's not dependent on doctrine inside the service.
     $this->doctrine = $this->container->get('doctrine');
     $this->em = $this->doctrine->getManager();
@@ -118,7 +118,7 @@ class ExchangeService {
     $response = $this->ews->FindItem($request);
 
     // Verify the response.
-    if ($response->ResponseMessages->FindItemResponseMessage->ResponseCode == "NoError") {
+    if ($response->ResponseMessages->FindItemResponseMessage->ResponseCode == 'NoError') {
       // Verify items.
       if ($response->ResponseMessages->FindItemResponseMessage->RootFolder->TotalItemsInView > 0) {
         //TODO: Fix this!
@@ -128,7 +128,7 @@ class ExchangeService {
     }
 
     // @TODO: Render not defined, if template need it should be inject into the
-    // service ("@templating" -> EngineInterface $templating).
+    // service ('@templating' -> EngineInterface $templating).
     return $this->render('ItkKobaBundle:Default:index.html.twig');
   }
 
@@ -147,8 +147,8 @@ class ExchangeService {
    */
   public function sendBookingRequest(Booking $booking) {
     $timestamp = gmdate('Ymd\THis+01');
-    $uid  = $timestamp . "-" . $booking->getUser()->getMail();
-    $prodId = "-//KOBA//NONSGML v1.0//EN";
+    $uid  = $timestamp . '-' . $booking->getUser()->getMail();
+    $prodId = '-//KOBA//NONSGML v1.0//EN';
 
     // vCard.
     $message =
@@ -168,7 +168,7 @@ class ExchangeService {
       END:VCALENDAR\r\n";
 
     // Send the e-mail.
-    $success = mail($booking->getResource()->getMail(), $booking->getSubject(), $message, $this->ewsHeaders, "-f " . $booking->getUser()->getMail());
+    $success = mail($booking->getResource()->getMail(), $booking->getSubject(), $message, $this->ewsHeaders, '-f ' . $booking->getUser()->getMail());
 
     if (!$success) {
       $booking->setStatusMessage('Mail not received by resource');
@@ -177,13 +177,13 @@ class ExchangeService {
       $this->em->flush();
 
       // TODO: Fix this!
-      return null;
-      //return $this->helperService->generateResponse(503, null, array('message' => 'Booking request was not delivered to resource, try again'));
+      return NULL;
+      //return $this->helperService->generateResponse(503, NULL, array('message' => 'Booking request was not delivered to resource, try again'));
     }
     else {
 
       // TODO: Fix this!
-      return null;
+      return NULL;
       //return $this->helperService->generateResponse(200, $booking);
     }
   }
@@ -198,25 +198,25 @@ class ExchangeService {
    */
   public function sendBookingTest() {
     $resource = new Resource();
-    $resource->setName("res 1");
-    $resource->setMail("test_loc@test.test");
+    $resource->setName('res 1');
+    $resource->setMail('test_loc@test.test');
     $resource->setExpire(10000000);
-    $resource->setMailbox("bla");
-    $resource->setRouting("blip");
+    $resource->setMailbox('bla');
+    $resource->setRouting('blip');
     $this->em->persist($resource);
 
     $user = new User();
     $user->setStatus(true);
-    $user->setMail("test@test.test");
-    $user->setName("Test testesen");
-    $user->setUniqueId("123");
+    $user->setMail('test@test.test');
+    $user->setName('Test testesen');
+    $user->setUniqueId('123');
     $this->em->persist($user);
 
     $booking = new Booking();
-    $booking->setStartDateTime(new \DateTime("@1421749680"));
-    $booking->setEndDateTime(  new \DateTime("@1421749880"));
-    $booking->setDescription("fisk");
-    $booking->setSubject("faks");
+    $booking->setStartDateTime(new \DateTime('@1421749680'));
+    $booking->setEndDateTime(  new \DateTime('@1421749880'));
+    $booking->setDescription('fisk');
+    $booking->setSubject('faks');
     $booking->setUser($user);
     $booking->setResource($resource);
     $this->em->persist($booking);

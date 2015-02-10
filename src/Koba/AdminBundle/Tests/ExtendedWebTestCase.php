@@ -52,7 +52,7 @@ class ExtendedWebTestCase extends WebTestCase {
 
     // Dispatch the login event
     $event = new InteractiveLoginEvent(new Request(), $token);
-    $container->get("event_dispatcher")->dispatch("security.interactive_login", $event);
+    $container->get('event_dispatcher')->dispatch('security.interactive_login', $event);
   }
 
   /**
@@ -114,16 +114,16 @@ class ExtendedWebTestCase extends WebTestCase {
    */
   protected function setupData($em) {
     $user1 = new User();
-    $user1->setUniqueId("user1");
-    $user1->setName("Name 1");
-    $user1->setMail("test1@test.test");
+    $user1->setUniqueId('user1');
+    $user1->setName('Name 1');
+    $user1->setMail('test1@test.test');
     $user1->setStatus(TRUE);
     $em->persist($user1);
 
     $user2 = new User();
-    $user2->setUniqueId("user2");
-    $user2->setName("Name 2");
-    $user2->setMail("test2@test.test");
+    $user2->setUniqueId('user2');
+    $user2->setName('Name 2');
+    $user2->setMail('test2@test.test');
     $user2->setStatus(TRUE);
     $em->persist($user2);
 
@@ -151,16 +151,16 @@ class ExtendedWebTestCase extends WebTestCase {
 
     $roleAdmin = new Role();
     $roleAdmin->setTitle('ROLE_ADMIN');
-    $roleAdmin->setDescription("bla bla bla");
+    $roleAdmin->setDescription('bla bla bla');
     $em->persist($roleAdmin);
 
     $user1->addRole($roleAdmin);
 
     $resource1 = new Resource();
-    $resource1->setName("Rum 1");
-    $resource1->setMail("test1@test.test");
-    $resource1->setRouting("SMTP");
-    $resource1->setMailbox("PublicDL");
+    $resource1->setName('Rum 1');
+    $resource1->setMail('test1@test.test');
+    $resource1->setRouting('SMTP');
+    $resource1->setMailbox('PublicDL');
     $resource1->setExpire(1000000);
     $resource1->addRole($role1);
     $resource1->addRole($role2);
@@ -169,10 +169,10 @@ class ExtendedWebTestCase extends WebTestCase {
     $em->persist($resource1);
 
     $resource2 = new Resource();
-    $resource2->setName("Rum 2");
-    $resource2->setMail("test2@test.test");
-    $resource2->setRouting("SMTP");
-    $resource2->setMailbox("PublicDL");
+    $resource2->setName('Rum 2');
+    $resource2->setMail('test2@test.test');
+    $resource2->setRouting('SMTP');
+    $resource2->setMailbox('PublicDL');
     $resource2->setExpire(1000000);
     $em->persist($resource2);
 

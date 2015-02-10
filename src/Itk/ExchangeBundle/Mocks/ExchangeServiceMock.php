@@ -38,7 +38,7 @@ class ExchangeServiceMock extends ExchangeService {
     // manager?
     $this->container = $container;
 
-    // @TODO: Inject "EntityManager $em" -> "@doctrine.orm.entity_manager" so
+    // @TODO: Inject 'EntityManager $em' -> '@doctrine.orm.entity_manager' so
     // it's not dependent on doctrine inside the service.
     $this->doctrine = $this->container->get('doctrine');
     $this->em = $this->doctrine->getManager();
@@ -65,7 +65,7 @@ class ExchangeServiceMock extends ExchangeService {
   /**
    * Mock of sendBookingRequest
    *
-   * @todo: What is this "subject" about?
+   * @todo: What is this 'subject' about?
    * subject = 'success'
    * subject = 'error_mail_not_received'
    *
@@ -78,14 +78,14 @@ class ExchangeServiceMock extends ExchangeService {
     if ($booking->getSubject() === 'success') {
       $booking->setStatusMessage('Mail sent');
       $booking->setCompleted(true);
-      $booking->setEid("123123");
+      $booking->setEid('123123');
       $this->em->flush();
       return $this->helperService->generateResponse(201, $booking);
     }
     else if ($booking->getSubject() === 'error_mail_not_received') {
       $booking->setStatusMessage('Mail not received by resource');
       $this->em->flush();
-      return $this->helperService->generateResponse(503, null, array('message' => 'Booking request was not delivered to resource, try again'));
+      return $this->helperService->generateResponse(503, NULL, array('message' => 'Booking request was not delivered to resource, try again'));
     }
   }
 }
