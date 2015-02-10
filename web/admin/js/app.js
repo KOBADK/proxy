@@ -1,7 +1,7 @@
 /**
-* @file
-* Defines the Angular JS application the run the administration frontend.
-*/
+ * @file
+ * Defines the Angular JS application the run the administration frontend.
+ */
 
 // Define the angular application.
 var app = angular.module('SearchNodeApp', [ 'ngRoute', 'ngOverlay', 'appMessage' ]);
@@ -11,7 +11,7 @@ var app = angular.module('SearchNodeApp', [ 'ngRoute', 'ngOverlay', 'appMessage'
  */
 app.factory('authInterceptor', ['$rootScope', '$q', '$window', '$location',
   function ($rootScope, $q, $window, $location) {
-    "use strict";
+    'use strict';
 
     return {
       request: function (config) {
@@ -37,11 +37,11 @@ app.factory('authInterceptor', ['$rootScope', '$q', '$window', '$location',
  */
 app.config(['$routeProvider', '$locationProvider', '$httpProvider',
   function ($routeProvider, $locationProvider, $httpProvider) {
-    "use strict";
+    'use strict';
 
     $routeProvider
       .when('/', {
-       templateUrl: 'views/login.html',
+        templateUrl: 'views/login.html',
         controller: 'LoginController'
       })
       .when('/users', {
@@ -59,5 +59,5 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider',
 
 
     $httpProvider.interceptors.push('authInterceptor');
-	}
+  }
 ]);
