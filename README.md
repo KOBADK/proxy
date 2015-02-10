@@ -43,3 +43,7 @@ Run the following within the vagrant:
 <pre>
 ssh -D 8080 -f -C -q -N deploy@namor.aakb.dk
 </pre>
+
+Scrutinizer: 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/KOBADK/backend/badges/quality-score.png?b=development)](https://scrutinizer-ci.com/g/KOBADK/backend/?branch=development)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/KOBADK/backend/badges/build.png?b=development)](https://scrutinizer-ci.com/g/KOBADK/backend/?branch=development)
