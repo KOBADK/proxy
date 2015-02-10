@@ -144,7 +144,7 @@ class Booking {
   /**
    * Set user
    *
-   * @param \Koba\MainBundle\Entity\User $user
+   * @param null|\Koba\MainBundle\Entity\User $user
    *
    * @return Booking
    */
@@ -157,7 +157,7 @@ class Booking {
   /**
    * Get user
    *
-   * @return \Koba\MainBundle\Entity\User
+   * @return \Koba\MainBundle\Entity\User|null
    */
   public function getUser() {
     return $this->user;
@@ -327,7 +327,7 @@ class Booking {
   /**
    * Set resource
    *
-   * @param \Koba\MainBundle\Entity\Resource $resource
+   * @param null|\Koba\MainBundle\Entity\Resource $resource
    *
    * @return Booking
    */
@@ -340,7 +340,7 @@ class Booking {
   /**
    * Get resource
    *
-   * @return \Koba\MainBundle\Entity\Resource
+   * @return \Koba\MainBundle\Entity\Resource|null
    */
   public function getResource() {
     return $this->resource;

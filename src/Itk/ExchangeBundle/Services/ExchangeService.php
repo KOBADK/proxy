@@ -42,7 +42,7 @@ class ExchangeService {
    * @param Container $container
    *   @TODO Missing description?
    */
-  function __construct(Container $container) {
+  public function __construct(Container $container) {
     // @todo: The service is only dependent on the container to get the entity
     // manager and parameters?
     $this->container = $container;
