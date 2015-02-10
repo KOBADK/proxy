@@ -116,6 +116,8 @@ class ResourcesController extends FOSRestController {
    *
    * @return View|\Symfony\Component\HttpFoundation\Response
    *   Response object.
+   *
+   * @TODO: Implement this!
    */
   public function postResource(Request $request) {
     $resourceService = $this->get('koba.resource_service');
@@ -129,7 +131,7 @@ class ResourcesController extends FOSRestController {
       return $this->handleView($view);
     }
 
-    // @TODO: Implement this!
+    $resourceService->createResource($resource);
 
     $view = $this->view('not implemented', 500);
     return $this->handleView($view);
@@ -164,7 +166,11 @@ class ResourcesController extends FOSRestController {
    * @TODO: Implement this!
    */
   public function deleteResource($id) {
-    $view = $this->view('not implemented', 500);
+    $resourceService = $this->get('koba.resource_service');
+
+    $resourceService->deleteResource($id);
+
+    $view = $this->view(NULL, 204);
     return $this->handleView($view);
   }
 }

@@ -71,6 +71,8 @@ class ResourceService {
    *
    * @return boolean
    *   Success.
+   *
+   * @TODO: Implement this!
    */
   public function createResource(Resource $resource) {
     throw new NotImplementedException('not implemented');
@@ -82,7 +84,6 @@ class ResourceService {
     }
 
     if ($this->resourceRepository->findOneByMail($resource->getMail())) {
-      // @TODO: Throw meaningfull exception.
       //return $this->helperService->generateResponse(409, null, array('message' => 'resource already exists'));
     }
 
@@ -91,4 +92,17 @@ class ResourceService {
     return $result;
     */
   }
+
+  /**
+   * Delete resource with id.
+   *
+   * @param integer $id
+   *   Id of the resource to delete.
+   *
+   * @TODO: Implement this!
+   */
+  public function deleteResource($id) {
+    throw new NotImplementedException('not implemented');
+  }
+
 }
