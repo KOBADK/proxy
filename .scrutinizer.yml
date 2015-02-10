@@ -30,11 +30,12 @@ tools:
             latedef: true
             newcap: true
             noarg: true
-            quotmark: single
+            quotmark: true
             undef: true
             unused: true
             strict: true
             trailing: true
+            shadow: true
             smarttabs: true
             multistr: true
             globals:
