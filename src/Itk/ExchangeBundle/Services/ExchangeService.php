@@ -21,6 +21,7 @@ use PhpEws\EWSType\CalendarViewType;
 use PhpEws\EWSType\NonEmptyArrayOfBaseFolderIdsType;
 use PhpEws\EWSType\DistinguishedFolderIdType;
 use PhpEws\EWSType\DistinguishedFolderIdNameType;
+use Symfony\Component\Intl\Exception\NotImplementedException;
 
 /**
  * Class ExchangeService
@@ -28,77 +29,80 @@ use PhpEws\EWSType\DistinguishedFolderIdNameType;
  * @package Itk\ApiBundle\Services
  */
 class ExchangeService {
-  protected $container;
-  protected $doctrine;
-  protected $em;
-  protected $ewsHeaders;
+  const EWS_HEADERS = "Content-Type:text/calendar; charset=utf-8; method=REQUEST\r\nContent-Type: text/plain; charset=\"utf-8\" \r\n";
+
   protected $ews;
   protected $bookingMail;
   protected $bookingUser;
 
   /**
    * Constructor
-   *
-   * @param Container $container
-   *   @TODO Missing description?
    */
-  public function __construct(Container $container) {
-    // @todo: The service is only dependent on the container to get the entity
-    // manager and parameters?
-    $this->container = $container;
+  public function __construct() {
 
-    // @TODO: Inject 'EntityManager $em' -> '@doctrine.orm.entity_manager' so
-    // it's not dependent on doctrine inside the service.
-    $this->doctrine = $this->container->get('doctrine');
-    $this->em = $this->doctrine->getManager();
+  }
 
-    $this->ewsHeaders = "Content-Type:text/calendar; charset=utf-8; method=REQUEST\r\n";
-    $this->ewsHeaders .= "Content-Type: text/plain; charset=\"utf-8\" \r\n";
-
-    // @TODO: Parameters could be injects into the service via constructor or
-    // setters? So names would not be hardcoded inside the service?
+  /**
+   * Initialise ExchangeWebservice.
+   *
+   * @param string $host
+   *   Hostname of Exchange web service.
+   * @param string $username
+   *   Username.
+   * @param $password
+   *   Password.
+   */
+  public function initExchangeWebservice($host, $username, $password) {
     $this->ews = new ExchangeWebServices(
-      $this->container->getParameter('ews_host'),
-      $this->container->getParameter('ews_user'),
-      $this->container->getParameter('ews_password'),
+      $host,
+      $username,
+      $password,
       ExchangeWebServices::VERSION_2010
     );
-
-    $this->bookingMail = $this->container->getParameter('ews_booking_mail');
-    $this->bookingUser = $this->container->getParameter('ews_booking_user');
   }
 
   /**
-   * Get a resource from exchange
+   * Set the exchange user.
    *
-   * @param string $mail the mail that identifies the resource in Exchange
-   *   @TODO Missing description?
+   * @param $name
+   *   Name of the user.
+   * @param $mail
+   *   Mail for the user.
+   */
+  public function setExchangeUser($name, $mail) {
+    $this->bookingUser = $name;
+    $this->bookingMail = $mail;
+  }
+
+  /**
+   * Get a resource from exchange and update the local resource information.
    *
-   * @return array
-   *   @TODO Missing description?
+   * @param string $mail
+   *   The mail that identifies the resource in Exchange
+   *
+   * @TODO: Implement this.
    */
   public function getResource($mail) {
-    // @TODO: Mail parameter is not used?
-
-    // TODO: fix this!
-    return NULL;
-    //return $this->helperService->generateResponse(500, NULL, array('message' => 'not implemented'));
+    throw new NotImplementedException('not implemented');
   }
 
   /**
-   * @TODO Missing function description?
+   * Get events for a resource.
    *
    * @param $resourceMail
-   *   @TODO Missing description?
-   * @param $startDate
-   *   @TODO Missing description?
-   * @param $endDate
-   *   @TODO Missing description?
+   *   Mail identifying the resource.
    *
-   * @return array
-   *   @TODO Missing description?
+   * @param $startDate
+   *   Start date to get events from.
+   * @param $endDate
+   *   End date to get events from.
+   *
+   * @returns array
+   *   Array of events.
+   *
+   * @TODO: Implement and test this!
    */
-  public function listAction($resourceMail, $startDate, $endDate) {
+  public function listEventsForResource($resourceMail, $startDate, $endDate) {
     // Configure impersonation
     $ei = new ExchangeImpersonationType();
     $sid = new ConnectingSIDType();
@@ -121,15 +125,11 @@ class ExchangeService {
     if ($response->ResponseMessages->FindItemResponseMessage->ResponseCode == 'NoError') {
       // Verify items.
       if ($response->ResponseMessages->FindItemResponseMessage->RootFolder->TotalItemsInView > 0) {
-        //TODO: Fix this!
         return NULL;
-        //return $this->helperService->generateResponse(200, $response->ResponseMessages->FindItemResponseMessage->RootFolder->Items->CalendarItem);
       }
     }
 
-    // @TODO: Render not defined, if template need it should be inject into the
-    // service ('@templating' -> EngineInterface $templating).
-    return $this->render('ItkKobaBundle:Default:index.html.twig');
+    return NULL;
   }
 
   /**
@@ -142,8 +142,12 @@ class ExchangeService {
    *
    * @param Booking $booking
    *   The booking to attempt to make
-   * @return array
-   *   @TODO Missing description?
+   *
+   * @returns boolean
+   *   Success?
+   *
+   * @TODO: What to do when the mail has been sent? Emit an event?
+   * @TODO: Unified way of handling date formats.
    */
   public function sendBookingRequest(Booking $booking) {
     $timestamp = gmdate('Ymd\THis+01');
@@ -168,61 +172,14 @@ class ExchangeService {
       END:VCALENDAR\r\n";
 
     // Send the e-mail.
-    $success = mail($booking->getResource()->getMail(), $booking->getSubject(), $message, $this->ewsHeaders, '-f ' . $booking->getUser()->getMail());
+    $success = mail(
+      $booking->getResource()->getMail(),
+      $booking->getSubject(),
+      $message,
+      self::EWS_HEADERS,
+      '-f ' . $booking->getUser()->getMail()
+    );
 
-    if (!$success) {
-      $booking->setStatusMessage('Mail not received by resource');
-
-      // @TODO: Is is this function role to ensure that the entity is flushed?
-      $this->em->flush();
-
-      // TODO: Fix this!
-      return NULL;
-      //return $this->helperService->generateResponse(503, NULL, array('message' => 'Booking request was not delivered to resource, try again'));
-    }
-    else {
-
-      // TODO: Fix this!
-      return NULL;
-      //return $this->helperService->generateResponse(200, $booking);
-    }
-  }
-
-  /**
-   * @TODO Missing funciton description? Is this a test function and should it
-   * be located in the test cases?
-   *
-   * @TODO: Remove this!
-   *
-   * @return mixed
-   */
-  public function sendBookingTest() {
-    $resource = new Resource();
-    $resource->setName('res 1');
-    $resource->setMail('test_loc@test.test');
-    $resource->setExpire(10000000);
-    $resource->setMailbox('bla');
-    $resource->setRouting('blip');
-    $this->em->persist($resource);
-
-    $user = new User();
-    $user->setStatus(TRUE);
-    $user->setMail('test@test.test');
-    $user->setName('Test testesen');
-    $user->setUniqueId('123');
-    $this->em->persist($user);
-
-    $booking = new Booking();
-    $booking->setStartDateTime(new \DateTime('@1421749680'));
-    $booking->setEndDateTime(  new \DateTime('@1421749880'));
-    $booking->setDescription('fisk');
-    $booking->setSubject('faks');
-    $booking->setUser($user);
-    $booking->setResource($resource);
-    $this->em->persist($booking);
-
-    $this->em->flush();
-
-    return $this->sendBookingRequestEmail($booking);
+    return $success;
   }
 }

@@ -131,3 +131,10 @@ itk_wayf:
         organizationUrl: 'http://koba2.vm'
         contactName: 'Admin'
         contactMail: 'design@mkb.aarhus.dk'
+
+itk_exchange:
+    ws_host: %itk_exchange_ws_host%
+    ws_user: %itk_exchange_ws_user%
+    ws_password: %itk_exchange_ws_password%
+    user_mail: %itk_exchange_user_mail%
+    user_name: %itk_exchange_user_name%
