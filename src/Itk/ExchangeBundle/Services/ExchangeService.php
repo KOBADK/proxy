@@ -81,8 +81,8 @@ class ExchangeService {
     // @TODO: Mail parameter is not used?
 
     // TODO: fix this!
-    return null;
-    //return $this->helperService->generateResponse(500, null, array('message' => 'not implemented'));
+    return NULL;
+    //return $this->helperService->generateResponse(500, NULL, array('message' => 'not implemented'));
   }
 
   /**
@@ -122,7 +122,7 @@ class ExchangeService {
       // Verify items.
       if ($response->ResponseMessages->FindItemResponseMessage->RootFolder->TotalItemsInView > 0) {
         //TODO: Fix this!
-        return null;
+        return NULL;
         //return $this->helperService->generateResponse(200, $response->ResponseMessages->FindItemResponseMessage->RootFolder->Items->CalendarItem);
       }
     }
@@ -162,7 +162,7 @@ class ExchangeService {
       DTSTART:" . $booking->getStartDatetimeForVcard() . "\r\n
       DTEND:" . $booking->getEndDatetimeForVcard() . "r\n
       SUMMARY:" . $booking->getSubject() . "\r\n
-      ORGANIZER;CN=" . $this->bookingUser . ":mailto:" . $this->bookingMail . "\r\n
+      ORGANIZER;CN=" . $this->bookingUser . ':mailto:' . $this->bookingMail . "\r\n
       DESCRIPTION:" . $booking->getDescription() . "\r\n
       END:VEVENT\r\n
       END:VCALENDAR\r\n";
