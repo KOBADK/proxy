@@ -14,14 +14,8 @@ parameters:
     locale:            en
     secret:            ThisTokenIsNotSoSecretChangeIt
 
-    wayf_idp_certificate: file
-    wayf_sso:
-    wayf_private_key: file
-    wayf_asc:
-    wayf_entityid:
-
-    ews_host:
-    ews_user:
-    ews_password:
-    ews_booking_mail:
-    ews_booking_user:
+    itk_exchange_ws_host: exchange.koba2.vm
+    itk_exchange_ws_user: user
+    itk_exchange_ws_password: pass
+    itk_exchange_user_mail: mail@koba2.vm
+    itk_exchange_user_name: Koba

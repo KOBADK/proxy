@@ -7,7 +7,7 @@
  * Data service service.
  */
 app.factory('dataService', ['$http', '$q', function($http, $q) {
-  "use strict";
+  'use strict';
 
   /**
    * Fetch content from the backend service.
@@ -75,7 +75,7 @@ app.factory('dataService', ['$http', '$q', function($http, $q) {
    * Public functions exposed by this factory.
    */
   return {
-    "fetch": fetch,
-    "send": send
+    'fetch': fetch,
+    'send': send
   };
 }]);

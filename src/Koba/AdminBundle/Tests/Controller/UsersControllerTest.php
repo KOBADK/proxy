@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Contains test for Users controller for /admin.
+ */
 
 namespace Koba\AdminBundle\Tests\Controller;
 

@@ -27,7 +27,7 @@
            *
            * @param opts
            */
-          "open": function open(opts) {
+          'open': function open(opts) {
             var self = this;
 
             // Extend default options with the once passed to open.
@@ -66,7 +66,7 @@
                 $dialogParent.append($dialog);
 
                 // Let bootstrap take over.
-                var el = $("#myModal");
+                var el = $('#myModal');
                 el.modal('show');
 
                 // Ensures that the modal code is removed on close. This will also
@@ -115,7 +115,7 @@
            * Close function to close the open modal window.
            */
           "close": function close() {
-            $("#myModal").modal('hide');
+            $('#myModal').modal('hide');
           }
         };
       }

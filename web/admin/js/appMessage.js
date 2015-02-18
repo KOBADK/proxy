@@ -19,7 +19,7 @@
            * @param message
            *   The message to display.
            */
-          "display": function display(message) {
+          'display': function display(message) {
             // Create new scope and add message to it.
             var scope = $rootScope.$new();
             scope.message = message;
@@ -36,7 +36,7 @@
           /**
            * Close function to close the open modal window.
            */
-          "close": function close() {
+          'close': function close() {
             if (overlay) {
               overlay.close();
             }

@@ -8,7 +8,7 @@
  */
 app.controller('MainController', ['$scope', '$route', '$routeParams', '$location',
   function($scope, $route, $routeParams, $location) {
-    "use strict";
+    'use strict';
 
   }
 ]);
@@ -18,7 +18,7 @@ app.controller('MainController', ['$scope', '$route', '$routeParams', '$location
  */
 app.controller('LoginController', ['$scope', '$http', '$window', '$location',
   function($scope, $http, $window, $location) {
-    "use strict";
+    'use strict';
 
     $scope.login = function login() {
       $http.post('/login', $scope.user)
@@ -45,7 +45,7 @@ app.controller('LoginController', ['$scope', '$http', '$window', '$location',
  */
 app.controller('LogoutController', ['$scope', '$window',
   function($scope, $window) {
-    "use strict";
+    'use strict';
 
     // Remove the token from login.
     delete $window.sessionStorage.token;
@@ -58,7 +58,7 @@ app.controller('LogoutController', ['$scope', '$window',
  */
 app.controller('NavigationController', ['$scope', '$location',
   function($scope, $location) {
-    "use strict";
+    'use strict';
 
     $scope.isActive = function (viewLocation) {
       return viewLocation === $location.path();
@@ -71,7 +71,7 @@ app.controller('NavigationController', ['$scope', '$location',
  */
 app.controller('UsersController', ['$scope', '$window', '$location', 'ngOverlay', 'dataService',
   function($scope, $window, $location, ngOverlay, dataService) {
-    "use strict";
+    'use strict';
 
     // Check that the user is logged in.
     if (!$window.sessionStorage.token) {
@@ -164,7 +164,7 @@ app.controller('UsersController', ['$scope', '$window', '$location', 'ngOverlay'
 
               // Open the overlay.
               var overlay = ngOverlay.open({
-                template: "views/userEdit.html",
+                template: 'views/userEdit.html',
                 scope: scope
               });
             },
@@ -193,7 +193,7 @@ app.controller('UsersController', ['$scope', '$window', '$location', 'ngOverlay'
  */
 app.controller('RolesController', ['$scope', '$window', '$location', 'ngOverlay', 'dataService',
   function($scope, $window, $location, ngOverlay, dataService) {
-    "use strict";
+    'use strict';
 
     // Check that the user is logged in.
     if (!$window.sessionStorage.token) {
@@ -251,7 +251,7 @@ app.controller('RolesController', ['$scope', '$window', '$location', 'ngOverlay'
 
           // Open the overlay.
           var overlay = ngOverlay.open({
-            template: "views/roleEdit.html",
+            template: 'views/roleEdit.html',
             scope: scope
           });
         },

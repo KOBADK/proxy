@@ -1,8 +1,0 @@
-parameters:
-
-services:
-  ## @TODO: Fix this!
-#  koba.exchange_service:
-#    class: Itk\ExchangeBundle\Mocks\ExchangeServiceMock
-#    arguments: [@service_container, @koba.helper_service]
-

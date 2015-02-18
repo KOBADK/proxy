@@ -37,9 +37,9 @@ class BookingsController extends FOSRestController {
    *   Response object.
    */
   public function getBookings() {
-    $bookingsService = $this->get('koba.bookings_service');
+    $bookingService = $this->get('koba.booking_service');
 
-    $bookings = $bookingsService->getAllBookings();
+    $bookings = $bookingService->getAllBookings();
 
     $view = $this->view($bookings, 200);
     return $this->handleView($view);
@@ -68,9 +68,9 @@ class BookingsController extends FOSRestController {
    *   Response object.
    */
   public function getBooking($id) {
-    $bookingsService = $this->get('koba.bookings_service');
+    $bookingService = $this->get('koba.booking_service');
 
-    $booking = $bookingsService->getBooking($id);
+    $booking = $bookingService->getBooking($id);
 
     $view = $this->view($booking, 200);
     return $this->handleView($view);

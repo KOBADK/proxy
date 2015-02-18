@@ -44,11 +44,11 @@ class ResourcesController extends FOSRestController {
   public function getResources() {
     $resourceService = $this->get('koba.resource_service');
 
-    $result = $resourceService->getAllResources();
+    $resources = $resourceService->getAllResources();
 
     $context = new SerializationContext();
     $context->setGroups(array('resource'));
-    $view = $this->view($result['data'], $result['status']);
+    $view = $this->view($resources, 200);
     $view->setSerializationContext($context);
     return $this->handleView($view);
   }
@@ -81,11 +81,11 @@ class ResourcesController extends FOSRestController {
   public function getResource($id) {
     $resourceService = $this->get('koba.resource_service');
 
-    $result = $resourceService->getResource($id);
+    $resource = $resourceService->getResource($id);
 
     $context = new SerializationContext();
     $context->setGroups(array('resource'));
-    $view = $this->view($result['data'], $result['status']);
+    $view = $this->view($resource, 200);
     $view->setSerializationContext($context);
     return $this->handleView($view);
   }

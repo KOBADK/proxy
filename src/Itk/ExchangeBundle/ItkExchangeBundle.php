@@ -13,4 +13,5 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  * @package Itk\ExchangeBundle
  */
 class ItkExchangeBundle extends Bundle {
+
 }

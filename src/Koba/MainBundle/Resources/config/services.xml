@@ -24,7 +24,7 @@
     </service>
     <service id="koba.group_service" class="Koba\MainBundle\Services\GroupService">
       <argument type="service" id="koba.group_repository"></argument>
-      <argument type="service" id="itk.exchange_service"></argument>
+      <argument type="service" id="koba.user_repository"></argument>
     </service>
     <service id="koba.resource_service" class="Koba\MainBundle\Services\ResourceService">
       <argument type="service" id="koba.resource_repository"></argument>
@@ -37,6 +37,7 @@
 
     <!-- Event listeners -->
     <service id="kernel.listener.koba_exception" class="Koba\MainBundle\EventListeners\KobaExceptionListener">
+      <argument type="service" id="kernel" />
       <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException"></tag>
     </service>
   </services>

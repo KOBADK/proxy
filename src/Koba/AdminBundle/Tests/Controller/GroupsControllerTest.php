@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Contains test for Groups controller for /admin.
+ */
 
 namespace Koba\AdminBundle\Tests\Controller;
 

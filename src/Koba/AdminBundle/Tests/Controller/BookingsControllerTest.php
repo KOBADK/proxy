@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Contains test for Bookings controller for /admin.
+ */
 
 namespace Koba\AdminBundle\Tests\Controller;
 

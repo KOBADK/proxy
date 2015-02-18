@@ -30,7 +30,7 @@ class ResourceService {
    * @param ExchangeService $exchangeService
    *   The exchange service.
    */
-  function __construct(ResourceRepository $resourceRepository, ExchangeService $exchangeService) {
+  public function __construct(ResourceRepository $resourceRepository, ExchangeService $exchangeService) {
     $this->resourceRepository = $resourceRepository;
     $this->exchangeService = $exchangeService;
   }
