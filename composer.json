@@ -31,7 +31,8 @@
     "hautelook/templated-uri-bundle": "~2.0",
     "willdurand/rest-extra-bundle": "~1.0",
     "jamesiarmes/php-ews": "dev-master",
-    "incenteev/composer-parameter-handler": "~2.0"
+    "incenteev/composer-parameter-handler": "~2.0",
+    "bomo/ical-bundle": "~1.0"
   },
   "conflict": {
     "symfony/routing": "2.4.1"
