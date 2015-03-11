@@ -6,8 +6,8 @@
 /**
  * Main application controller.
  */
-app.controller('MainController', ['$scope', '$route', '$routeParams', '$location',
-  function($scope, $route, $routeParams, $location) {
+app.controller('MainController', [
+  function() {
     'use strict';
 
   }
@@ -22,13 +22,13 @@ app.controller('LoginController', ['$scope', '$http', '$window', '$location',
 
     $scope.login = function login() {
       $http.post('/login', $scope.user)
-        .success(function (data, status, headers, config) {
+        .success(function (data) {
           // Store token in session.
           $window.sessionStorage.token = data.token;
 
           $location.path('users');
         })
-        .error(function (data, status, headers, config) {
+        .error(function () {
           // Erase the token if the user fails to log in
           delete $window.sessionStorage.token;
 
@@ -83,7 +83,7 @@ app.controller('UsersController', ['$scope', '$window', '$location', 'ngOverlay'
      */
     function loadUsers() {
       // Get user/api key information form the backend.
-      dataService.fetch('get', '/api/users').then(
+      dataService.fetch('get', '/admin/users').then(
         function (data) {
           $scope.users = data;
         },
@@ -95,13 +95,13 @@ app.controller('UsersController', ['$scope', '$window', '$location', 'ngOverlay'
     }
 
     /**
-     * Load Roles.
+     * Load Groups
      */
-    function loadRoles() {
+    function loadGroups() {
       // Get user/api key information form the backend.
-      dataService.fetch('get', '/api/roles').then(
+      dataService.fetch('get', '/admin/groups').then(
         function (data) {
-          $scope.roles = data;
+          $scope.groups = data;
         },
         function (reason) {
           $scope.message = reason.message;
@@ -114,24 +114,24 @@ app.controller('UsersController', ['$scope', '$window', '$location', 'ngOverlay'
      * Edit User callback.
      */
     $scope.edit = function edit(id) {
-      dataService.fetch('get', '/api/users/' + id).then(
+      dataService.fetch('get', '/admin/users/' + id).then(
         function (data) {
           var scope = $scope.$new(true);
-          scope.roles = $scope.roles;
+          scope.groups = $scope.groups;
 
           // Set User information.
           scope.user = data;
 
-          // Get user roles.
-          dataService.fetch('get', '/api/users/' + scope.user.id + '/roles').then(
+          // Get user groups.
+          dataService.fetch('get', '/admin/users/' + scope.user.id + '/groups').then(
             function (data) {
-              scope.user.roles = data;
+              scope.user.groups = data;
 
               /**
                * Save User callback.
                */
               scope.save = function save() {
-                dataService.send('put', '/api/users/' + scope.user.id + '/status', { "status": scope.user.status }).then(
+                dataService.send('put', '/admin/users/' + scope.user.id + '/status', { "status": scope.user.status }).then(
                   function (data) {
                     $scope.message = data;
                     $scope.messageClass = 'alert-success';
@@ -150,21 +150,9 @@ app.controller('UsersController', ['$scope', '$window', '$location', 'ngOverlay'
                 );
               };
 
-              // helper method to get selected fruits
-              scope.selectedRoles = function selectedRoles() {
-                return filterFilter(scope.fruits, { selected: true });
-              };
-
-              // watch fruits for changes
-              $scope.$watch('fruits|filter:{selected:true}', function (nv) {
-                $scope.selection = nv.map(function (fruit) {
-                  return fruit.name;
-                });
-              }, true);
-
               // Open the overlay.
               var overlay = ngOverlay.open({
-                template: 'views/userEdit.html',
+                template: 'admin/views/userEdit.html',
                 scope: scope
               });
             },
@@ -183,15 +171,15 @@ app.controller('UsersController', ['$scope', '$window', '$location', 'ngOverlay'
 
     // Get the controller up and running.
     loadUsers();
-    loadRoles();
+    loadGroups();
   }
 ]);
 
 
 /**
- * Roles page.
+ * Groups page.
  */
-app.controller('RolesController', ['$scope', '$window', '$location', 'ngOverlay', 'dataService',
+app.controller('GroupsController', ['$scope', '$window', '$location', 'ngOverlay', 'dataService',
   function($scope, $window, $location, ngOverlay, dataService) {
     'use strict';
 
@@ -201,13 +189,13 @@ app.controller('RolesController', ['$scope', '$window', '$location', 'ngOverlay'
     }
 
     /**
-     * Load Roles.
+     * Load Groups.
      */
-    function loadRoles() {
+    function loadGroups() {
       // Get user/api key information form the backend.
-      dataService.fetch('get', '/api/roles').then(
+      dataService.fetch('get', '/admin/groups').then(
         function (data) {
-          $scope.roles = data;
+          $scope.groups = data;
         },
         function (reason) {
           $scope.message = reason.message;
@@ -217,27 +205,27 @@ app.controller('RolesController', ['$scope', '$window', '$location', 'ngOverlay'
     }
 
     /**
-     * Edit Role callback.
+     * Edit Group callback.
      */
     $scope.edit = function edit(id) {
-      dataService.fetch('get', '/api/roles/' + id).then(
+      dataService.fetch('get', '/admin/groups/' + id).then(
         function (data) {
           var scope = $scope.$new(true);
 
-          // Set User information.
-          scope.role = data;
+          // Set Group information.
+          scope.group = data;
 
           /**
-           * Save role callback.
+           * Save group callback.
            */
           scope.save = function save() {
-            dataService.send('put', '/api/roles/' + scope.role.id, scope.role).then(
+            dataService.send('put', '/admin/groups/' + scope.group.id, scope.group).then(
               function (data) {
                 $scope.message = data;
                 $scope.messageClass = 'alert-success';
 
                 // Reload API keys.
-                loadRoles();
+                loadGroups();
 
                 // Close overlay.
                 overlay.close();
@@ -251,7 +239,7 @@ app.controller('RolesController', ['$scope', '$window', '$location', 'ngOverlay'
 
           // Open the overlay.
           var overlay = ngOverlay.open({
-            template: 'views/roleEdit.html',
+            template: 'admin/views/groupEdit.html',
             scope: scope
           });
         },
@@ -263,6 +251,6 @@ app.controller('RolesController', ['$scope', '$window', '$location', 'ngOverlay'
     };
 
     // Get the controller up and running.
-    loadRoles();
+    loadGroups();
   }
 ]);

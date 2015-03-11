@@ -13,7 +13,7 @@
     // Default values.
     var defaults = this.defaults = {
       'templateUrl': 'overlay.html',
-      'cache': true,
+      'cache': true
     };
 
     this.$get = ['$document', '$templateCache', '$compile', '$q', '$http', '$rootScope', '$timeout', '$window', '$controller',

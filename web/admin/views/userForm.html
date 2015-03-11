@@ -33,13 +33,13 @@
 		</div>
 	</div>
 
-	<!-- Roles -->
+	<!-- Groups -->
 	<div class="form-group">
-		<label for="email">User Roles</label>
-		<div class="checkbox" data-ng-repeat="(key, role) in roles">
+		<label for="email">User Groups</label>
+		<div class="checkbox" data-ng-repeat="(key, group) in groups">
 			<label>
 				<input type="checkbox" value="" id="" ng-checked="false">
-				<strong>{{ role.title }}</strong> - {{ role.description }}
+				<strong>{{ group.title }}</strong> - {{ group.description }}
 			</label>
 		</div>
 	</div>
