@@ -2,9 +2,8 @@
 	<!-- Key -->
 	<fieldset disabled>
 		<div class="form-group">
-			<label for="index" class="control-label">ID</label>
-			<input type="text" class="form-control" id="index" placeholder="API Key" data-ng-model="user.uuid">
-			<span class="help-block">The UUID is automatically generated.</span>
+			<label for="index" class="control-label">Unique ID</label>
+			<input type="text" class="form-control" id="index" placeholder="Unique id" data-ng-model="user.unique_id">
 		</div>
 
 
@@ -38,7 +37,7 @@
 		<label for="email">User Groups</label>
 		<div class="checkbox" data-ng-repeat="(key, group) in groups">
 			<label>
-				<input type="checkbox" value="" id="" ng-checked="false">
+				<input type="checkbox" value="" id="" data-ng-checked="userInGroup(group)"">
 				<strong>{{ group.title }}</strong> - {{ group.description }}
 			</label>
 		</div>

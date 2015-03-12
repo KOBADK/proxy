@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains the booking repository.
+ * Contains the Apikey repository.
  */
 
 namespace Koba\MainBundle\Entity;
@@ -9,9 +9,9 @@ namespace Koba\MainBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * Class BookingRepository
+ * Class ApiKeyRepository
  * @package Koba\MainBundle\Entity
  */
-class BookingRepository extends EntityRepository {
+class ApiKeyRepository extends EntityRepository {
 
 }

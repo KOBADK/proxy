@@ -126,6 +126,47 @@ app.controller('UsersController', ['$scope', '$window', '$location', 'ngOverlay'
           dataService.fetch('get', '/admin/users/' + scope.user.id + '/groups').then(
             function (data) {
               scope.user.groups = data;
+              // The original groups. For comparison on save.
+              scope.user.originalGroupIds = [];
+              for (var i = 0; i < scope.user.groups.length; i++) {
+                scope.user.originalGroupIds.push(scope.user.groups[i].id);
+              }
+
+              /**
+               * Is the user in the group with id = groupId
+               *
+               * @param group
+               *   The group to check if the user is part of.
+               *
+               * @return boolean
+               *   Is the user in the group?
+               */
+              scope.userInGroup = function userInGroup(group) {
+                for (var i = 0; i < scope.user.groups.length; i++) {
+                  if (scope.user.groups[i].id === group.id) {
+                    return true;
+                  }
+                }
+                return false;
+              };
+
+              /**
+               * Add the user to a group.
+               * @param group
+               *   The group to add the user to.
+               */
+              scope.toggleGroup = function toggleGroup(group) {
+                dataService.send('post', '/admin/users/'+ scope.user.id + '/groups',  group);
+              };
+
+              /**
+               * Remove the user from a group.
+               * @param group
+               *   The group to remove the user from.
+               */
+              scope.removeUserFromGroup = function removeUserFromGroup(group) {
+                dataService.send('delete', '/admin/users/'+ scope.user.id + '/groups/' + group.id);
+              };
 
               /**
                * Save User callback.
@@ -135,6 +176,15 @@ app.controller('UsersController', ['$scope', '$window', '$location', 'ngOverlay'
                   function (data) {
                     $scope.message = data;
                     $scope.messageClass = 'alert-success';
+
+                    var groups = [];
+                    for (var i = 0; i < scope.user.groups; i++) {
+                      var id = scope.user.groups[i].id;
+                      groups.push(id);
+                      if (scope.user.originalGroupIds.indexOf(scope.user.groups[i].id)) {
+
+                      }
+                    }
 
                     // Reload API key list.
                     loadUsers();
