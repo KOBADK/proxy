@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains KobaAdminExtension.
+ * Contains KobaMainExtension.
  */
 
-namespace Koba\AdminBundle\DependencyInjection;
+namespace Koba\MainBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 /**
  * This is the class that loads and manages your bundle configuration.
  */
-class KobaAdminExtension extends Extension {
+class KobaMainExtension extends Extension {
   /**
    * {@inheritDoc}
    */
