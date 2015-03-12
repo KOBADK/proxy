@@ -18,17 +18,13 @@
 				<th>#</th>
      		<th>Name</th>
      		<th>Key</th>
-        <th>Expire</th>
-        <th>Indexes</th>
      		<th>Actions</th>
   		</tr>
   	</thead>
-    <tr data-ng-repeat="(key, info) in apikeys">
+    <tr data-ng-repeat="key in apikeys">
     	<td>{{ $index + 1 }}</td>
-    	<td>{{ info.name }}</td>
-    	<td>{{ key }}</td>
-      <td>{{ info.expire }}</td>
-      <td>{{ info.indexes.length }}</td>
+    	<td>{{ key.name }}</td>
+    	<td>{{ key.api_key }}</td>
       <td>
         <!-- Edit index -->
         <button type="button" class="btn btn-success btn-xs" data-ng-click="edit(key)">

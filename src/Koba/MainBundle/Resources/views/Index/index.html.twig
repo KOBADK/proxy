@@ -1,4 +1,4 @@
-<html>
+<html data-ng-app="KobaAdminApp">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -19,7 +19,8 @@
 
   <!-- Load bootstrap theme -->
   <link rel="stylesheet" href="{{ asset('admin/css/bootstrap.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('admin/css/bootstrap-theme.min.css') }}">
+  <link rel="stylesheet"
+        href="{{ asset('admin/css/bootstrap-theme.min.css') }}">
   <link rel="stylesheet" href="{{ asset('admin/css/font-awesome.min.css') }}">
 
   <script src="{{ asset('admin/js/lib/jquery-1.11.1.min.js') }}"></script>
@@ -28,10 +29,10 @@
   <!-- Local styles -->
   <link rel="stylesheet" href="{{ asset('admin/css/style.css') }}">
 </head>
-<body data-ng-app="SearchNodeApp">
+<body>
 <div class="container" data-ng-controller="MainController">
   <!-- Placeholder for the route templets -->
-  <div ng-view></div>
+  <div data-ng-view></div>
 </div>
 </body>
 </html>

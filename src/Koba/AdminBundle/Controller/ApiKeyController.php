@@ -64,8 +64,9 @@ class ApiKeyController extends Controller {
     // @TODO: Validate that parameters exist in body.
     $content = json_decode($request->getContent());
 
-    $postApiKey = $content->apikey;
+    $postApiKey = $content->api_key;
     $postConfiguration = $content->configuration;
+    $postName = $content->name;
 
     $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey($postApiKey);
 
@@ -77,6 +78,7 @@ class ApiKeyController extends Controller {
 
     $apiKey = new ApiKey();
     $apiKey->setApiKey($postApiKey);
+    $apiKey->setName($postName);
     $apiKey->setConfiguration($postConfiguration);
     $manager->persist($apiKey);
 
@@ -107,10 +109,12 @@ class ApiKeyController extends Controller {
     $content = json_decode($request->getContent());
 
     $postConfiguration = $content->configuration;
+    $postName = $content->name;
 
     $manager = $this->getDoctrine()->getEntityManager();
 
     $apiKeyEntity->setConfiguration($postConfiguration);
+    $apiKeyEntity->setName($postName);
 
     $manager->flush();
 
