@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * @TODO: Missing file description?
+ * Contains KobaApiExtension.
  */
 
 namespace Koba\ApiBundle\DependencyInjection;

@@ -1,0 +1,47 @@
+<!-- Navigation bar -->
+<ng-include src="'app/shared/navigation/navigation.html'"></ng-include>
+
+<!-- Header -->
+<div class="page-header">
+  <h1>API KEYS <small>access</small></h1>
+</div>
+
+<!-- messages -->
+<div data-ng-show="message" class="alert {{ messageClass }}" role="alert">{{ message }}</div>
+
+<!-- Page content -->
+<div class="jumbotron">
+	<div class="panel panel-default">
+  	<table class="table table-hover">
+  	<thead>
+			<tr>
+				<th>#</th>
+     		<th>Name</th>
+     		<th>Key</th>
+     		<th>Actions</th>
+  		</tr>
+  	</thead>
+    <tr data-ng-repeat="key in apikeys">
+    	<td>{{ $index + 1 }}</td>
+    	<td>{{ key.name }}</td>
+    	<td>{{ key.api_key }}</td>
+      <td>
+        <!-- Edit index -->
+        <button type="button" class="btn btn-success btn-xs" data-ng-click="edit(key.api_key)">
+          <span class="fa fa-wrench" aria-hidden="true"></span> Edit
+        </button>
+
+        <!-- Remove index -->
+        <button type="button" class="btn btn-danger btn-xs" data-ng-click="remove(key.api_key)">
+          <span class="fa fa-minus" aria-hidden="true"></span> Remove
+        </button>
+      </td>
+    </tr>
+  	</table>
+	</div>
+
+  <!-- Add new key -->
+  <button type="button" class="btn btn-info" data-ng-click="add()">
+    <span class="fa fa-plus" aria-hidden="true"></span> Add key
+  </button>
+</div>

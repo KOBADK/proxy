@@ -1,7 +1,7 @@
 # KOBA - Kalender og Booking API
 This project is based on Symfony Rest Edition.
 
-## Installation
+## Initial Installation
 <pre>
  $ composer install
  $ php app/console doctrine:database:create
@@ -21,17 +21,6 @@ The API accepts/returns json by default, but can also handle xml if the followin
 ?_format=xml
 </pre>
 
-## Testing
-To run symfony tests:
-<pre>
-$ php bin/phpunit -c app
-</pre>
-
-Documentation for testing in Symfony see:
-<pre>
-http://symfony.com/doc/current/book/testing.html
-</pre>
-
 ## Tunnel (only for testing!)
 Append following line to vendor/jameslarmes/PhpEws/NTLMSoapClient.php after line 84:
 <pre>
@@ -44,6 +33,6 @@ Run the following within the vagrant:
 ssh -D 8080 -f -C -q -N deploy@namor.aakb.dk
 </pre>
 
-Scrutinizer: 
+## Scrutinizer
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/KOBADK/backend/badges/quality-score.png?b=development)](https://scrutinizer-ci.com/g/KOBADK/backend/?branch=development)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/KOBADK/backend/badges/build.png?b=development)](https://scrutinizer-ci.com/g/KOBADK/backend/?branch=development)

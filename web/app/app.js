@@ -4,12 +4,12 @@
  */
 
 // Define the angular application.
-var app = angular.module('SearchNodeApp', [ 'ngRoute', 'ngOverlay', 'appMessage' ]);
+var app = angular.module('KobaAdminApp', [ 'ngRoute', 'ngOverlay', 'appMessage' ]);
 
 /**
  * Add authentication header to all AJAX requests.
  */
-app.factory('authInterceptor', ['$rootScope', '$q', '$window', '$location',
+angular.module('KobaAdminApp').factory('authInterceptor', ['$rootScope', '$q', '$window', '$location',
   function ($rootScope, $q, $window, $location) {
     'use strict';
 
@@ -35,28 +35,23 @@ app.factory('authInterceptor', ['$rootScope', '$q', '$window', '$location',
 /**
  * Configure routes and add auth interceptor.
  */
-app.config(['$routeProvider', '$locationProvider', '$httpProvider',
+angular.module('KobaAdminApp').config(['$routeProvider', '$locationProvider', '$httpProvider',
   function ($routeProvider, $locationProvider, $httpProvider) {
     'use strict';
 
     $routeProvider
       .when('/', {
-        templateUrl: 'admin/views/login.html',
+        templateUrl: 'app/pages/login/login.html',
         controller: 'LoginController'
       })
-      .when('/users', {
-        templateUrl: 'admin/views/users.html',
-        controller: 'UsersController'
-      })
-      .when('/groups', {
-        templateUrl: 'admin/views/groups.html',
-        controller: 'GroupsController'
+      .when('/apikeys', {
+        templateUrl: 'app/pages/apiKey/apikeys.html',
+        controller: 'ApiKeyController'
       })
       .when('/logout', {
-        templateUrl: 'admin/views/logout.html',
+        templateUrl: 'app/pages/logout/logout.html',
         controller: 'LogoutController'
       });
-
 
     $httpProvider.interceptors.push('authInterceptor');
   }

@@ -20,13 +20,18 @@ class ApiKey {
   /**
    * ApiKey
    *
-   * @ORM\Column(type="string")
+   * @ORM\Column(type="string", nullable=false)
    * @ORM\Id
    */
   protected $apiKey;
 
   /**
-   * @ORM\Column(type="json_array")
+   * @ORM\Column(type="string", nullable=false)
+   */
+  protected $name;
+
+  /**
+   * @ORM\Column(type="json_array", nullable=false)
    */
   protected $configuration;
 
@@ -49,6 +54,27 @@ class ApiKey {
    */
   public function getApiKey() {
     return $this->apiKey;
+  }
+
+  /**
+   * Set name
+   *
+   * @param string $name
+   * @return ApiKey
+   */
+  public function setName($name) {
+    $this->name = $name;
+
+    return $this;
+  }
+
+  /**
+   * Get name
+   *
+   * @return string
+   */
+  public function getName() {
+    return $this->name;
   }
 
   /**

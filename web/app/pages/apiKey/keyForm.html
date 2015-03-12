@@ -1,0 +1,43 @@
+<form role="form">
+	<!-- Key -->
+	<fieldset disabled>
+		<div class="form-group">
+			<label for="index" class="control-label">ID</label>
+			<input type="text" class="form-control" id="index" placeholder="API Key" data-ng-model="api.api_key">
+			<span class="help-block">The API key is automatically generated.</span>
+		</div>
+	</fieldset>
+
+	<!-- Name -->
+	<div class="form-group">
+		<label for="name">Name</label>
+		<input type="text" class="form-control" id="name" placeholder="Enter Name" data-ng-model="api.name">
+	</div>
+
+  <!-- Groups -->
+  <div class="form-group">
+    <label>Group</label>
+    <table class="table table-hover">
+      <tr>
+        <td>
+          <input type="text" class="form-control" id="addGroup" placeholder="Enter Name" data-ng-model="groupName">
+        </td>
+        <td>
+          <button type="button" class="btn btn-info" data-ng-click="addGroup(groupName)">
+            <span class="fa fa-plus" aria-hidden="true"></span> Add group
+          </button>
+        </td>
+      </tr>
+    </table>
+
+    <div data-ng-repeat="group in api.configuration.groups">
+      {{ group.id }}
+      <button type="button" class="btn btn-danger btn-xs" data-ng-click="removeGroup(group.id)">
+        <span class="fa fa-minus" aria-hidden="true"></span> Remove group
+      </button>
+      <div data-ng-repeat="location in group.locations">
+        {{ location }}
+      </div>
+    </div>
+  </div>
+</form>
