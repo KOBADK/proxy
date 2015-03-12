@@ -3,5 +3,12 @@
   <services>
     <service id="itk.exchange_service" class="Itk\ExchangeBundle\Services\ExchangeService">
     </service>
+
+    <!-- Private service for the bundle -->
+    <service id="itk.exchange_mail_service" class="Itk\ExchangeBundle\Services\ExchangeMailService" public="false">
+      <argument type="service" id="mailer"/>
+    </service>
+    <service id="itk.exchange_web_service" class="Itk\ExchangeBundle\Services\ExchangeWebService" public="false">
+    </service>
   </services>
 </container>
