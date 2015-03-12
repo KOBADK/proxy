@@ -10,11 +10,5 @@
     <service id="koba.group_service" class="Koba\MainBundle\Services\GroupService">
       <argument type="service" id="koba.group_repository"></argument>
     </service>
-
-    <!-- Event listeners -->
-    <service id="kernel.listener.koba_exception" class="Koba\MainBundle\EventListeners\KobaExceptionListener">
-      <argument type="service" id="kernel" />
-      <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException"></tag>
-    </service>
   </services>
 </container>
