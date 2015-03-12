@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityRepository;
  * @package Itk\ExchangeBundle\Entity
  */
 class BookingRepository extends EntityRepository {
+  CONST DATAFORMAT = 'Ymd\THis\Z';
 
   /**
    * Get start datetime formatted for a vCard.
@@ -21,11 +22,9 @@ class BookingRepository extends EntityRepository {
    *   T = Separator between date and time
    *   TZD  = time zone designator (Z or +hh:mm or -hh:mm)
    *   See http://www.w3.org/TR/NOTE-datetime where the separators have been removed
-   *
-   * @TODO: Use common date format!
    */
   public function getStartDatetimeForVcard() {
-    return $this->startDateTime->format('Ymd\THis\Z');
+    return date($this->startTime, self::DATAFORMAT);
   }
 
   /**
@@ -35,10 +34,8 @@ class BookingRepository extends EntityRepository {
    *   T = Separator between date and time
    *   TZD  = time zone designator (Z or +hh:mm or -hh:mm)
    *   See http://www.w3.org/TR/NOTE-datetime where the separators have been removed
-   *
-   * @TODO: Use common date format!
    */
   public function getEndDatetimeForVcard() {
-    return $this->endDateTime->format('Ymd\THis\Z');
+    return date($this->endTime, self::DATAFORMAT);
   }
 }

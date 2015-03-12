@@ -10,6 +10,7 @@
 
 namespace Itk\ExchangeBundle\Services;
 
+use Itk\ExchangeBundle\Entity\Booking;
 use Itk\ExchangeBundle\Exceptions\ExchangeNotSupported;
 
 /**
@@ -35,7 +36,12 @@ class ExchangeMailService {
     $this->createBooking();
   }
 
-  public function createBooking() {
+  /**
+   * @param \Itk\ExchangeBundle\Entity\Booking $booking
+   *
+   * @return mixed
+   */
+  public function createBooking(Booking $booking) {
     // Get a new ICal calender object.
     $calendar = $this->createCalendar('REQUEST');
 

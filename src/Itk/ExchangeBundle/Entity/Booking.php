@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * A booking. The internal representation of a booking.
  *
- * @ORM\Entity(repositoryClass="Koba\MainBundle\Entity\BookingRepository")
+ * @ORM\Entity(repositoryClass="Itk\ExchangeBundle\Entity\BookingRepository")
  * @ORM\Table(name="koba_booking")
  */
 class Booking {
