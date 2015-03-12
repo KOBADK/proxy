@@ -20,6 +20,9 @@ class IndexController extends Controller {
    * @Route("")
    */
   public function indexAction() {
+
+    $provider = $this->get('itk.exchange_mail_service');
+
     return new JsonResponse(array('stest' => 'rewt'));
   }
 }

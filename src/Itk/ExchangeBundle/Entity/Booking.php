@@ -1,10 +1,8 @@
 <?php
 
-namespace Koba\MainBundle\Entity;
+namespace Itk\ExchangeBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\XmlRoot;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -13,7 +11,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Entity(repositoryClass="Koba\MainBundle\Entity\BookingRepository")
  * @ORM\Table(name="koba_booking")
- * @XmlRoot("booking")
  */
 class Booking {
   /**
@@ -78,4 +75,203 @@ class Booking {
    */
   protected $description;
 
+  /**
+   * @ORM\Column(name="name", type="text")
+   *
+   * @Assert\NotBlank
+   */
+  protected $name;
+
+  /**
+   * @ORM\Column(name="mail", type="text")
+   *
+   * @Assert\NotBlank
+   */
+  protected $mail;
+
+
+  /**
+   * Get id
+   *
+   * @return integer
+   */
+  public function getId() {
+    return $this->id;
+  }
+
+  /**
+   * Set exchangeId
+   *
+   * @param string $exchangeId
+   *
+   * @return Booking
+   */
+  public function setExchangeId($exchangeId) {
+    $this->exchangeId = $exchangeId;
+
+    return $this;
+  }
+
+  /**
+   * Get exchangeId
+   *
+   * @return string
+   */
+  public function getExchangeId() {
+    return $this->exchangeId;
+  }
+
+  /**
+   * Set startTime
+   *
+   * @param integer $startTime
+   *
+   * @return Booking
+   */
+  public function setStartTime($startTime) {
+    $this->startTime = $startTime;
+
+    return $this;
+  }
+
+  /**
+   * Get startTime
+   *
+   * @return integer
+   */
+  public function getStartTime() {
+    return $this->startTime;
+  }
+
+  /**
+   * Set endTime
+   *
+   * @param integer $endTime
+   *
+   * @return Booking
+   */
+  public function setEndTime($endTime) {
+    $this->endTime = $endTime;
+
+    return $this;
+  }
+
+  /**
+   * Get endTime
+   *
+   * @return integer
+   */
+  public function getEndTime() {
+    return $this->endTime;
+  }
+
+  /**
+   * Set subject
+   *
+   * @param string $subject
+   *
+   * @return Booking
+   */
+  public function setSubject($subject) {
+    $this->subject = $subject;
+
+    return $this;
+  }
+
+  /**
+   * Get subject
+   *
+   * @return string
+   */
+  public function getSubject() {
+    return $this->subject;
+  }
+
+  /**
+   * Set description
+   *
+   * @param string $description
+   *
+   * @return Booking
+   */
+  public function setDescription($description) {
+    $this->description = $description;
+
+    return $this;
+  }
+
+  /**
+   * Get description
+   *
+   * @return string
+   */
+  public function getDescription() {
+    return $this->description;
+  }
+
+  /**
+   * Set name
+   *
+   * @param string $name
+   *
+   * @return Booking
+   */
+  public function setName($name) {
+    $this->name = $name;
+
+    return $this;
+  }
+
+  /**
+   * Get name
+   *
+   * @return string
+   */
+  public function getName() {
+    return $this->name;
+  }
+
+  /**
+   * Set mail
+   *
+   * @param string $mail
+   *
+   * @return Booking
+   */
+  public function setMail($mail) {
+    $this->mail = $mail;
+
+    return $this;
+  }
+
+  /**
+   * Get mail
+   *
+   * @return string
+   */
+  public function getMail() {
+    return $this->mail;
+  }
+
+  /**
+   * Set resource
+   *
+   * @param \Itk\ExchangeBundle\Entity\Resource $resource
+   *
+   * @return Booking
+   */
+  public function setResource(\Itk\ExchangeBundle\Entity\Resource $resource = NULL) {
+    $this->resource = $resource;
+
+    return $this;
+  }
+
+  /**
+   * Get resource
+   *
+   * @return \Itk\ExchangeBundle\Entity\Resource
+   */
+  public function getResource() {
+    return $this->resource;
+  }
 }

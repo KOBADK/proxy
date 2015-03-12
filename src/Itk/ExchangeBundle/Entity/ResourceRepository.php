@@ -1,12 +1,12 @@
 <?php
 
-namespace Koba\MainBundle\Entity;
+namespace Itk\ExchangeBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
 /**
  * Class ResourceRepository
- * @package Koba\MainBundle\Entity
+ * @package Itk\ExchangeBundle\Entity;
  */
 class ResourceRepository extends EntityRepository {
 

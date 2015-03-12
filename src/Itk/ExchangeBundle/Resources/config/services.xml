@@ -4,7 +4,7 @@
     <service id="itk.exchange_service" class="Itk\ExchangeBundle\Services\ExchangeService"/>
 
     <!-- Private service for the bundle -->
-    <service id="itk.exchange_mail_service" class="Itk\ExchangeBundle\Services\ExchangeMailService" public="false">
+    <service id="itk.exchange_mail_service" class="Itk\ExchangeBundle\Services\ExchangeMailService" public="true">
       <argument type="service" id="mailer"/>
       <argument type="service" id="bomo_ical.ics_provider"/>
     </service>

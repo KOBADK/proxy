@@ -4,13 +4,13 @@
  * Contains the booking repository.
  */
 
-namespace Koba\MainBundle\Entity;
+namespace Itk\ExchangeBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
 /**
  * Class BookingRepository
- * @package Koba\MainBundle\Entity
+ * @package Itk\ExchangeBundle\Entity
  */
 class BookingRepository extends EntityRepository {
 
