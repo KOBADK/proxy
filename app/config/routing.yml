@@ -1,8 +1,8 @@
-itk_api:
+koba_api:
     resource: "@KobaApiBundle/Resources/config/routing.yml"
     prefix:   /api
 
-itk_admin:
+koba_admin:
     resource: "@KobaAdminBundle/Resources/config/routing.yml"
     prefix:   /admin
 
@@ -14,3 +14,6 @@ NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
     prefix:   /doc
 
+koba_main:
+    resource: "@KobaMainBundle/Resources/config/routing.yml"
+    prefix:   /

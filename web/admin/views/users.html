@@ -1,5 +1,5 @@
 <!-- Navigation bar -->
-<ng-include src="'views/navigation.html'"></ng-include>
+<ng-include src="'admin/views/navigation.html'"></ng-include>
 
 <!-- Header -->
 <div class="page-header">
@@ -16,7 +16,7 @@
   	<thead>
 			<tr>
 				<th>#</th>
-     		<th>UUID</th>
+     		<th>Unique ID</th>
      		<th>Name</th>
         <th>Email</th>
         <th>Active</th>
@@ -25,7 +25,7 @@
   	</thead>
     <tr data-ng-repeat="user in users">
     	<td>{{ $index + 1 }}</td>
-    	<td>{{ user.uuid }}</td>
+    	<td>{{ user.unique_id }}</td>
     	<td>{{ user.name }}</td>
       <td>{{ user.mail }}</td>
       <td>
@@ -36,10 +36,8 @@
         <button type="button" class="btn btn-success btn-xs" data-ng-click="edit(user.id)">
           <i class="fa fa-pencil-square-o"></i> Edit
         </button>
-
       </td>
     </tr>
   	</table>
 	</div>
-
 </div>

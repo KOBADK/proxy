@@ -41,19 +41,19 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider',
 
     $routeProvider
       .when('/', {
-        templateUrl: 'views/login.html',
+        templateUrl: 'admin/views/login.html',
         controller: 'LoginController'
       })
       .when('/users', {
-        templateUrl: 'views/users.html',
+        templateUrl: 'admin/views/users.html',
         controller: 'UsersController'
       })
-      .when('/roles', {
-        templateUrl: 'views/roles.html',
-        controller: 'RolesController'
+      .when('/groups', {
+        templateUrl: 'admin/views/groups.html',
+        controller: 'GroupsController'
       })
       .when('/logout', {
-        templateUrl: 'views/logout.html',
+        templateUrl: 'admin/views/logout.html',
         controller: 'LogoutController'
       });
 

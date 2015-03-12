@@ -29,7 +29,7 @@
 
             // Open overlay with the message.
             overlay = ngOverlay.open({
-              template: 'views/message.html',
+              template: 'admin/views/message.html',
               scope: scope
             });
           },

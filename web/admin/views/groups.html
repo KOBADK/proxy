@@ -1,9 +1,9 @@
 <!-- Navigation bar -->
-<ng-include src="'views/navigation.html'"></ng-include>
+<ng-include src="'admin/views/navigation.html'"></ng-include>
 
 <!-- Header -->
 <div class="page-header">
-  <h1>Roles</h1>
+  <h1>Groups</h1>
 </div>
 
 <!-- messages -->
@@ -21,13 +21,13 @@
      		<th>Actions</th>
   		</tr>
   	</thead>
-    <tr data-ng-repeat="role in roles">
+    <tr data-ng-repeat="group in groups">
     	<td>{{ $index + 1 }}</td>
-    	<td>{{ role.title }}</td>
-    	<td>{{ role.description }}</td>
+    	<td>{{ group.title }}</td>
+    	<td>{{ group.description }}</td>
       <td>
-        <!-- Edit role -->
-        <button type="button" class="btn btn-success btn-xs" data-ng-click="edit(role.id)">
+        <!-- Edit group -->
+        <button type="button" class="btn btn-success btn-xs" data-ng-click="edit(group.id)">
           <i class="fa fa-pencil-square-o"></i> Edit
         </button>
       </td>
