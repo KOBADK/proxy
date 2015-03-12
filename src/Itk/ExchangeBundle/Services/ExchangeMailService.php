@@ -30,10 +30,16 @@ class ExchangeMailer {
    */
   public function __construct($mailer, $ical) {
     $this->mailer = $mailer;
+    $this->ical = $ical;
   }
 
   public function createBooking() {
-
+    $event = $this->ical->createEvent();
+    $event
+      ->setStartDate($datetime)
+      ->setEndDate($datetime->modify('+5 hours'))
+      ->setName('Event 1')
+      ->setDescription('Desc for event')
   }
 
   public function cancelBooking() {
