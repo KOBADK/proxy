@@ -61,7 +61,6 @@ class ApiKeyController extends Controller {
    *   The Http Request.
    */
   public function postApiKey(Request $request) {
-    // @TODO: Validate that parameters exist in body.
     $content = json_decode($request->getContent());
 
     $postApiKey = $content->api_key;
@@ -105,7 +104,6 @@ class ApiKeyController extends Controller {
       throw new NotFoundHttpException("api key not found", null, 404);
     }
 
-    // @TODO: Validate that parameters exist in body.
     $content = json_decode($request->getContent());
 
     $postConfiguration = $content->configuration;
@@ -121,5 +119,25 @@ class ApiKeyController extends Controller {
     $resp = new Response();
     $resp->setStatusCode(201);
     return $resp;
+  }
+
+  /**
+   * Delete an ApiKey.
+   *
+   * @FOSRest\Delete("/{key}")
+   *
+   * @param $key
+   *   The id of the ApiKey to delete
+   */
+  public function deleteApiKey($key) {
+    $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey($key);
+
+    if (!$apiKeyEntity) {
+      throw new NotFoundHttpException("api key not found", null, 404);
+    }
+
+    $manager = $this->getDoctrine()->getEntityManager();
+    $manager->remove($apiKeyEntity);
+    $manager->flush();
   }
 }

@@ -27,12 +27,12 @@
     	<td>{{ key.api_key }}</td>
       <td>
         <!-- Edit index -->
-        <button type="button" class="btn btn-success btn-xs" data-ng-click="edit(key)">
+        <button type="button" class="btn btn-success btn-xs" data-ng-click="edit(key.api_key)">
           <span class="fa fa-wrench" aria-hidden="true"></span> Edit
         </button>
 
         <!-- Remove index -->
-        <button type="button" class="btn btn-danger btn-xs" data-ng-click="remove(key)">
+        <button type="button" class="btn btn-danger btn-xs" data-ng-click="remove(key.api_key)">
           <span class="fa fa-minus" aria-hidden="true"></span> Remove
         </button>
       </td>
