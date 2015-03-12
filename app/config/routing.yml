@@ -10,10 +10,6 @@ itk_wayf:
     resource: "@ItkWayfBundle/Resources/config/routing.yml"
     prefix:   /auth
 
-NelmioApiDocBundle:
-    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
-    prefix:   /doc
-
 koba_main:
     resource: "@KobaMainBundle/Resources/config/routing.yml"
     prefix:   /
