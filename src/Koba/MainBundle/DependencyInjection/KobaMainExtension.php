@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * @TODO: Missing file description?
+ * Contains KobaMainExtension.
  */
 
 namespace Koba\MainBundle\DependencyInjection;
