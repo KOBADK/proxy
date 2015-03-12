@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains index controller for AdminBundle.
+ * Contains groups controller for AdminBundle.
  */
 
 namespace Koba\AdminBundle\Controller;
@@ -11,15 +11,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
- * @Route("")
+ * @Route("/groups")
  */
-class IndexController extends Controller {
-  /**
-   * indexAction.
-   *
-   * @Route("")
-   */
-  public function indexAction() {
-    return new JsonResponse();
-  }
+class GroupController extends Controller {
+
 }

@@ -24,4 +24,51 @@ class ApiKey {
    * @ORM\Id
    */
   protected $apiKey;
+
+  /**
+   * @ORM\Column(type="json_array")
+   */
+  protected $configuration;
+
+  /**
+   * Set apiKey
+   *
+   * @param string $apiKey
+   * @return ApiKey
+   */
+  public function setApiKey($apiKey) {
+    $this->apiKey = $apiKey;
+
+    return $this;
+  }
+
+  /**
+   * Get apiKey
+   *
+   * @return string
+   */
+  public function getApiKey() {
+    return $this->apiKey;
+  }
+
+  /**
+   * Set configuration
+   *
+   * @param array $configuration
+   * @return ApiKey
+   */
+  public function setConfiguration($configuration) {
+    $this->configuration = $configuration;
+
+    return $this;
+  }
+
+  /**
+   * Get configuration
+   *
+   * @return array
+   */
+  public function getConfiguration() {
+    return $this->configuration;
+  }
 }
