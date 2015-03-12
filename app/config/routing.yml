@@ -13,3 +13,7 @@ itk_wayf:
 koba_main:
     resource: "@KobaMainBundle/Resources/config/routing.yml"
     prefix:   /
+
+exchange:
+    resource: "@ItkExchangeBundle/Resources/config/routing.yml"
+    prefix:   /exchange

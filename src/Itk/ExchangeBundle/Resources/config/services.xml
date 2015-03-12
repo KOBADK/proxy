@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
   <services>
-    <service id="itk.exchange_service" class="Itk\ExchangeBundle\Services\ExchangeService">
+    <service id="itk.exchange_service" class="Itk\ExchangeBundle\Services\ExchangeService"/>
+
+    <!-- Private service for the bundle -->
+    <service id="itk.exchange_mail_service" class="Itk\ExchangeBundle\Services\ExchangeMailService" public="false">
+      <argument type="service" id="mailer"/>
+      <argument type="service" id="bomo_ical.ics_provider"/>
+    </service>
+    <service id="itk.exchange_web_service" class="Itk\ExchangeBundle\Services\ExchangeWebService" public="false">
     </service>
   </services>
 </container>

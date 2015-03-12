@@ -20,16 +20,26 @@ use Itk\ExchangeBundle\Exceptions\ExchangeNotSupported;
 class ExchangeMailer {
 
   private $mailer;
+  private $ical;
 
   /**
    * Constructor
+   *
+   * @param $mailer
+   *   The mailer used to send mail to Exchange.
    */
-  public function __construct($mailer) {
+  public function __construct($mailer, $ical) {
     $this->mailer = $mailer;
+    $this->ical = $ical;
   }
 
   public function createBooking() {
-    throw new ExchangeNotSupported();
+    $event = $this->ical->createEvent();
+    $event
+      ->setStartDate($datetime)
+      ->setEndDate($datetime->modify('+5 hours'))
+      ->setName('Event 1')
+      ->setDescription('Desc for event')
   }
 
   public function cancelBooking() {
