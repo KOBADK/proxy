@@ -9,9 +9,11 @@ namespace Koba\AdminBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Koba\MainBundle\Entity\ApiKey;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 
 /**
@@ -59,15 +61,61 @@ class ApiKeyController extends Controller {
    *   The Http Request.
    */
   public function postApiKey(Request $request) {
+    // @TODO: Validate that parameters exist in body.
     $content = json_decode($request->getContent());
+
+    $postApiKey = $content->apikey;
+    $postConfiguration = $content->configuration;
+
+    $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey($postApiKey);
+
+    if ($apiKeyEntity) {
+      throw new ConflictHttpException('api key already exists', null, 409);
+    }
 
     $manager = $this->getDoctrine()->getEntityManager();
 
     $apiKey = new ApiKey();
-    $apiKey->setApiKey($content->apikey);
-    $apiKey->setConfiguration($content->configuration);
+    $apiKey->setApiKey($postApiKey);
+    $apiKey->setConfiguration($postConfiguration);
     $manager->persist($apiKey);
 
     $manager->flush();
+  }
+
+  /**
+   * Update an ApiKey.
+   *
+   * @FOSRest\Put("/{key}")
+   *
+   * @param Request $request
+   *   The Http Request.
+   * @param $key
+   *   Key of the ApiKey to update.
+   *
+   * @return Response
+   *   The Http Response.
+   */
+  public function putApiKey(Request $request, $key) {
+    $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey($key);
+
+    if (!$apiKeyEntity) {
+      throw new NotFoundHttpException("api key not found", null, 404);
+    }
+
+    // @TODO: Validate that parameters exist in body.
+    $content = json_decode($request->getContent());
+
+    $postConfiguration = $content->configuration;
+
+    $manager = $this->getDoctrine()->getEntityManager();
+
+    $apiKeyEntity->setConfiguration($postConfiguration);
+
+    $manager->flush();
+
+    $resp = new Response();
+    $resp->setStatusCode(201);
+    return $resp;
   }
 }

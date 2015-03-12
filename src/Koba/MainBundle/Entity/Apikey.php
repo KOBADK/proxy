@@ -20,13 +20,13 @@ class ApiKey {
   /**
    * ApiKey
    *
-   * @ORM\Column(type="string")
+   * @ORM\Column(type="string", nullable=false)
    * @ORM\Id
    */
   protected $apiKey;
 
   /**
-   * @ORM\Column(type="json_array")
+   * @ORM\Column(type="json_array", nullable=false)
    */
   protected $configuration;
 
