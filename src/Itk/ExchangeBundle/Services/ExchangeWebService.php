@@ -4,7 +4,7 @@
  * Contains the Itk ExchangeService
  */
 
-namespace Itk\ExchangeBundle\Libraries;
+namespace Itk\ExchangeBundle\Services;
 
 /**
  * Class ExchangeWS

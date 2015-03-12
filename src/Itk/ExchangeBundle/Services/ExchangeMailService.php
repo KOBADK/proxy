@@ -8,7 +8,7 @@
  * allow us to preform write operations via the Exchange Web Service (EWS).
  */
 
-namespace Itk\ExchangeBundle\Libraries;
+namespace Itk\ExchangeBundle\Services;
 
 use Itk\ExchangeBundle\Exceptions\ExchangeNotSupported;
 
@@ -20,7 +20,6 @@ use Itk\ExchangeBundle\Exceptions\ExchangeNotSupported;
 class ExchangeMailer {
 
   private $mailer;
-  private $ical;
 
   /**
    * Constructor
@@ -28,18 +27,15 @@ class ExchangeMailer {
    * @param $mailer
    *   The mailer used to send mail to Exchange.
    */
-  public function __construct($mailer, $ical) {
+  public function __construct($mailer) {
     $this->mailer = $mailer;
-    $this->ical = $ical;
+
+    // @TODO HACK: Make this into a symfony library.
+    require_once '../lib/iCalcreator/iCalcreator.class.php';
   }
 
   public function createBooking() {
-    $event = $this->ical->createEvent();
-    $event
-      ->setStartDate($datetime)
-      ->setEndDate($datetime->modify('+5 hours'))
-      ->setName('Event 1')
-      ->setDescription('Desc for event')
+
   }
 
   public function cancelBooking() {
