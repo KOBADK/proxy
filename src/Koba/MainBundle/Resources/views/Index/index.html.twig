@@ -5,32 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>KOBA Administration</title>
 
-  <!-- Load angular -->
-  <script src="{{ asset('admin/js/lib/angular.min.js') }}"></script>
-  <script src="{{ asset('admin/js/lib/angular-route.min.js') }}"></script>
-  <script src="{{ asset('admin/js/app.js') }}"></script>
-  <script src="{{ asset('admin/js/controllers.js') }}"></script>
-  <script src="{{ asset('admin/js/dataService.js') }}"></script>
-  <script src="{{ asset('admin/js/ngOverlay.js') }}"></script>
-  <script src="{{ asset('admin/js/appMessage.js') }}"></script>
-
-  <!-- Utils -->
-  <script src="{{ asset('admin/js/lib/md5.js') }}"></script>
-
-  <!-- Load bootstrap theme -->
-  <link rel="stylesheet" href="{{ asset('admin/css/bootstrap.min.css') }}">
-  <link rel="stylesheet"
-        href="{{ asset('admin/css/bootstrap-theme.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('admin/css/font-awesome.min.css') }}">
-
-  <script src="{{ asset('admin/js/lib/jquery-1.11.1.min.js') }}"></script>
-  <script src="{{ asset('admin/js/lib/bootstrap.min.js') }}"></script>
-
+  <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-theme.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}">
   <!-- Local styles -->
-  <link rel="stylesheet" href="{{ asset('admin/css/style.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+
+  <script src="{{ asset('assets/lib/jquery-1.11.1.min.js') }}"></script>
+  <script src="{{ asset('assets/lib/bootstrap.min.js') }}"></script>
+  <script src="{{ asset('assets/lib/angular.min.js') }}"></script>
+  <script src="{{ asset('assets/lib/angular-route.min.js') }}"></script>
+  <script src="{{ asset('assets/lib/md5.js') }}"></script>
+
+  <script src="{{ asset('app/shared/ngOverlay/ngOverlay.js') }}"></script>
+  <script src="{{ asset('app/shared/appMessage/appMessage.js') }}"></script>
+
+  <script src="{{ asset('app/app.js') }}"></script>
+  <script src="{{ asset('app/shared/services/dataService.js') }}"></script>
+  <script src="{{ asset('app/shared/navigation/navigationController.js') }}"></script>
+
+  <script src="{{ asset('app/pages/apiKey/apiKeyController.js') }}"></script>
+  <script src="{{ asset('app/pages/login/loginController.js') }}"></script>
+  <script src="{{ asset('app/pages/logout/logoutController.js') }}"></script>
 </head>
 <body>
-<div class="container" data-ng-controller="MainController">
+<div class="container">
   <!-- Placeholder for the route templets -->
   <div data-ng-view></div>
 </div>

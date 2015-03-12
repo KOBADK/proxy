@@ -41,15 +41,15 @@ angular.module('KobaAdminApp').config(['$routeProvider', '$locationProvider', '$
 
     $routeProvider
       .when('/', {
-        templateUrl: 'admin/views/login.html',
+        templateUrl: 'app/pages/login/login.html',
         controller: 'LoginController'
       })
       .when('/apikeys', {
-        templateUrl: 'admin/views/apikeys.html',
+        templateUrl: 'app/pages/apiKey/apikeys.html',
         controller: 'ApiKeyController'
       })
       .when('/logout', {
-        templateUrl: 'admin/views/logout.html',
+        templateUrl: 'app/pages/logout/logout.html',
         controller: 'LogoutController'
       });
 

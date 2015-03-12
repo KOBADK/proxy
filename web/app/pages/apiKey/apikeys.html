@@ -1,9 +1,9 @@
 <!-- Navigation bar -->
-<ng-include src="'admin/views/navigation.html'"></ng-include>
+<ng-include src="'app/shared/navigation/navigation.html'"></ng-include>
 
 <!-- Header -->
 <div class="page-header">
-  <h1>API KEYS <small>User access</small></h1>
+  <h1>API KEYS <small>access</small></h1>
 </div>
 
 <!-- messages -->
@@ -28,12 +28,12 @@
       <td>
         <!-- Edit index -->
         <button type="button" class="btn btn-success btn-xs" data-ng-click="edit(key)">
-          <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Edit
+          <span class="fa fa-wrench" aria-hidden="true"></span> Edit
         </button>
 
         <!-- Remove index -->
         <button type="button" class="btn btn-danger btn-xs" data-ng-click="remove(key)">
-          <span class="glyphicon glyphicon-minus" aria-hidden="true"></span> Remove
+          <span class="fa fa-minus" aria-hidden="true"></span> Remove
         </button>
       </td>
     </tr>
@@ -42,6 +42,6 @@
 
   <!-- Add new key -->
   <button type="button" class="btn btn-info" data-ng-click="add()">
-    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add key
+    <span class="fa fa-plus" aria-hidden="true"></span> Add key
   </button>
 </div>

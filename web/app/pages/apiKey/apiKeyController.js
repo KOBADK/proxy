@@ -1,18 +1,6 @@
 /**
- * @file
- * The applications controllers.
+ * ApiKeyController.
  */
-
-/**
- * Main application controller.
- */
-angular.module('KobaAdminApp').controller('MainController', [
-  function() {
-    'use strict';
-
-  }
-]);
-
 angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOverlay', 'dataService',
   function($scope, ngOverlay, dataService) {
     'use strict';
@@ -82,50 +70,10 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
 
       // Open the overlay.
       var overlay = ngOverlay.open({
-        template: "admin/views/keyAdd.html",
+        template: "app/pages/apiKey/keyAdd.html",
         scope: scope
       });
     };
   }
 ]);
-
-/**
- * Login page.
- */
-angular.module('KobaAdminApp').controller('LoginController', ['$scope', '$http', '$window', '$location',
-  function($scope, $http, $window, $location) {
-    'use strict';
-
-    $scope.login = function login() {
-      $location.path("/apikeys");
-    };
-  }
-]);
-
-/**
- * Logout page.
- */
-angular.module('KobaAdminApp').controller('LogoutController', ['$scope', '$window',
-  function($scope, $window) {
-    'use strict';
-
-    // Remove the token from login.
-    delete $window.sessionStorage.token;
-  }
-]);
-
-
-/**
- * Navigation helpers.
- */
-angular.module('KobaAdminApp').controller('NavigationController', ['$scope', '$location',
-  function($scope, $location) {
-    'use strict';
-
-    $scope.isActive = function (viewLocation) {
-      return viewLocation === $location.path();
-    };
-  }
-]);
-
 

@@ -29,7 +29,7 @@
 
             // Open overlay with the message.
             overlay = ngOverlay.open({
-              template: 'admin/views/message.html',
+              template: 'app/shared/appMessage/message.html',
               scope: scope
             });
           },
