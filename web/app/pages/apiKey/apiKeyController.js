@@ -74,6 +74,36 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
           scope.api.api_key = key;
 
           /**
+           * Add a group
+           * @param groupId
+           *   The id of the group to add.
+           */
+          scope.addGroup = function addGroup(groupId) {
+            for (var i = 0; i < scope.api.configuration.groups.length; i++) {
+              if (scope.api.configuration.groups[i].id === groupId) {
+                return;
+              }
+            }
+            scope.api.configuration.groups.push({
+              "id": groupId,
+              "locations": []
+            });
+          };
+
+          /**
+           * Remove a group
+           * @param groupId
+           *   The id of the group to remove.
+           */
+          scope.removeGroup = function removeGroup(groupId) {
+            for (var i = 0; i < scope.api.configuration.groups.length; i++) {
+              if (scope.api.configuration.groups[i].id === groupId) {
+                scope.api.configuration.groups.splice(i, 1);
+              }
+            }
+          };
+
+          /**
            * Save API key callback.
            */
           scope.save = function save() {
@@ -119,7 +149,39 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
       scope.api = {
         "api_key": '',
         "name": '',
-        "configuration": {}
+        "configuration": {
+          "groups": []
+        }
+      };
+
+      /**
+       * Add a group
+       * @param groupId
+       *   The id of the group to add.
+       */
+      scope.addGroup = function addGroup(groupId) {
+        for (var i = 0; i < scope.api.configuration.groups.length; i++) {
+          if (scope.api.configuration.groups[i].id === groupId) {
+            return;
+          }
+        }
+        scope.api.configuration.groups.push({
+          "id": groupId,
+          "locations": []
+        });
+      };
+
+      /**
+       * Remove a group
+       * @param groupId
+       *   The id of the group to remove.
+       */
+      scope.removeGroup = function removeGroup(groupId) {
+        for (var i = 0; i < scope.api.configuration.groups.length; i++) {
+          if (scope.api.configuration.groups[i].id === groupId) {
+            scope.api.configuration.groups.splice(i, 1);
+          }
+        }
       };
 
       // Update api key.

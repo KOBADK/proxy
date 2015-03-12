@@ -21,6 +21,6 @@ class IndexController extends Controller {
    * @Route("")
    */
   public function indexAction() {
-    return new JsonResponse();
+    return new JsonResponse(array());
   }
 }
