@@ -19,11 +19,13 @@ use Itk\ExchangeBundle\Exceptions\ExchangeNotSupported;
  */
 class ExchangeMailer {
 
+  private $mailer;
+
   /**
    * Constructor
    */
-  public function __construct() {
-
+  public function __construct($mailer) {
+    $this->mailer = $mailer;
   }
 
   public function createBooking() {
@@ -36,6 +38,17 @@ class ExchangeMailer {
 
   public function editBooking() {
     throw new ExchangeNotSupported();
+  }
+
+  private function sendMail($m) {
+     $message = $this->mailer->createMessage()
+      ->setSubject('You have Completed Registration!')
+      ->setFrom('send@example.com')
+      ->setTo('recipient@example.com')
+      ->setBody($m, 'text/plain')
+
+    ;
+    $this->mailer->send($message);
   }
 
 }
