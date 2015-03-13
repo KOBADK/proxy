@@ -12,6 +12,10 @@ namespace Itk\ExchangeBundle\Services;
 
 use Itk\ExchangeBundle\Entity\Booking;
 use Itk\ExchangeBundle\Exceptions\ExchangeNotSupported;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * Class ExchangeBookingService
@@ -33,13 +37,22 @@ class ExchangeMailService {
     $this->mailer = $mailer;
     $this->ics = $ics;
 
-    $this->createBooking();
+    // Create some test data.
+    $b = new Booking();
+    $b->setSubject('New test event');
+    $b->setDescription('Test event');
+    $b->setName('Jesper Kristensen');
+    $b->setMail('jeskr@aarhus.dk');
+    $b->setStartTime(time());
+    $b->setEndTime(time() + 3600);
+    $this->createBooking($b);
   }
 
   /**
    * @param \Itk\ExchangeBundle\Entity\Booking $booking
    *
-   * @return mixed
+   * @return string
+   *   The unique ID send with the request to Exchange.
    */
   public function createBooking(Booking $booking) {
     // Get a new ICal calender object.
@@ -48,15 +61,28 @@ class ExchangeMailService {
     // Create new event in the calender.
     $event = $calendar->newEvent();
 
+    // @TODO: Get location.
 
-    $datetime = new \Datetime('now');
+    // Set event information.
+    $event->setStartDate(new \Datetime($booking->getStartTime()))
+      ->setEndDate(new \DateTime($booking->getEndTime()))
+      ->setName($booking->getSubject())
+      ->setDescription($booking->getDescription())
+//      ->setLocation($booking->getResource()->location())
+      ->getEvent()->setProperty("organizer", $booking->getMail(), array("CN" => $booking->getName()));
 
-    $event->setStartDate($datetime)
-      ->setEndDate($datetime->modify('+5 hours'))
-      ->setName('Event 1')
-      ->setDescription('Desc for event')
-      ->getEvent()->setProperty("organizer", "ical@domain.com",
-        array("CN" => "John Doe"));
+    $booking->setExchangeId($event->getProperty('UID'));
+
+    // @TODO: Encode booking information in the vevent description.
+//    $encoders = array(new XmlEncoder(), new JsonEncoder());
+//    $normalizers = array(new GetSetMethodNormalizer());
+//    $normalizers[0]->setIgnoredAttributes(array('resource'));
+//    $serializer = new Serializer($normalizers, $encoders);
+//    echo $serializer->serialize($booking, 'json');
+
+
+    // Get the calendar as an formatted string and send mail.
+    $this->sendMail('jeskr@aarhus.dk', 'Test booking', $calendar->getCalendar()->createCalendar(), 'REQUEST');
 
     return $event->getProperty('UID');
   }
@@ -94,53 +120,24 @@ class ExchangeMailService {
   }
 
 
-  private function sendMail($body, $method = 'REQUEST') {
+  private function sendMail($to, $subject, $body, $method = 'REQUEST') {
 
-
-    $headers = "Content-Type:text/calendar; charset=utf-8; method=" . $method . "\r\n";
-    $headers .= 'Content-Type: text/plain; charset="utf-8";' . "\r\n";
 
      $message = $this->mailer->createMessage()
-      ->setSubject('You have Completed Registration!')
+      ->setSubject($subject)
       ->setFrom('send@example.com')
-      ->setTo('recipient@example.com')
+      ->setTo($to)
       ->setBody($body, 'text/plain');
+
+    $type = $message->getHeaders()->get('Content-Type');
+    $type->setValue('text/calendar');
+    $type->setParameters(array(
+      'charset' => 'utf-8',
+      'method' => $method,
+    ));
+
+    echo $message;
+
     $this->mailer->send($message);
   }
-
-
-
-  public function sendBookingRequest($booking) {
-    $timestamp = gmdate('Ymd\THis+01');
-    $uid = $timestamp . '-' . $booking->getUser()->getMail();
-    $prodId = '-//KOBA//NONSGML v1.0//EN';
-
-    // vCard.
-    $message =
-      "BEGIN:VCALENDAR\r\n
-      VERSION:2.0\r\n
-      PRODID:" . $prodId ."\r\n
-      METHOD:REQUEST\r\n
-      BEGIN:VEVENT\r\n
-      UID:" . $uid . "\r\n
-      DTSTAMP:" . $timestamp . "\r\n
-      DTSTART:" . $booking->getStartDatetimeForVcard() . "\r\n
-      DTEND:" . $booking->getEndDatetimeForVcard() . "r\n
-      SUMMARY:" . $booking->getSubject() . "\r\n
-      ORGANIZER;CN=" . $this->bookingUser . ':mailto:' . $this->bookingMail . "\r\n
-      DESCRIPTION:" . $booking->getDescription() . "\r\n
-      END:VEVENT\r\n
-      END:VCALENDAR\r\n";
-
-    // Send the e-mail.
-    $success = mail(
-      $booking->getResource()->getMail(),
-      $booking->getSubject(),
-      $message,
-      self::EWS_HEADERS,
-      '-f ' . $booking->getUser()->getMail()
-    );
-    return $success;
-  }
-
 }

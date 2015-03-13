@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * A resource. Is hooked up with a mail in Exchange.
  *
- * @ORM\Entity(repositoryClass="Itk\ExchangeBundle\Entity\ResourceRepository")
  * @ORM\Table(name="koba_resource")
  */
 class Resource {
