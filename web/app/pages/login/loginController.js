@@ -6,7 +6,7 @@ angular.module('KobaAdminApp').controller('LoginController', ['$scope', '$http',
     'use strict';
 
     $scope.login = function login() {
-      $location.path("/apikeys");
+      $location.path('/apikeys');
     };
   }
 ]);

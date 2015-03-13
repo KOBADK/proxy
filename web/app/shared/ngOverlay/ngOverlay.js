@@ -7,7 +7,6 @@
   var module = angular.module('ngOverlay', []);
 
   var $el = angular.element;
-  var isDef = angular.isDefined;
 
   module.provider('ngOverlay', function () {
     // Default values.
@@ -71,7 +70,7 @@
 
                 // Ensures that the modal code is removed on close. This will also
                 // ensure that the modal is updated if open once more.
-                el.on('hidden.bs.modal', function (e) {
+                el.on('hidden.bs.modal', function () {
                   angular.element(document.querySelector('#myModal')).remove();
                 });
               });
@@ -114,7 +113,7 @@
           /**
            * Close function to close the open modal window.
            */
-          "close": function close() {
+          'close': function close() {
             $('#myModal').modal('hide');
           }
         };

@@ -23,12 +23,12 @@ angular.module('KobaAdminApp').factory('dataService', ['$http', '$q', function($
     var deferred = $q.defer();
 
     $http({method: method, url: uri}).
-      success(function(data, status, headers, config) {
+      success(function(data) {
 
         // Resolve promise an return data.
         deferred.resolve(data);
       }).
-      error(function(data, status, headers, config) {
+      error(function(data, status) {
         deferred.reject({
           'status': status,
           'message': data
@@ -55,12 +55,12 @@ angular.module('KobaAdminApp').factory('dataService', ['$http', '$q', function($
     var deferred = $q.defer();
 
     $http({ "method": method, "url": uri, "data": data }).
-      success(function(data, status, headers, config) {
+      success(function(data) {
 
         // Resolve promise.
         deferred.resolve(data);
       }).
-      error(function(data, status, headers, config) {
+      error(function(data, status) {
         deferred.reject({
           'status': status,
           'message': data
