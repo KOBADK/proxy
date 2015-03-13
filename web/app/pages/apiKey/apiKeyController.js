@@ -103,6 +103,60 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
             }
           };
 
+
+          /**
+           * Add a location to a group.
+           *
+           * @param groupId
+           *   Id of the group to add a location to.
+           * @param location
+           *   The location to add.
+           */
+          scope.addLocationToGroup = function addLocationToGroup(groupId, location) {
+            for (var i = 0; i < scope.api.configuration.groups.length; i++) {
+              if (scope.api.configuration.groups[i].id === groupId) {
+                var locations = scope.api.configuration.groups[i].locations;
+
+                var alreadyAdded = false;
+
+                for (var j = 0; j < locations.length; j++) {
+                  if (locations[j] === location) {
+                    alreadyAdded = true;
+                  }
+                }
+
+                if (!alreadyAdded) {
+                  locations.push(location);
+                }
+
+                break;
+              }
+            }
+          };
+
+          /**
+           * Remove location from a group.
+           *
+           * @param groupId
+           *   Id of the group to add a location to.
+           * @param location
+           *   The location to add.
+           */
+          scope.removeLocationFromGroup = function removeLocationFromGroup(groupId, location) {
+            for (var i = 0; i < scope.api.configuration.groups.length; i++) {
+              if (scope.api.configuration.groups[i].id === groupId) {
+                var locations = scope.api.configuration.groups[i].locations;
+
+                for (var j = 0; j < locations.length; j++) {
+                  if (locations[j] === location) {
+                    locations.splice(j, 1);
+                    return;
+                  }
+                }
+              }
+            }
+          };
+
           /**
            * Save API key callback.
            */
@@ -180,6 +234,59 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
         for (var i = 0; i < scope.api.configuration.groups.length; i++) {
           if (scope.api.configuration.groups[i].id === groupId) {
             scope.api.configuration.groups.splice(i, 1);
+          }
+        }
+      };
+
+      /**
+       * Add a location to a group.
+       *
+       * @param groupId
+       *   Id of the group to add a location to.
+       * @param location
+       *   The location to add.
+       */
+      scope.addLocationToGroup = function addLocationToGroup(groupId, location) {
+        for (var i = 0; i < scope.api.configuration.groups.length; i++) {
+          if (scope.api.configuration.groups[i].id === groupId) {
+            var locations = scope.api.configuration.groups[i].locations;
+
+            var alreadyAdded = false;
+
+            for (var j = 0; j < locations.length; j++) {
+              if (locations[j] === location) {
+                alreadyAdded = true;
+              }
+            }
+
+            if (!alreadyAdded) {
+              locations.push(location);
+            }
+
+            break;
+          }
+        }
+      };
+
+      /**
+       * Remove location from a group.
+       *
+       * @param groupId
+       *   Id of the group to add a location to.
+       * @param location
+       *   The location to add.
+       */
+      scope.removeLocationFromGroup = function removeLocationFromGroup(groupId, location) {
+        for (var i = 0; i < scope.api.configuration.groups.length; i++) {
+          if (scope.api.configuration.groups[i].id === groupId) {
+            var locations = scope.api.configuration.groups[i].locations;
+
+            for (var j = 0; j < locations.length; j++) {
+              if (locations[j] === location) {
+                locations.splice(j, 1);
+                return;
+              }
+            }
           }
         }
       };

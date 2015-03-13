@@ -31,13 +31,37 @@
     </table>
 
     <div data-ng-repeat="group in api.configuration.groups">
-      {{ group.id }}
-      <button type="button" class="btn btn-danger btn-xs" data-ng-click="removeGroup(group.id)">
-        <span class="fa fa-minus" aria-hidden="true"></span> Remove group
-      </button>
-      <div data-ng-repeat="location in group.locations">
-        {{ location }}
-      </div>
+      <table class="table table-hover">
+        <tr>
+          <td>{{ group.id }}</td>
+          <td>
+            <button type="button" class="btn btn-danger btn-s" data-ng-click="removeGroup(group.id)">
+              <span class="fa fa-minus" aria-hidden="true"></span> Remove group
+            </button>
+          </td>
+          <td>
+            <input type="text" class="form-control" id="addLocation" placeholder="Enter location name" data-ng-model="locationName">
+          </td>
+          <td>
+            <button type="button" class="btn btn-info btn-s" data-ng-click="addLocationToGroup(group.id, locationName)">
+              <span class="fa fa-plus" aria-hidden="true"></span> Add location
+            </button>
+          </td>
+        </tr>
+        <tr data-ng-repeat="location in group.locations">
+          <td>
+
+          </td>
+          <td>
+            {{ location }}
+          </td>
+          <td>
+            <button type="button" class="btn btn-danger btn-xs" data-ng-click="removeLocationFromGroup(group.id, location)">
+              <span class="fa fa-minus" aria-hidden="true"></span> Remove location
+            </button>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </form>
