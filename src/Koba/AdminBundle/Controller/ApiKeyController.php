@@ -29,7 +29,7 @@ class ApiKeyController extends Controller {
    *   Array of ApiKeys.
    */
   public function getApiKeys() {
-    return $this->get('koba.apikey_repository')->findAll();
+    return $this->getDoctrine()->getRepository('KobaMainBundle:ApiKey')->findAll();
   }
 
   /**
@@ -43,7 +43,7 @@ class ApiKeyController extends Controller {
    * @return ApiKey
    */
   public function getApiKey($key) {
-    $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey($key);
+    $apiKeyEntity = $this->getDoctrine()->getRepository('KobaMainBundle:ApiKey')->findOneByApiKey($key);
 
     if ($apiKeyEntity === null) {
       throw new NotFoundHttpException('apikey not found', null, 404);
@@ -67,7 +67,7 @@ class ApiKeyController extends Controller {
     $postConfiguration = $content->configuration;
     $postName = $content->name;
 
-    $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey($postApiKey);
+    $apiKeyEntity = $this->getDoctrine()->getRepository('KobaMainBundle:ApiKey')->findOneByApiKey($postApiKey);
 
     if ($apiKeyEntity) {
       throw new ConflictHttpException('api key already exists', null, 409);
@@ -98,7 +98,7 @@ class ApiKeyController extends Controller {
    *   The Http Response.
    */
   public function putApiKey(Request $request, $key) {
-    $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey($key);
+    $apiKeyEntity = $this->getDoctrine()->getRepository('KobaMainBundle:ApiKey')->findOneByApiKey($key);
 
     if (!$apiKeyEntity) {
       throw new NotFoundHttpException('api key not found', null, 404);
@@ -130,7 +130,7 @@ class ApiKeyController extends Controller {
    *   The id of the ApiKey to delete
    */
   public function deleteApiKey($key) {
-    $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey($key);
+    $apiKeyEntity = $this->getDoctrine()->getRepository('KobaMainBundle:ApiKey')->findOneByApiKey($key);
 
     if (!$apiKeyEntity) {
       throw new NotFoundHttpException('api key not found', null, 404);

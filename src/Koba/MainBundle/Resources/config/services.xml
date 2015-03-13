@@ -1,9 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
-  <services>
-    <!-- Entity repositories -->
-    <service id="koba.apikey_repository" class="Koba\MainBundle\Entity\ApiKeyRepository" factory-service="doctrine.orm.default_entity_manager" factory-method="getRepository">
-      <argument>Koba\MainBundle\Entity\ApiKey</argument>
-    </service>
-  </services>
 </container>

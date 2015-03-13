@@ -4,7 +4,7 @@
  */
 
 // Define the angular application.
-var app = angular.module('KobaAdminApp', [ 'ngRoute', 'ngOverlay', 'appMessage' ]);
+angular.module('KobaAdminApp', [ 'ngRoute', 'ngOverlay', 'appMessage' ]);
 
 /**
  * Add authentication header to all AJAX requests.
