@@ -43,3 +43,17 @@ legend {
 .right {
   float: right;
 }
+
+.modal-dialog {
+  width: 800px;
+}
+
+.max-height-list {
+  max-height: 150px;
+  overflow: auto;
+}
+
+.inline {
+  display: inline-block;
+  width: auto;
+}

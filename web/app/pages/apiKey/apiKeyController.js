@@ -73,12 +73,44 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
           // Set key.
           scope.api.api_key = key;
 
+          // @TODO: Replace with real locations.
+          scope.availableLocations = [
+            "location-1",
+            "location-2",
+            "location-3",
+            "location-4",
+            "location-5",
+            "location-6",
+            "location-7",
+            "location-8",
+            "location-9",
+            "location-10",
+            "location-11",
+            "location-12",
+            "location-13",
+            "location-14",
+            "location-15",
+            "location-16",
+            "location-17",
+            "location-18",
+            "location-19",
+            "location-20",
+            "location-21",
+            "location-22",
+            "location-23",
+            "location-24"
+          ];
+
           /**
            * Add a group
            * @param groupId
            *   The id of the group to add.
            */
           scope.addGroup = function addGroup(groupId) {
+            if (!groupId || groupId === '') {
+              return;
+            }
+
             for (var i = 0; i < scope.api.configuration.groups.length; i++) {
               if (scope.api.configuration.groups[i].id === groupId) {
                 return;
@@ -102,7 +134,6 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
               }
             }
           };
-
 
           /**
            * Add a location to a group.
@@ -208,12 +239,44 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
         }
       };
 
+      // @TODO: Replace with real locations.
+      scope.availableLocations = [
+        "location-1",
+        "location-2",
+        "location-3",
+        "location-4",
+        "location-5",
+        "location-6",
+        "location-7",
+        "location-8",
+        "location-9",
+        "location-10",
+        "location-11",
+        "location-12",
+        "location-13",
+        "location-14",
+        "location-15",
+        "location-16",
+        "location-17",
+        "location-18",
+        "location-19",
+        "location-20",
+        "location-21",
+        "location-22",
+        "location-23",
+        "location-24"
+      ];
+
       /**
        * Add a group
        * @param groupId
        *   The id of the group to add.
        */
       scope.addGroup = function addGroup(groupId) {
+        if (!groupId || groupId === '') {
+          return;
+        }
+
         for (var i = 0; i < scope.api.configuration.groups.length; i++) {
           if (scope.api.configuration.groups[i].id === groupId) {
             return;
@@ -305,6 +368,12 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
        * Save API key callback.
        */
       scope.save = function save() {
+        if (scope.api.name === '') {
+          scope.message = 'Set a name.';
+          scope.messageClass = 'alert-danger';
+          return;
+        }
+
         dataService.send('post', '/admin/apikeys', scope.api).then(
           function (data) {
             $scope.message = data;

@@ -1,4 +1,7 @@
 <form role="form">
+  <!-- messages -->
+  <div data-ng-show="message" class="alert {{ messageClass }}" role="alert">{{ message }}</div>
+
 	<!-- Key -->
 	<fieldset disabled>
 		<div class="form-group">
@@ -32,6 +35,13 @@
 
     <div data-ng-repeat="group in api.configuration.groups">
       <table class="table table-hover">
+        <thead>
+          <tr>
+            <td>GroupID</td>
+            <td>Actions</td>
+            <td>Locations</td>
+          </tr>
+        </thead>
         <tr>
           <td>{{ group.id }}</td>
           <td>
@@ -40,18 +50,24 @@
             </button>
           </td>
           <td>
-            <input type="text" class="form-control" id="addLocation" placeholder="Enter location name" data-ng-model="locationName">
-          </td>
-          <td>
-            <button type="button" class="btn btn-info btn-s" data-ng-click="addLocationToGroup(group.id, locationName)">
-              <span class="fa fa-plus" aria-hidden="true"></span> Add location
-            </button>
+            <div>
+              <button data-ng-show="!showAddLocation" type="button" class="btn btn-success" data-ng-click="showAddLocation = !showAddLocation">
+                <span class="fa fa-wrench" aria-hidden="true"></span> Locations
+              </button>
+              <button data-ng-show="showAddLocation" type="button" class="btn btn-success inline" data-ng-click="showAddLocation = !showAddLocation">
+                <span class="fa fa-minus"></span>
+              </button>
+              <input data-ng-show="showAddLocation" type="text" class="form-control inline" placeholder="Search locations..." data-ng-model="filterLocation">
+              <ul class="max-height-list" data-ng-if="showAddLocation">
+                <li data-ng-repeat="locationName in availableLocations | filter: filterLocation" data-ng-if="group.locations.indexOf(locationName) === -1">
+                  <a data-ng-click="addLocationToGroup(group.id, locationName)">{{ locationName }}</a>
+                </li>
+              </ul>
+            </div>
           </td>
         </tr>
-        <tr data-ng-repeat="location in group.locations">
-          <td>
-
-          </td>
+        <tr data-ng-repeat="location in group.locations" data-ng-if="showAddLocation">
+          <td></td>
           <td>
             {{ location }}
           </td>
