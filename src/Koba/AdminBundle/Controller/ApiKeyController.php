@@ -101,7 +101,7 @@ class ApiKeyController extends Controller {
     $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey($key);
 
     if (!$apiKeyEntity) {
-      throw new NotFoundHttpException("api key not found", null, 404);
+      throw new NotFoundHttpException('api key not found', null, 404);
     }
 
     $content = json_decode($request->getContent());
@@ -109,7 +109,7 @@ class ApiKeyController extends Controller {
     $postConfiguration = $content->configuration;
     $postName = $content->name;
 
-    $manager = $this->getDoctrine()->getEntityManager();
+    $manager = $this->getDoctrine()->getManager();
 
     $apiKeyEntity->setConfiguration($postConfiguration);
     $apiKeyEntity->setName($postName);
@@ -133,10 +133,10 @@ class ApiKeyController extends Controller {
     $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey($key);
 
     if (!$apiKeyEntity) {
-      throw new NotFoundHttpException("api key not found", null, 404);
+      throw new NotFoundHttpException('api key not found', null, 404);
     }
 
-    $manager = $this->getDoctrine()->getEntityManager();
+    $manager = $this->getDoctrine()->getManager();
     $manager->remove($apiKeyEntity);
     $manager->flush();
   }
