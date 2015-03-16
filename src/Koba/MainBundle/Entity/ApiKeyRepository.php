@@ -14,4 +14,11 @@ use Doctrine\ORM\EntityRepository;
  */
 class ApiKeyRepository extends EntityRepository {
 
+  public function findOneByApiKey($apiKey) {
+    return $this->findOneBy(
+      array(
+        'apiKey' => $apiKey
+      )
+    );
+  }
 }

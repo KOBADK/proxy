@@ -25,13 +25,13 @@
     "sensio/generator-bundle": "2.3.*",
     "jms/serializer-bundle": "0.13.*@dev",
     "friendsofsymfony/rest-bundle": "1.4.*",
-    "nelmio/api-doc-bundle": "~2.4",
     "friendsofsymfony/http-cache-bundle": "~1.0",
     "willdurand/hateoas-bundle": "1.0.*@dev",
     "hautelook/templated-uri-bundle": "~2.0",
     "willdurand/rest-extra-bundle": "~1.0",
     "incenteev/composer-parameter-handler": "~2.0",
-    "bomo/ical-bundle": "~1.0"
+    "bomo/ical-bundle": "~1.0",
+    "friendsofsymfony/user-bundle": "~2.0@dev"
   },
   "conflict": {
     "symfony/routing": "2.4.1"
