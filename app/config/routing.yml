@@ -6,10 +6,6 @@ koba_admin:
     resource: "@KobaAdminBundle/Resources/config/routing.yml"
     prefix:   /admin
 
-itk_wayf:
-    resource: "@ItkWayfBundle/Resources/config/routing.yml"
-    prefix:   /auth
-
 koba_main:
     resource: "@KobaMainBundle/Resources/config/routing.yml"
     prefix:   /

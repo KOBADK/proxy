@@ -19,7 +19,6 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new FOS\RestBundle\FOSRestBundle(),
-            new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new FOS\HttpCacheBundle\FOSHttpCacheBundle(),
             new Bazinga\Bundle\HateoasBundle\BazingaHateoasBundle(),
             new Hautelook\TemplatedUriBundle\HautelookTemplatedUriBundle(),
@@ -32,7 +31,6 @@ class AppKernel extends Kernel
             new Koba\ApiBundle\KobaApiBundle(),
             new Koba\AdminBundle\KobaAdminBundle(),
             new Itk\ExchangeBundle\ItkExchangeBundle(),
-            new Itk\WayfBundle\ItkWayfBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
