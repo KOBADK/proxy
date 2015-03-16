@@ -4,7 +4,7 @@
  */
 
 // Define the angular application.
-angular.module('KobaAdminApp', [ 'ngRoute', 'ngOverlay', 'appMessage' ]);
+angular.module('KobaAdminApp', ['ngRoute', 'ngOverlay', 'appMessage']);
 
 /**
  * Add authentication header to all AJAX requests.
@@ -40,10 +40,6 @@ angular.module('KobaAdminApp').config(['$routeProvider', '$locationProvider', '$
     'use strict';
 
     $routeProvider
-      .when('/', {
-        templateUrl: 'app/pages/login/login.html',
-        controller: 'LoginController'
-      })
       .when('/apikeys', {
         templateUrl: 'app/pages/apiKey/apikeys.html',
         controller: 'ApiKeyController'
@@ -51,6 +47,9 @@ angular.module('KobaAdminApp').config(['$routeProvider', '$locationProvider', '$
       .when('/logout', {
         templateUrl: 'app/pages/logout/logout.html',
         controller: 'LogoutController'
+      })
+      .otherwise({
+        redirectTo: '/apikeys'
       });
 
     $httpProvider.interceptors.push('authInterceptor');

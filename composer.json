@@ -32,7 +32,8 @@
     "willdurand/rest-extra-bundle": "~1.0",
     "jamesiarmes/php-ews": "dev-master",
     "incenteev/composer-parameter-handler": "~2.0",
-    "bomo/ical-bundle": "~1.0"
+    "bomo/ical-bundle": "~1.0",
+    "friendsofsymfony/user-bundle": "~2.0@dev"
   },
   "conflict": {
     "symfony/routing": "2.4.1"

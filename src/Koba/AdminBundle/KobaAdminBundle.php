@@ -13,5 +13,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  * @package Koba\AdminBundle
  */
 class KobaAdminBundle extends Bundle {
-
+  public function getParent() {
+    return 'FOSUserBundle';
+  }
 }

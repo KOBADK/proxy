@@ -10,7 +10,7 @@ framework:
         resource: "%kernel.root_dir%/config/routing.yml"
         strict_requirements: %kernel.debug%
     form:            ~
-    csrf_protection: false
+    csrf_protection: true
     validation:      { enable_annotations: true }
     templating:
         engines: ['twig']
@@ -86,34 +86,39 @@ fos_http_cache:
                     cache_control: { public: true, max_age: 15, s_maxage: 30 }
                     last_modified: "-1 hour"
                     vary: [Accept-Encoding, Accept-Language]
+#
+#nelmio_api_doc:
+#    name:                 'KOBA API documentation'
+#    exclude_sections:     []
+#    motd:
+#        template:             'NelmioApiDocBundle::Components/motd.html.twig'
+#    request_listener:
+#        enabled:              true
+#        parameter:            _doc
+#    sandbox:
+#        enabled:              true
+#        endpoint:             null
+#        accept_type:          null
+#        body_format:
+#            formats:
+#
+#                # Defaults:
+#                - form
+#                - json
+#            default_format:       json # One of "form"; "json"
+#        request_format:
+#            formats:
+#
+#                # Defaults:
+#                json:                application/json
+#                xml:                 application/xml
+#            method:               format_param # One of "format_param"; "accept_header"
+#            default_format:       json
 
-nelmio_api_doc:
-    name:                 'KOBA API documentation'
-    exclude_sections:     []
-    motd:
-        template:             'NelmioApiDocBundle::Components/motd.html.twig'
-    request_listener:
-        enabled:              true
-        parameter:            _doc
-    sandbox:
-        enabled:              true
-        endpoint:             null
-        accept_type:          null
-        body_format:
-            formats:
-
-                # Defaults:
-                - form
-                - json
-            default_format:       json # One of "form"; "json"
-        request_format:
-            formats:
-
-                # Defaults:
-                json:                application/json
-                xml:                 application/xml
-            method:               format_param # One of "format_param"; "accept_header"
-            default_format:       json
+fos_user:
+    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+    firewall_name: admin
+    user_class: Koba\AdminBundle\Entity\User
 
 itk_wayf:
     idp:
