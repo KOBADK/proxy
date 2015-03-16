@@ -17,3 +17,6 @@ koba_main:
 exchange:
     resource: "@ItkExchangeBundle/Resources/config/routing.yml"
     prefix:   /exchange
+
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
