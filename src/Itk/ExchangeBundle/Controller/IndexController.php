@@ -25,4 +25,17 @@ class IndexController extends Controller {
 
     return new JsonResponse(array('stest' => 'rewt'));
   }
+
+
+  /**
+   * @Route("/list")
+   */
+  public function listResources() {
+
+    $ws = $this->get('itk.exchange_web_service');
+
+    $ws->getRessources();
+
+    return new JsonResponse(array('stest' => 'rewt'));
+  }
 }

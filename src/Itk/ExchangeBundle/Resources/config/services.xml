@@ -8,7 +8,16 @@
       <argument type="service" id="mailer"/>
       <argument type="service" id="bomo_ical.ics_provider"/>
     </service>
-    <service id="itk.exchange_web_service" class="Itk\ExchangeBundle\Services\ExchangeWebService" public="false">
+
+    <service id="itk.exchange_web_service" class="Itk\ExchangeBundle\Services\ExchangeWebService" public="true">
+      <argument type="service" id="itk.exchange_soap_client"/>
+    </service>
+
+    <service id="itk.exchange_soap_client" class="Itk\ExchangeBundle\Services\ExchangeSoapClientService" public="true">
+      <argument>%itk_exchange_ws_host%</argument>
+      <argument>%itk_exchange_ws_user%</argument>
+      <argument>%itk_exchange_ws_password%</argument>
+      <argument>%itk_exchange_ws_version%</argument>
     </service>
   </services>
 </container>

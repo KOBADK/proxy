@@ -7,10 +7,10 @@
 namespace Itk\ExchangeBundle\Exceptions;
 
 /**
- * Class ExchangeNotSupported
+ * Class ExchangeSoapException
  *
  *
  * @package Itk\ExchangeBundle\Exceptions
  */
-class ExchangeNotSupported extends \RuntimeException {
+class ExchangeSoapException extends \RuntimeException {
 }

@@ -41,6 +41,13 @@ class Resource {
   protected $routing;
 
   /**
+   * Routing protocol
+   *
+   * @ORM\Column(type="string")
+   */
+  protected $type;
+
+  /**
    * When should the resource be reloaded?
    *
    * @ORM\Column(type="integer")
@@ -120,6 +127,28 @@ class Resource {
    */
   public function getRouting() {
     return $this->routing;
+  }
+
+  /**
+   * Set type
+   *
+   * @param integer $type
+   *
+   * @return Resource
+   */
+  public function setType($type) {
+    $this->type = $type;
+
+    return $this;
+  }
+
+  /**
+   * Get type
+   *
+   * @return integer
+   */
+  public function getType() {
+    return $this->type;
   }
 
   /**
