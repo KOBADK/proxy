@@ -7,20 +7,17 @@
 namespace Koba\MainBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
-use Symfony\Component\Validator\Constraints as Assert;
-
 /**
  * ApiKey.
  *
- * @ORM\Entity(repositoryClass="Koba\MainBundle\Entity\ApikeyRepository")
+ * @ORM\Entity(repositoryClass="Koba\MainBundle\Entity\ApiKeyRepository")
  * @ORM\Table(name="koba_apikey")
  */
 class ApiKey {
   /**
    * ApiKey
    *
-   * @ORM\Column(type="string", nullable=false)
+   * @ORM\Column(name="api_key", type="string", nullable=false)
    * @ORM\Id
    */
   protected $apiKey;
