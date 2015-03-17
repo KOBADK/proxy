@@ -36,16 +36,6 @@ class ExchangeMailService {
   public function __construct($mailer, $ics) {
     $this->mailer = $mailer;
     $this->ics = $ics;
-
-    // Create some test data.
-    $b = new Booking();
-    $b->setSubject('New test event');
-    $b->setDescription('Test event');
-    $b->setName('Jesper Kristensen');
-    $b->setMail('jeskr@aarhus.dk');
-    $b->setStartTime(time());
-    $b->setEndTime(time() + 3600);
-    $this->createBooking($b);
   }
 
   /**
