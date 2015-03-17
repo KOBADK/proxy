@@ -13,7 +13,7 @@ namespace Itk\ExchangeBundle\Services;
  */
 class ExchangeXMLService {
   private function createUnixTimestamp($s) {
-    return \DateTime::createFromFormat("d-m-Y H:i:s", $s)->format('U');
+    return \DateTime::createFromFormat("d-m-Y H:i:s", $s, new \DateTimeZone('Europe/Copenhagen'));
   }
 
   public function parseXMLFile() {
@@ -37,7 +37,9 @@ class ExchangeXMLService {
         "event-name" => trim($node->Eventname->__toString()),
         "room-id" => trim($node->Templatename),
         "start-time" => $this->createUnixTimestamp(trim($node->Starttime)),
-        "end-time" => $this->createUnixTimestamp(trim($node->Endtime))
+        "start-time-from-file" => trim($node->Starttime),
+        "end-time" => $this->createUnixTimestamp(trim($node->Endtime)),
+        "end-time-from-file" => trim($node->Endtime)
       );
 
       if (!isset($data[$arr["room-id"]])) {
