@@ -44,6 +44,7 @@ class ExchangeSoapClientService {
       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
       CURLOPT_HTTPAUTH => CURLAUTH_BASIC | CURLAUTH_NTLM,
       CURLOPT_USERPWD => $this->username . ':' . $this->password,
+      CURLOPT_CONNECTTIMEOUT => 10,
     );
 
     // Set namespaces.
@@ -113,7 +114,7 @@ class ExchangeSoapClientService {
     $options[CURLOPT_POSTFIELDS] = $requestBody;
 
     // Initialise and configure cURL.
-    $ch = curl_init($this->host);
+    $ch = curl_init($this->host . '/EWS/Exchange.asmx');
     curl_setopt_array($ch, $options);
 
     // Send the request.
