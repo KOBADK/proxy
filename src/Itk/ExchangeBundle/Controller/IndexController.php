@@ -9,6 +9,7 @@
 namespace Itk\ExchangeBundle\Controller;
 
 use Itk\ExchangeBundle\Entity\Booking;
+use Itk\ExchangeBundle\Entity\Resource;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,7 +25,13 @@ class IndexController extends Controller {
    */
   public function indexAction() {
 
-    // Create some test data.
+    // Build resource for our test resource.
+    $resource = new Resource();
+    $resource->setName('DOKK1-lokale-test1@aarhus.dk');
+    $resource->setMail('DOKK1-lokale-test1@aarhus.dk@aarhus.dk');
+    $resource->setType('SMTP');
+
+    // Create a test booking.
     $b = new Booking();
     $b->setSubject('New test event');
     $b->setDescription('Test event');
@@ -32,6 +39,7 @@ class IndexController extends Controller {
     $b->setMail('jeskr@aarhus.dk');
     $b->setStartTime(time());
     $b->setEndTime(time() + 3600);
+    $b->setResource($resource);
 
     $provider = $this->get('itk.exchange_mail_service');
     $provider->createBooking($b);
@@ -70,5 +78,8 @@ class IndexController extends Controller {
     $ws = $this->get('itk.exchange_web_service');
 
     $ws->getBooking("AAMkAGI0OWM5ZmE3LTBiOWMtNDg1Yi1iNmFlLTY5OGZhOGY0ZDI5NwBGAAAAAABLCXZAC9/fR7JGHNWMb+0pBwDpHfiAZp9LRYnG8zs4k/DGAAAAAAENAADpHfiAZp9LRYnG8zs4k/DGAAAoAqjXAAA=", "DwAAABYAAADpHfiAZp9LRYnG8zs4k/DGAAAoAq5Q");
+
+
+    return new JsonResponse(array('stest' => 'rewt'));
   }
 }
