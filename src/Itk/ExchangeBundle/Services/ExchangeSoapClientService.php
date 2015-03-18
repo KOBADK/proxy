@@ -28,11 +28,11 @@ class ExchangeSoapClientService {
   /**
    * Construct the SOAP client.
    *
-   * @param $host
+   * @param string $host
    *   The host to connect to.
-   * @param $username
+   * @param string $username
    *   The username to use.
-   * @param $password
+   * @param string $password
    *   The password to match the username.
    * @param string $version
    *   The Exchange version.
@@ -72,7 +72,7 @@ class ExchangeSoapClientService {
    *   SOAP action header.
    * @param string $xmlBody
    *   The XML body request
-   * @param string $impersonationId
+   * @param string|null $impersonationId
    *   The impersonation id (normally the room id as a mail address).
    * @param array $options
    *   Extra options for the transport client.
@@ -98,11 +98,11 @@ class ExchangeSoapClientService {
   /**
    * Send request via CURL.
    *
-   * @param $action
+   * @param string $action
    *   SOAP action header.
-   * @param $requestBody
+   * @param string $requestBody
    *   The request XML message.
-   * @param $options
+   * @param array $options
    *   Extra options for the transport client.
    *
    * @return mixed
@@ -143,9 +143,9 @@ class ExchangeSoapClientService {
   /**
    * Generate SOAP message.
    *
-   * @param $xmlBody
+   * @param string $xmlBody
    *   The XML message inside the body tag.
-   * @param $impersonationId
+   * @param string|null $impersonationId
    *   The mail address of the user to impersonate.
    *
    * @return string
