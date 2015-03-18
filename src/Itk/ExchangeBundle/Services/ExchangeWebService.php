@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains the Itk ExchangeService
+ * Contains the Itk ExchangeService.
  */
 
 namespace Itk\ExchangeBundle\Services;
@@ -42,6 +42,14 @@ class ExchangeWebService {
     // @TODO: Get the rooms and create resource entities?
   }
 
+  /**
+   * Get detailed information about a booking.
+   *
+   * @param $id
+   *   The Exchange ID for the booking.
+   * @param $changeKey
+   *   The Exchange change key (revision id).
+   */
   public function getBooking($id, $changeKey) {
     // Build XML body.
     $body = '<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -68,8 +76,6 @@ class ExchangeWebService {
     $dom->loadXML($xml);
 
     // @TODO: return bookings?
-
-    throw new ExchangeNotSupportedException();
   }
 
   /**
@@ -78,8 +84,9 @@ class ExchangeWebService {
    * @param $impersonationId
    *   The id of the resource (mail address).
    * @param $start
-   *   Unix
+   *   Unix timestamp for the start date to query Exchange.
    * @param $end
+   *   Unix timestamp for the end date to query Exchange.
    */
   public function getRessourceBookings($impersonationId, $start, $end) {
     // Build XML body.

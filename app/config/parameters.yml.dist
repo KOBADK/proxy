@@ -21,4 +21,5 @@ parameters:
     itk_exchange_ws_version: Exchange2010
 
     itk_exchange_user_mail: mail@koba2.vm
-    itk_exchange_user_name: Koba
+    itk_exchange_user_name: pass
+    itk_exchange_user_password: pass

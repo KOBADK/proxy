@@ -14,13 +14,14 @@ use Itk\ExchangeBundle\Exceptions\ExchangeSoapException;
  * @package Itk\ExchangeBundle\Services
  */
 class ExchangeSoapClientService {
-  const XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>';
   const USER_AGENT = 'ExchangeWebService KOBA';
 
-  private $host;
-  private $username;
-  private $password;
-  private $version;
+  /**
+   * Connection information about Exchange EWS.
+   *
+   * @var array
+   */
+  private $exchange;
 
   private $namespaces;
   private $curlOptions = array();
@@ -38,11 +39,13 @@ class ExchangeSoapClientService {
    *   The Exchange version.
    */
   public function __construct($host, $username, $password, $version = 'Exchange2010') {
-    $this->host = $host;
-    $this->version = $version;
-
-    $this->username = $username;
-    $this->password = $password;
+    // Set account information to the Exchange EWS.
+    $this->exchange = array(
+      'host' => $host,
+      'version' => $version,
+      'username' => $username,
+      'password' => $password,
+    );
 
     // Set default options.
     $this->curlOptions = array(
@@ -52,11 +55,11 @@ class ExchangeSoapClientService {
       CURLOPT_POST => TRUE,
       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
       CURLOPT_HTTPAUTH => CURLAUTH_BASIC | CURLAUTH_NTLM,
-      CURLOPT_USERPWD => $this->username . ':' . $this->password,
+      CURLOPT_USERPWD => $this->exchange['username'] . ':' . $this->exchange['password'],
       CURLOPT_CONNECTTIMEOUT => 10,
     );
 
-    // Set namespaces.
+    // Set EWS namespaces.
     $this->namespaces = array(
       'xsd' => 'http://www.w3.org/2001/XMLSchema',
       'soap' => 'http://schemas.xmlsoap.org/soap/envelope/',
@@ -123,7 +126,7 @@ class ExchangeSoapClientService {
     $options[CURLOPT_POSTFIELDS] = $requestBody;
 
     // Initialise and configure cURL.
-    $ch = curl_init($this->host . '/EWS/Exchange.asmx');
+    $ch = curl_init($this->exchange['host'] . '/EWS/Exchange.asmx');
     curl_setopt_array($ch, $options);
 
     // Send the request.
@@ -171,10 +174,10 @@ class ExchangeSoapClientService {
 
     // Build the final message.
     $message = array(
-      'header' => self::XML_HEADER,
+      'header' => '<?xml version="1.0" encoding="UTF-8"?>',
       'env_start' => '<soap:Envelope' . $ns_string . '>',
       'soap_header_start' => '<soap:Header>',
-      'version' => '<t:RequestServerVersion Version ="'. $this->version .'"/>',
+      'version' => '<t:RequestServerVersion Version ="'. $this->exchange['version'] .'"/>',
       'tz' => '<t:TimeZoneContext><t:TimeZoneDefinition Id="Central Europe Standard Time"/></t:TimeZoneContext>',
       'im' => $impersonation,
       'soap_header_end' => '</soap:Header>',

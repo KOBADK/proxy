@@ -1,7 +1,9 @@
 <?php
 /**
  * @file
- * Contains index controller for MainBundle.
+ * Test controller to debug the services during development.
+ *
+ * THIS FILE HAVE TO BE REMOVED BEFORE PRODUCTION.
  */
 
 namespace Itk\ExchangeBundle\Controller;
@@ -18,7 +20,7 @@ class IndexController extends Controller {
   /**
    * indexAction.
    *
-   * @Route("")
+   * @Route("/book")
    */
   public function indexAction() {
 
