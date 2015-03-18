@@ -38,7 +38,7 @@ class IndexController extends Controller {
   }
 
   /**
-   * @Route("/list")
+   * @Route("/rooms")
    */
   public function listResources() {
 
@@ -50,15 +50,23 @@ class IndexController extends Controller {
   }
 
   /**
-   * @Route("/get")
+   * @Route("/list")
    */
   public function getResources() {
-    $resource = 'DOKK1-lokale-test1@aarhus.dk';
-
+    $id = 'DOKK1-lokale-test1@aarhus.dk';
     $ws = $this->get('itk.exchange_web_service');
 
-    $ws->getRessources();
+    $ws->getRessourceBookings($id, mktime(0, 0, 0), mktime(23, 59, 59));
 
     return new JsonResponse(array('stest' => 'rewt'));
+  }
+
+  /**
+   * @Route("/get")
+   */
+  public function getResource() {
+    $ws = $this->get('itk.exchange_web_service');
+
+    $ws->getBooking("AAMkAGI0OWM5ZmE3LTBiOWMtNDg1Yi1iNmFlLTY5OGZhOGY0ZDI5NwBGAAAAAABLCXZAC9/fR7JGHNWMb+0pBwDpHfiAZp9LRYnG8zs4k/DGAAAAAAENAADpHfiAZp9LRYnG8zs4k/DGAAAoAqjXAAA=", "DwAAABYAAADpHfiAZp9LRYnG8zs4k/DGAAAoAq5Q");
   }
 }

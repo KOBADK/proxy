@@ -26,7 +26,16 @@ class ExchangeSoapClientService {
   private $curlOptions = array();
 
   /**
-   * Construct the SOAP client, using the specified options.
+   * Construct the SOAP client.
+   *
+   * @param $host
+   *   The host to connect to.
+   * @param $username
+   *   The username to use.
+   * @param $password
+   *   The password to match the username.
+   * @param string $version
+   *   The Exchange version.
    */
   public function __construct($host, $username, $password, $version = 'Exchange2010') {
     $this->host = $host;
@@ -63,21 +72,21 @@ class ExchangeSoapClientService {
    *   SOAP action header.
    * @param string $xmlBody
    *   The XML body request
+   * @param string $impersonationId
+   *   The impersonation id (normally the room id as a mail address).
    * @param array $options
    *   Extra options for the transport client.
-   * @param array $SoapHeaders
-   *   EWS SOAP headers.
    *
    * @return mixed
    *   The RAW XML response.
    */
-  public function request($action, $xmlBody, $options = array(), $SoapHeaders = array()) {
+  public function request($action, $xmlBody, $impersonationId = NULL, $options = array()) {
     // Merge options with defaults.
     $options = $options + $this->curlOptions;
 
     // Run the XML through DOMDocument to get an verify on the format.
     $doc = new \DOMDocument();
-    $doc->loadXML($this->generateSoapMessage($xmlBody, $SoapHeaders));
+    $doc->loadXML($this->generateSoapMessage($xmlBody, $impersonationId));
 
     // Render and store the final request string.
     $requestBodyString = $doc->saveXML();
@@ -133,8 +142,17 @@ class ExchangeSoapClientService {
 
   /**
    * Generate SOAP message.
+   *
+   * @param $xmlBody
+   *   The XML message inside the body tag.
+   * @param $impersonationId
+   *   The mail address of the user to impersonate.
+   *
+   * @return string
+   *   The final XML message.
    */
-  private function generateSoapMessage($xmlBody, $SoapHeaders) {
+  private function generateSoapMessage($xmlBody, $impersonationId = NULL) {
+    // Build namespace string.
     $ns_string = '';
     foreach ($this->namespaces as $key => $url) {
       if ($key == '') {
@@ -144,15 +162,22 @@ class ExchangeSoapClientService {
         $ns_string .= ' xmlns:' . $key . '="' . $url . '"';
       }
     }
+
+    // Build impersonation if needed.
+    $impersonation = '';
+    if (is_string($impersonationId)) {
+      $impersonation = '<t:ExchangeImpersonation><t:ConnectingSID><t:PrimarySmtpAddress>' . $impersonationId . '</t:PrimarySmtpAddress></t:ConnectingSID></t:ExchangeImpersonation>';
+    }
+
+    // Build the final message.
     $message = array(
       'header' => self::XML_HEADER,
       'env_start' => '<soap:Envelope' . $ns_string . '>',
-
-      // @TODO: Need to be able to add other $SoapHeaders.
       'soap_header_start' => '<soap:Header>',
       'version' => '<t:RequestServerVersion Version ="'. $this->version .'"/>',
+      'tz' => '<t:TimeZoneContext><t:TimeZoneDefinition Id="Central Europe Standard Time"/></t:TimeZoneContext>',
+      'im' => $impersonation,
       'soap_header_end' => '</soap:Header>',
-
       'body_start' => '<soap:Body>',
       'body' => $xmlBody,
       'body_end' => '</soap:Body>',
