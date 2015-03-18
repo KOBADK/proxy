@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains index controller for AdminBundle.
+ * Contains BookingController.
  */
 
 namespace Koba\AdminBundle\Controller;
@@ -10,15 +10,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
- * @Route("")
+ * @Route("/bookings")
  */
-class IndexController extends Controller {
+class BookingController extends Controller {
   /**
    * indexAction.
    *
    * @Route("")
    */
   public function indexAction() {
-    return array();
+    $arr = $this->get('itk.exchange_xml_service')->parseXMLFile();
+
+    return $arr;
   }
 }

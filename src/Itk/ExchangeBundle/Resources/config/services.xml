@@ -19,5 +19,7 @@
       <argument>%itk_exchange_ws_password%</argument>
       <argument>%itk_exchange_ws_version%</argument>
     </service>
+
+    <service id="itk.exchange_xml_service" class="Itk\ExchangeBundle\Services\ExchangeXMLService" public="true" />
   </services>
 </container>
