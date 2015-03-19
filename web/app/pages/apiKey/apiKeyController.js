@@ -73,33 +73,23 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
           // Set key.
           scope.api.api_key = key;
 
-          // @TODO: Replace with real locations.
-          scope.availableLocations = [
-            'location-1',
-            'location-2',
-            'location-3',
-            'location-4',
-            'location-5',
-            'location-6',
-            'location-7',
-            'location-8',
-            'location-9',
-            'location-10',
-            'location-11',
-            'location-12',
-            'location-13',
-            'location-14',
-            'location-15',
-            'location-16',
-            'location-17',
-            'location-18',
-            'location-19',
-            'location-20',
-            'location-21',
-            'location-22',
-            'location-23',
-            'location-24'
-          ];
+          /**
+           * Load Resources.
+           */
+          function loadResources() {
+            // Get user/api key information form the backend.
+            dataService.fetch('get', '/admin/resources').then(
+              function (data) {
+                scope.resources = data;
+              },
+              function (reason) {
+                $scope.message = reason.message;
+                $scope.messageClass = 'alert-danger';
+              }
+            );
+          }
+
+          loadResources();
 
           /**
            * Add a group
@@ -118,7 +108,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
             }
             scope.api.configuration.groups.push({
               "id": groupId,
-              "locations": []
+              "resources": []
             });
           };
 
@@ -136,28 +126,28 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
           };
 
           /**
-           * Add a location to a group.
+           * Add a resource to a group.
            *
            * @param groupId
-           *   Id of the group to add a location to.
-           * @param location
-           *   The location to add.
+           *   Id of the group to add a resource to.
+           * @param resource
+           *   The resource to add.
            */
-          scope.addLocationToGroup = function addLocationToGroup(groupId, location) {
+          scope.addResourceToGroup = function addResourceToGroup(groupId, resource) {
             for (var i = 0; i < scope.api.configuration.groups.length; i++) {
               if (scope.api.configuration.groups[i].id === groupId) {
-                var locations = scope.api.configuration.groups[i].locations;
+                var resources = scope.api.configuration.groups[i].resources;
 
                 var alreadyAdded = false;
 
-                for (var j = 0; j < locations.length; j++) {
-                  if (locations[j] === location) {
+                for (var j = 0; j < resources.length; j++) {
+                  if (resources[j].email === resource.email) {
                     alreadyAdded = true;
                   }
                 }
 
                 if (!alreadyAdded) {
-                  locations.push(location);
+                  resources.push(resource);
                 }
 
                 break;
@@ -166,26 +156,48 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
           };
 
           /**
-           * Remove location from a group.
+           * Remove resource from a group.
            *
            * @param groupId
-           *   Id of the group to add a location to.
-           * @param location
-           *   The location to add.
+           *   Id of the group to add a resource to.
+           * @param resource
+           *   The resource to add.
            */
-          scope.removeLocationFromGroup = function removeLocationFromGroup(groupId, location) {
+          scope.removeResourceFromGroup = function removeResourceFromGroup(groupId, resource) {
             for (var i = 0; i < scope.api.configuration.groups.length; i++) {
               if (scope.api.configuration.groups[i].id === groupId) {
-                var locations = scope.api.configuration.groups[i].locations;
+                var resources = scope.api.configuration.groups[i].resources;
 
-                for (var j = 0; j < locations.length; j++) {
-                  if (locations[j] === location) {
-                    locations.splice(j, 1);
+                for (var j = 0; j < resources.length; j++) {
+                  if (resources[j].email === resource.email) {
+                    resources.splice(j, 1);
                     return;
                   }
                 }
               }
             }
+          };
+
+          /**
+           * Is the group selected.
+           *
+           * @param groupId
+           * @param resource
+           * @returns {boolean}
+           */
+          scope.resourceSelected = function resourceSelected(groupId, resource) {
+            for (var i = 0; i < scope.api.configuration.groups.length; i++) {
+              if (scope.api.configuration.groups[i].id === groupId) {
+                var resources = scope.api.configuration.groups[i].resources;
+
+                for (var j = 0; j < resources.length; j++) {
+                  if (resources[j].email === resource.email) {
+                    return true;
+                  }
+                }
+              }
+            }
+            return false;
           };
 
           /**
@@ -239,33 +251,23 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
         }
       };
 
-      // @TODO: Replace with real locations.
-      scope.availableLocations = [
-        'location-1',
-        'location-2',
-        'location-3',
-        'location-4',
-        'location-5',
-        'location-6',
-        'location-7',
-        'location-8',
-        'location-9',
-        'location-10',
-        'location-11',
-        'location-12',
-        'location-13',
-        'location-14',
-        'location-15',
-        'location-16',
-        'location-17',
-        'location-18',
-        'location-19',
-        'location-20',
-        'location-21',
-        'location-22',
-        'location-23',
-        'location-24'
-      ];
+      /**
+       * Load Resources.
+       */
+      function loadResources() {
+        // Get user/api key information form the backend.
+        dataService.fetch('get', '/admin/resources').then(
+          function (data) {
+            scope.resources = data;
+          },
+          function (reason) {
+            $scope.message = reason.message;
+            $scope.messageClass = 'alert-danger';
+          }
+        );
+      }
+
+      loadResources();
 
       /**
        * Add a group
@@ -284,7 +286,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
         }
         scope.api.configuration.groups.push({
           "id": groupId,
-          "locations": []
+          "resources": []
         });
       };
 
@@ -302,28 +304,28 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
       };
 
       /**
-       * Add a location to a group.
+       * Add a resource to a group.
        *
        * @param groupId
-       *   Id of the group to add a location to.
-       * @param location
-       *   The location to add.
+       *   Id of the group to add a resource to.
+       * @param resource
+       *   The resource to add.
        */
-      scope.addLocationToGroup = function addLocationToGroup(groupId, location) {
+      scope.addResourceToGroup = function addResourceToGroup(groupId, resource) {
         for (var i = 0; i < scope.api.configuration.groups.length; i++) {
           if (scope.api.configuration.groups[i].id === groupId) {
-            var locations = scope.api.configuration.groups[i].locations;
+            var resources = scope.api.configuration.groups[i].resources;
 
             var alreadyAdded = false;
 
-            for (var j = 0; j < locations.length; j++) {
-              if (locations[j] === location) {
+            for (var j = 0; j < resources.length; j++) {
+              if (resources[j].email === resource.email) {
                 alreadyAdded = true;
               }
             }
 
             if (!alreadyAdded) {
-              locations.push(location);
+              resources.push(resource);
             }
 
             break;
@@ -332,26 +334,48 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
       };
 
       /**
-       * Remove location from a group.
+       * Remove resource from a group.
        *
        * @param groupId
-       *   Id of the group to add a location to.
-       * @param location
-       *   The location to add.
+       *   Id of the group to add a resource to.
+       * @param resource
+       *   The resource to add.
        */
-      scope.removeLocationFromGroup = function removeLocationFromGroup(groupId, location) {
+      scope.removeResourceFromGroup = function removeResourceFromGroup(groupId, resource) {
         for (var i = 0; i < scope.api.configuration.groups.length; i++) {
           if (scope.api.configuration.groups[i].id === groupId) {
-            var locations = scope.api.configuration.groups[i].locations;
+            var resources = scope.api.configuration.groups[i].resources;
 
-            for (var j = 0; j < locations.length; j++) {
-              if (locations[j] === location) {
-                locations.splice(j, 1);
+            for (var j = 0; j < resources.length; j++) {
+              if (resources[j].email === resource.email) {
+                resources.splice(j, 1);
                 return;
               }
             }
           }
         }
+      };
+
+      /**
+       * Is the group selected.
+       *
+       * @param groupId
+       * @param resource
+       * @returns {boolean}
+       */
+      scope.resourceSelected = function resourceSelected(groupId, resource) {
+        for (var i = 0; i < scope.api.configuration.groups.length; i++) {
+          if (scope.api.configuration.groups[i].id === groupId) {
+            var resources = scope.api.configuration.groups[i].resources;
+
+            for (var j = 0; j < resources.length; j++) {
+              if (resources[j].email === resource.email) {
+                return true;
+              }
+            }
+          }
+        }
+        return false;
       };
 
       // Update api key.

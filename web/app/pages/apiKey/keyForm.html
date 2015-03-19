@@ -39,7 +39,7 @@
           <tr>
             <td>GroupID</td>
             <td>Actions</td>
-            <td>Locations</td>
+            <td>Resources</td>
           </tr>
         </thead>
         <tr>
@@ -51,29 +51,29 @@
           </td>
           <td>
             <div>
-              <button data-ng-show="!showAddLocation" type="button" class="btn btn-success" data-ng-click="showAddLocation = !showAddLocation">
-                <span class="fa fa-wrench" aria-hidden="true"></span> Locations
+              <button data-ng-show="!showAddResource" type="button" class="btn btn-success" data-ng-click="showAddResource = !showAddResource">
+                <span class="fa fa-wrench" aria-hidden="true"></span> Resources
               </button>
-              <button data-ng-show="showAddLocation" type="button" class="btn btn-success inline" data-ng-click="showAddLocation = !showAddLocation">
+              <button data-ng-show="showAddResource" type="button" class="btn btn-success inline" data-ng-click="showAddResource = !showAddResource">
                 <span class="fa fa-minus"></span>
               </button>
-              <input data-ng-show="showAddLocation" type="text" class="form-control inline" placeholder="Search locations..." data-ng-model="filterLocation">
-              <ul class="max-height-list" data-ng-if="showAddLocation">
-                <li data-ng-repeat="locationName in availableLocations | filter: filterLocation" data-ng-if="group.locations.indexOf(locationName) === -1">
-                  <a data-ng-click="addLocationToGroup(group.id, locationName)">{{ locationName }}</a>
+              <input data-ng-show="showAddResource" type="text" class="form-control inline" placeholder="Search resources..." data-ng-model="filterResource">
+              <ul class="max-height-list" data-ng-if="showAddResource">
+                <li data-ng-repeat="resource in resources | filter: filterResource" data-ng-if="!resourceSelected(group.id, resource)">
+                  <a data-ng-click="addResourceToGroup(group.id, resource)">{{ resource.name }}</a>
                 </li>
               </ul>
             </div>
           </td>
         </tr>
-        <tr data-ng-repeat="location in group.locations" data-ng-if="showAddLocation">
+        <tr data-ng-repeat="resource in group.resources" data-ng-if="showAddResource">
           <td></td>
           <td>
-            {{ location }}
+            {{ resource.name }}
           </td>
           <td>
-            <button type="button" class="btn btn-danger btn-xs" data-ng-click="removeLocationFromGroup(group.id, location)">
-              <span class="fa fa-minus" aria-hidden="true"></span> Remove location
+            <button type="button" class="btn btn-danger btn-xs" data-ng-click="removeResourceFromGroup(group.id, resource)">
+              <span class="fa fa-minus" aria-hidden="true"></span> Remove resource
             </button>
           </td>
         </tr>

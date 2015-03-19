@@ -44,9 +44,9 @@ angular.module('KobaAdminApp').config(['$routeProvider', '$locationProvider', '$
         templateUrl: 'app/pages/apiKey/apikeys.html',
         controller: 'ApiKeyController'
       })
-      .when('/logout', {
-        templateUrl: 'app/pages/logout/logout.html',
-        controller: 'LogoutController'
+      .when('/resources', {
+        templateUrl: 'app/pages/resources/resources.html',
+        controller: 'ResourceController'
       })
       .otherwise({
         redirectTo: '/apikeys'

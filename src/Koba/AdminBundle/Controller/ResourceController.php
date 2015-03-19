@@ -22,6 +22,6 @@ class ResourceController extends FOSRestController {
    * @return array
    */
   public function getResources() {
-    return array();
+    return $this->get('itk.exchange_service')->getResources();
   }
 }

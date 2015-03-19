@@ -16,5 +16,20 @@ namespace Itk\ExchangeBundle\Services;
  * @package Itk\ExchangeBundle
  */
 class ExchangeService {
-
+  /**
+   * Get all resources from Exchange.
+   */
+  public function getResources() {
+    // @TODO: Call correct method.
+    return array(
+      array(
+        "name" => "DOKK1-lokale-test1",
+        "email" => "DOKK1-lokale-test1@aarhus.dk"
+      ),
+      array(
+        "name" => "DOKK1-test-udstyr",
+        "email" => "DOKK1-test-udstyr@aarhus.dk"
+      ),
+    );
+  }
 }

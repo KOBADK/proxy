@@ -20,10 +20,8 @@ class IndexController extends FOSRestController {
    *
    * @FOSRest\Get("")
    * @Template()
-   *
-   * @return array
    */
-  public function getIndex() {
+  public function indexAction() {
     return array();
   }
 }
