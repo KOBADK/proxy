@@ -27,8 +27,8 @@ class IndexController extends Controller {
 
     // Build resource for our test resource.
     $resource = new Resource();
-    $resource->setName('DOKK1-lokale-test1@aarhus.dk');
-    $resource->setMail('DOKK1-lokale-test1@aarhus.dk@aarhus.dk');
+    $resource->setName('DOKK1-lokale-test1');
+    $resource->setMail('DOKK1-lokale-test1@aarhus.dk');
     $resource->setType('SMTP');
 
     // Create a test booking.
