@@ -6,21 +6,24 @@
 
 namespace Koba\MainBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use FOS\RestBundle\Controller\Annotations as FOSRest;
 
 /**
  * @Route("")
  */
-class IndexController extends Controller {
+class IndexController extends FOSRestController {
   /**
-   * indexAction.
+   * Get index page.
    *
-   * @Route("")
+   * @FOSRest\Get("")
    * @Template()
+   *
+   * @return array
    */
-  public function indexAction() {
+  public function getIndex() {
     return array();
   }
 }

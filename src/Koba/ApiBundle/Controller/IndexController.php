@@ -12,15 +12,16 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Controller\Annotations as FOSRest;
 
 /**
  * @Route("")
  */
 class IndexController extends FOSRestController {
   /**
-   * IndexAction.
+   * Get index.
    *
-   * @Route("")
+   * @FOSRest\Get("")
 
    * @param Request $request
    *   The request object.

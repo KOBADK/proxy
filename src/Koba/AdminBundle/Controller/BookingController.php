@@ -6,21 +6,22 @@
 
 namespace Koba\AdminBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use FOS\RestBundle\Controller\Annotations as FOSRest;
 
 /**
  * @Route("/bookings")
  */
-class BookingController extends Controller {
+class BookingController extends FOSRestController {
   /**
-   * indexAction.
+   * Get xml bookings.
    *
-   * @Route("")
+   * @FOSRest\Get("/xml")
    *
    * @return array
    */
-  public function indexAction() {
+  public function getXmlBookings() {
     $arr = $this->get('itk.exchange_xml_service')->parseXMLFile();
 
     return $arr;
