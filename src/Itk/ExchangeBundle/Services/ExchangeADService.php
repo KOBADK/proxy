@@ -62,9 +62,9 @@ class ExchangeADService {
 
     // Loop over the results getting the information needed.
     $resources = array();
-    for ($i=0; $i < $info["count"]; $i++) {
+    for ($i=0; $i < $info['count']; $i++) {
       // Set the resources mail address as key and the friendly name as value.
-      $resources[$info[$i]["mail"][0]] = $info[$i]["cn"][0];
+      $resources[$info[$i]['mail'][0]] = $info[$i]['cn'][0];
     }
 
     return $resources;
