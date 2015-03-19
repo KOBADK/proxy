@@ -13,10 +13,10 @@ namespace Itk\ExchangeBundle\Services;
  */
 class ExchangeXMLService {
   private function createUnixTimestamp($s) {
-    return \DateTime::createFromFormat("d-m-Y H:i:s", $s, new \DateTimeZone('Europe/Copenhagen'));
+    return \DateTime::createFromFormat('d-m-Y H:i:s', $s, new \DateTimeZone('Europe/Copenhagen'));
   }
 
-  public function parseXMLFile() {
+  public function parseXmlFile() {
     $data = array();
 
     $z = new \XMLReader;
@@ -24,30 +24,33 @@ class ExchangeXMLService {
 
     $doc = new \DOMDocument;
 
-    // move to the first <product /> node
-    while ($z->read() && $z->name !== 'Event') {}
+    // Move to the first Event node.
+    while ($z->read() && $z->name !== 'Event') {
+      continue;
+    }
 
-    // now that we're at the right depth, hop to the next <product/> until the end of the tree
+    // Loop over all Event nodes.
     while ($z->name === 'Event') {
-      // either one should work
-      //$node = new \SimpleXMLElement($z->readOuterXML());
+      // Get node as simplexml.
       $node = simplexml_import_dom($doc->importNode($z->expand(), TRUE));
 
+      // Setup data for node.
       $arr = array(
-        "event-name" => trim($node->Eventname->__toString()),
-        "room-id" => trim($node->Templatename),
-        "start-time" => $this->createUnixTimestamp(trim($node->Starttime)),
-        "start-time-from-file" => trim($node->Starttime),
-        "end-time" => $this->createUnixTimestamp(trim($node->Endtime)),
-        "end-time-from-file" => trim($node->Endtime)
+        'event-name' => trim($node->Eventname->__toString()),
+        'room-id' => trim($node->Templatename),
+        'start-time' => $this->createUnixTimestamp(trim($node->Starttime)),
+        'start-time-from-file' => trim($node->Starttime),
+        'end-time' => $this->createUnixTimestamp(trim($node->Endtime)),
+        'end-time-from-file' => trim($node->Endtime)
       );
 
-      if (!isset($data[$arr["room-id"]])) {
-        $data[$arr["room-id"]] = array();
+      // Save the event under the correct room.
+      if (!isset($data[$arr['room-id']])) {
+        $data[$arr['room-id']] = array();
       }
-      $data[$arr["room-id"]][] = $arr;
+      $data[$arr['room-id']][] = $arr;
 
-      // go to next <product />
+      // Go to next Event.
       $z->next('Event');
     }
 

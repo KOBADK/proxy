@@ -17,6 +17,8 @@ class BookingController extends Controller {
    * indexAction.
    *
    * @Route("")
+   *
+   * @return array
    */
   public function indexAction() {
     $arr = $this->get('itk.exchange_xml_service')->parseXMLFile();
