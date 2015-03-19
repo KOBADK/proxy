@@ -12,6 +12,12 @@
       <argument type="service" id="bomo_ical.ics_provider"/>
     </service>
 
+    <service id="itk.exchange_ad" class="Itk\ExchangeBundle\Services\ExchangeADService" public="true">
+      <argument>%itk_exchange_ad_host%</argument>
+      <argument>%itk_exchange_ad_user%</argument>
+      <argument>%itk_exchange_ad_password%</argument>
+    </service>
+
     <service id="itk.exchange_web_service" class="Itk\ExchangeBundle\Services\ExchangeWebService" public="true">
       <argument type="service" id="itk.exchange_soap_client"/>
     </service>

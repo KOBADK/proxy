@@ -52,9 +52,9 @@ class IndexController extends Controller {
    */
   public function listResources() {
 
-    $ws = $this->get('itk.exchange_web_service');
+    $ad = $this->get('itk.exchange_ad');
 
-    $ws->getRessources();
+    print_r($ad->getResources());
 
     return new JsonResponse(array('stest' => 'rewt'));
   }
