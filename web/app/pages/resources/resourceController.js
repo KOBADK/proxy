@@ -33,7 +33,7 @@ angular.module('KobaAdminApp').controller('ResourceController', ['$scope', 'ngOv
           $scope.messageClass = 'alert-danger';
         }
       );
-    }
+    };
   }
 ]);
 

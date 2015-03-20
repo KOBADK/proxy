@@ -26,10 +26,7 @@ class IndexController extends Controller {
   public function indexAction() {
 
     // Build resource for our test resource.
-    $resource = new Resource();
-    $resource->setName('DOKK1-lokale-test1');
-    $resource->setMail('DOKK1-lokale-test1@aarhus.dk');
-    $resource->setType('SMTP');
+    $resource = new Resource('DOKK1-lokale-test1@aarhus.dk', 'DOKK1-lokale-test1');
 
     // Create a test booking.
     $b = new Booking();
