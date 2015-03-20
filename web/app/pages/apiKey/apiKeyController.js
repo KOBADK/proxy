@@ -141,7 +141,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
                 var alreadyAdded = false;
 
                 for (var j = 0; j < resources.length; j++) {
-                  if (resources[j].email === resource.email) {
+                  if (resources[j].mail === resource.mail) {
                     alreadyAdded = true;
                   }
                 }
@@ -169,7 +169,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
                 var resources = scope.api.configuration.groups[i].resources;
 
                 for (var j = 0; j < resources.length; j++) {
-                  if (resources[j].email === resource.email) {
+                  if (resources[j].mail === resource.mail) {
                     resources.splice(j, 1);
                     return;
                   }
@@ -191,7 +191,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
                 var resources = scope.api.configuration.groups[i].resources;
 
                 for (var j = 0; j < resources.length; j++) {
-                  if (resources[j].email === resource.email) {
+                  if (resources[j].mail === resource.mail) {
                     return true;
                   }
                 }
@@ -319,7 +319,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
             var alreadyAdded = false;
 
             for (var j = 0; j < resources.length; j++) {
-              if (resources[j].email === resource.email) {
+              if (resources[j].mail === resource.mail) {
                 alreadyAdded = true;
               }
             }
@@ -347,7 +347,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
             var resources = scope.api.configuration.groups[i].resources;
 
             for (var j = 0; j < resources.length; j++) {
-              if (resources[j].email === resource.email) {
+              if (resources[j].mail === resource.mail) {
                 resources.splice(j, 1);
                 return;
               }
@@ -369,7 +369,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
             var resources = scope.api.configuration.groups[i].resources;
 
             for (var j = 0; j < resources.length; j++) {
-              if (resources[j].email === resource.email) {
+              if (resources[j].mail === resource.mail) {
                 return true;
               }
             }

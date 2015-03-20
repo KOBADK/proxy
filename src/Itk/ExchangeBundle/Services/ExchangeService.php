@@ -24,11 +24,11 @@ class ExchangeService {
     return array(
       array(
         "name" => "DOKK1-lokale-test1",
-        "email" => "DOKK1-lokale-test1@aarhus.dk"
+        "mail" => "DOKK1-lokale-test1@aarhus.dk"
       ),
       array(
         "name" => "DOKK1-test-udstyr",
-        "email" => "DOKK1-test-udstyr@aarhus.dk"
+        "mail" => "DOKK1-test-udstyr@aarhus.dk"
       ),
     );
   }
