@@ -7,22 +7,15 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * A resource. Is hooked up with a mail in Exchange.
  *
- * @ORM\Table(name="koba_resource")
+ * @ORM\Table(name="exchange_resource")
+ * @ORM\Entity(repositoryClass="Itk\ExchangeBundle\Entity\ResourceRepository")
  */
 class Resource {
-  /**
-   * Internal resource ID
-   *
-   * @ORM\Column(type="integer")
-   * @ORM\Id
-   * @ORM\GeneratedValue(strategy="AUTO")
-   */
-  protected $id;
-
   /**
    * Resource name
    *
    * @ORM\Column(type="string")
+   * @ORM\Id
    */
   protected $name;
 
@@ -33,34 +26,9 @@ class Resource {
    */
   protected $mail;
 
-  /**
-   * Routing protocol
-   *
-   * @ORM\Column(type="string")
-   */
-  protected $routing;
-
-  /**
-   * Routing protocol
-   *
-   * @ORM\Column(type="string")
-   */
-  protected $type;
-
-  /**
-   * When should the resource be reloaded?
-   *
-   * @ORM\Column(type="integer")
-   */
-  protected $expire;
-
-  /**
-   * Get id
-   *
-   * @return integer
-   */
-  public function getId() {
-    return $this->id;
+  public function __construct($mail, $name) {
+    $this->mail = $mail;
+    $this->name = $name;
   }
 
   /**
@@ -105,71 +73,5 @@ class Resource {
    */
   public function getMail() {
     return $this->mail;
-  }
-
-  /**
-   * Set routing
-   *
-   * @param string $routing
-   *
-   * @return Resource
-   */
-  public function setRouting($routing) {
-    $this->routing = $routing;
-
-    return $this;
-  }
-
-  /**
-   * Get routing
-   *
-   * @return string
-   */
-  public function getRouting() {
-    return $this->routing;
-  }
-
-  /**
-   * Set type
-   *
-   * @param integer $type
-   *
-   * @return Resource
-   */
-  public function setType($type) {
-    $this->type = $type;
-
-    return $this;
-  }
-
-  /**
-   * Get type
-   *
-   * @return integer
-   */
-  public function getType() {
-    return $this->type;
-  }
-
-  /**
-   * Set expire
-   *
-   * @param integer $expire
-   *
-   * @return Resource
-   */
-  public function setExpire($expire) {
-    $this->expire = $expire;
-
-    return $this;
-  }
-
-  /**
-   * Get expire
-   *
-   * @return integer
-   */
-  public function getExpire() {
-    return $this->expire;
   }
 }

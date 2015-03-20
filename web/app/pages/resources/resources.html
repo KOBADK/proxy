@@ -23,8 +23,13 @@
       <tr data-ng-repeat="resource in resources">
         <td>{{ $index + 1 }}</td>
         <td>{{ resource.name }}</td>
-        <td>{{ resource.email }}</td>
+        <td>{{ resource.mail }}</td>
       </tr>
     </table>
   </div>
+
+  <!-- Add new key -->
+  <button type="button" class="btn btn-info" data-ng-click="refreshResources()">
+    <span class="fa fa-plus" aria-hidden="true"></span> Refresh resources
+  </button>
 </div>

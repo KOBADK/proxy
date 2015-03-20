@@ -24,4 +24,13 @@ class ResourceController extends FOSRestController {
   public function getResources() {
     return $this->get('itk.exchange_service')->getResources();
   }
+
+  /**
+   * Refresh resources.
+   *
+   * @FOSRest\Get("/refresh")
+   */
+  public function refreshResources() {
+    $this->get('itk.exchange_service')->refreshResources();
+  }
 }

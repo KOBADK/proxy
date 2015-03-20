@@ -22,6 +22,18 @@ angular.module('KobaAdminApp').controller('ResourceController', ['$scope', 'ngOv
     }
 
     loadResources();
+
+    $scope.refreshResources = function refreshResources() {
+      dataService.fetch('get', '/admin/resources/refresh').then(
+        function () {
+          loadResources();
+        },
+        function (reason) {
+          $scope.message = reason.message;
+          $scope.messageClass = 'alert-danger';
+        }
+      );
+    }
   }
 ]);
 

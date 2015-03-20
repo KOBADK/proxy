@@ -9,6 +9,9 @@
  */
 
 namespace Itk\ExchangeBundle\Services;
+use Doctrine\ORM\EntityManager;
+use Itk\ExchangeBundle\Entity\Resource;
+use Itk\ExchangeBundle\Entity\ResourceRepository;
 
 /**
  * Class ExchangeService
@@ -16,20 +19,41 @@ namespace Itk\ExchangeBundle\Services;
  * @package Itk\ExchangeBundle
  */
 class ExchangeService {
+  protected $exchangeADService;
+  protected $resourceRepository;
+  protected $entityManager;
+
+  public function __construct(ExchangeADService $exchangeADService, ResourceRepository $resourceRepository) {
+    $this->exchangeADService = $exchangeADService;
+    $this->resourceRepository = $resourceRepository;
+  }
+
   /**
    * Get all resources from Exchange.
    */
   public function getResources() {
-    // @TODO: Call correct method.
-    return array(
-      array(
-        "name" => "DOKK1-lokale-test1",
-        "mail" => "DOKK1-lokale-test1@aarhus.dk"
-      ),
-      array(
-        "name" => "DOKK1-test-udstyr",
-        "mail" => "DOKK1-test-udstyr@aarhus.dk"
-      ),
-    );
+    return $this->resourceRepository->findAll();
+  }
+
+  /**
+   * Refresh the available resource entities.
+   */
+  public function refreshResources() {
+    $resources = $this->exchangeADService->getResources();
+    $em = $this->resourceRepository->getEntityManager();
+
+    foreach ($resources as $key => $value) {
+      $resource = $this->resourceRepository->findOneByMail($key);
+
+      if (!$resource) {
+        $resource = new Resource($key, $value);
+        $em->persist($resource);
+      }
+      else {
+        $resource->setName($value);
+      }
+    }
+
+    $em->flush();
   }
 }

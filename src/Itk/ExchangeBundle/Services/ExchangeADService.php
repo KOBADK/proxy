@@ -6,13 +6,8 @@
 
 namespace Itk\ExchangeBundle\Services;
 
-use Itk\ExchangeBundle\Exceptions\ExchangeNotSupportedException;
-
 /**
  * Class ExchangeADService
- *
- * @TODO: Build cache into the class to prevent asking the LDAP all the time...
- *        the information will not change often.
  *
  * @package Itk\ExchangeBundle
  */
@@ -20,6 +15,10 @@ class ExchangeADService {
 
   private $ldap;
   private $binding;
+  private $host;
+  private $username;
+  private $password;
+  private $connected;
 
   /**
    * Connect to the LDAP server.
@@ -32,17 +31,39 @@ class ExchangeADService {
    *   The password matching the username.
    */
   public function __construct($host, $username, $password) {
-    // Connect to the ldap server.
-    $this->ldap = ldap_connect($host);
-    $this->binding = @ldap_bind($this->ldap, 'ADM' . "\\" . $username, $password);
+    $this->host = $host;
+    $this->username = $username;
+    $this->password = $password;
+    $this->connected = false;
   }
 
   /**
    * Close the connection to LDAP.
    */
   public function __destruct() {
-    // Close connection to the ldap server.
-    ldap_close($this->ldap);
+    $this->disconnect();
+  }
+
+  /**
+   *
+   */
+  private function disconnect() {
+    if ($this->connected) {
+      // Close connection to the ldap server.
+      ldap_close($this->ldap);
+    }
+  }
+
+  /**
+   * Connect to LDAP if not already connected.
+   */
+  private function connect() {
+    if (!$this->connected) {
+      // Connect to the ldap server.
+      $this->ldap = ldap_connect($this->host);
+      $this->binding = @ldap_bind($this->ldap, 'ADM' . "\\" . $this->username, $this->password);
+      $this->connected = true;
+    }
   }
 
   /**
@@ -54,6 +75,9 @@ class ExchangeADService {
    *   The resources indexed by mail and friendly name as value.
    */
   public function getResources() {
+    // Connect to LDAP.
+    $this->connect();
+
     // Search the LDAP for resource with the type room.
     $result = ldap_search($this->ldap, 'OU=ResursePostkasser,OU=Brugere,OU=Postkalender,OU=Operatoerer,DC=adm,DC=aarhuskommune,DC=dk', 'msExchResourceMetaData=ResourceType:room');
 
