@@ -26,7 +26,15 @@ class Resource {
    */
   protected $mail;
 
-  public function __construct($mail, $name) {
+  /**
+   * Constructor.
+   *
+   * @param string|null $mail
+   *   Resource mail address.
+   * @param string|null $name
+   *   Resource name.
+   */
+  public function __construct($mail = NULL, $name = NULL) {
     $this->mail = $mail;
     $this->name = $name;
   }
