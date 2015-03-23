@@ -28,12 +28,15 @@ class IndexController extends Controller {
     // Build resource for our test resource.
     $resource = new Resource('DOKK1-lokale-test1@aarhus.dk', 'DOKK1-lokale-test1');
 
+    $user = $this->container->getParameter('itk_exchange_user_name');
+    $mail = $this->container->getParameter('itk_exchange_user_mail');
+
     // Create a test booking.
     $b = new Booking();
     $b->setSubject('New test event');
     $b->setDescription('Test event');
-    $b->setName('Jesper Kristensen');
-    $b->setMail('jeskr@aarhus.dk');
+    $b->setName($user);
+    $b->setMail($mail);
     $b->setStartTime(time());
     $b->setEndTime(time() + 3600);
     $b->setResource($resource);
