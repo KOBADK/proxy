@@ -8,13 +8,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A booking. The internal representation of a booking.
- *)
+ *
  * @ORM\Table(name="koba_booking")
  */
 class Booking {
-  CONST DEFAULT_DATAFORMAT = 'Ymd\THis\Z';
-
-
   /**
    * Internal booking ID
    *
@@ -139,13 +136,10 @@ class Booking {
   /**
    * Get startTime
    *
-   * @param string $format
-   *   The date format to apply to the date. Defaults to 'Ymd\THis\Z'.
-   *
    * @return integer
    */
-  public function getStartTime($format = self::DEFAULT_DATAFORMAT) {
-    return date($format, $this->startTime);
+  public function getStartTime() {
+    return $this->startTime;
   }
 
   /**
@@ -164,13 +158,10 @@ class Booking {
   /**
    * Get endTime
    *
-   * @param string $format
-   *   The date format to apply to the date. Defaults to 'Ymd\THis\Z'.
-   *
    * @return integer
    */
-  public function getEndTime($format = self::DEFAULT_DATAFORMAT) {
-    return date($format, $this->endTime);
+  public function getEndTime() {
+    return $this->endTime;
   }
 
   /**

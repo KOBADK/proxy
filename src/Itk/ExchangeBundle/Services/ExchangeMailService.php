@@ -82,8 +82,8 @@ class ExchangeMailService {
     $description = '<!-- KOBA ' . $serializer->serialize($booking, 'json') . 'KOBA --!>';
 
     // Set event information.
-    $event->setStartDate(new \Datetime($booking->getStartTime()))
-      ->setEndDate(new \DateTime($booking->getEndTime()))
+    $event->setStartDate(\DateTime::createFromFormat( 'U', $booking->getStartTime()))
+      ->setEndDate(\DateTime::createFromFormat( 'U', $booking->getEndTime()))
       ->setName($booking->getSubject())
       ->setDescription($description)
       ->setLocation($booking->getResource()->getName())
@@ -155,8 +155,10 @@ class ExchangeMailService {
     $message = $this->mailer->createMessage()
       ->setSubject($subject)
       ->setFrom($this->account['mail'])
+      ->setSender($this->account['mail'])
+      ->setReturnPath($this->account['mail'])
       ->setTo($to)
-      ->setBody($body, 'text/plain');
+      ->setBody($body, 'text/calendar');
 
     // Set the required headers.
     $type = $message->getHeaders()->get('Content-Type');
