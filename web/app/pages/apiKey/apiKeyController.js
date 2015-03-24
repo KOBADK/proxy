@@ -247,7 +247,16 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
         "api_key": '',
         "name": '',
         "configuration": {
-          "groups": []
+          "groups": [
+            {
+              "id": "default",
+              "resources": []
+            },
+            {
+              "id": "display",
+              "resources": []
+            }
+          ]
         }
       };
 

@@ -172,7 +172,7 @@ class ExchangeMailService {
     ));
 
     $headers = $message->getHeaders();
-    $headers->addTextHeader('Content-Disposition', 'Content-Disposition: inline; filename=cal.ics');
+    $headers->addTextHeader('Content-Disposition', 'inline; filename=cal.ics');
 
     echo $message;
 
