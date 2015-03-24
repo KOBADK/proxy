@@ -168,6 +168,7 @@ class ExchangeMailService {
     $type->setParameters(array(
       'charset' => 'utf-8',
       'method' => $method,
+      'name' => 'cal.ics',
     ));
 
     $headers = $message->getHeaders();
