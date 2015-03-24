@@ -20,6 +20,10 @@ security:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        api:
+            pattern: ^/api
+            anonymous: true
+
         admin:
             pattern: ^/
             form_login:
@@ -27,13 +31,6 @@ security:
                 csrf_provider: form.csrf_provider
             logout:       true
             anonymous:    true
-
-        api:
-            pattern: ^/api
-            anonymous: ~
-            stateless:  true
-            http_basic:
-                realm: "Demo REST API (username: restapi, password: secretpw)"
 
     access_control:
         - { path: ^/api, role: IS_AUTHENTICATED_ANONYMOUSLY }

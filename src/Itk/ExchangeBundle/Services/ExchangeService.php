@@ -12,6 +12,7 @@ namespace Itk\ExchangeBundle\Services;
 use Doctrine\ORM\EntityManager;
 use Itk\ExchangeBundle\Entity\Resource;
 use Itk\ExchangeBundle\Entity\ResourceRepository;
+use Itk\ExchangeBundle\Entity\Booking;
 
 /**
  * Class ExchangeService
@@ -22,10 +23,12 @@ class ExchangeService {
   protected $exchangeADService;
   protected $resourceRepository;
   protected $entityManager;
+  protected $exchangeMailService;
 
-  public function __construct(ExchangeADService $exchangeADService, ResourceRepository $resourceRepository) {
+  public function __construct(ExchangeADService $exchangeADService, ResourceRepository $resourceRepository, ExchangeMailService $exchangeMailService) {
     $this->exchangeADService = $exchangeADService;
     $this->resourceRepository = $resourceRepository;
+    $this->exchangeMailService = $exchangeMailService;
   }
 
   /**
@@ -55,5 +58,15 @@ class ExchangeService {
     }
 
     $em->flush();
+  }
+
+  /**
+   * Create a booking.
+   *
+   * @param Booking $booking
+   *   The booking to create.
+   */
+  public function createBooking(Booking $booking) {
+    $this->exchangeMailService->createBooking($booking);
   }
 }

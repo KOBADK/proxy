@@ -36,3 +36,37 @@ ssh -D 8080 -f -C -q -N deploy@namor.aakb.dk
 ## Scrutinizer
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/KOBADK/backend/badges/quality-score.png?b=development)](https://scrutinizer-ci.com/g/KOBADK/backend/?branch=development)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/KOBADK/backend/badges/build.png?b=development)](https://scrutinizer-ci.com/g/KOBADK/backend/?branch=development)
+
+
+
+## APIs
+
+### /api
+
+All /api calls should have the get parameter ApiKey defined or will get access denied.
+
+#### GET /api/resources/{groupID = default}
+Gets all resources for groupID and ApiKey.
+
+#### GET /api/bookings
+Gets all bookings made with the given ApiKey.
+
+#### POST /api/bookings
+Create a new booking.
+
+Request body:
+<pre>
+{
+  id (string): *,
+  starttime (unix timestamp): *,
+  endtime (unix timestamp): *,
+  description (string): *,
+  summary (string): *,
+  name (string): *,
+  mail (string): *,
+  tlf (string): *
+}
+</pre>
+
+Response:
+?
