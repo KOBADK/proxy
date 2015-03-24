@@ -77,7 +77,7 @@ class IndexController extends Controller {
   public function getResource() {
     $ws = $this->get('itk.exchange_web_service');
 
-    $ws->getBooking("AAMkAGI0OWM5ZmE3LTBiOWMtNDg1Yi1iNmFlLTY5OGZhOGY0ZDI5NwBGAAAAAABLCXZAC9/fR7JGHNWMb+0pBwDpHfiAZp9LRYnG8zs4k/DGAAAAAAENAADpHfiAZp9LRYnG8zs4k/DGAAAoAqjXAAA=", "DwAAABYAAADpHfiAZp9LRYnG8zs4k/DGAAAoAq5Q");
+    $ws->getBooking('AAMkAGI0OWM5ZmE3LTBiOWMtNDg1Yi1iNmFlLTY5OGZhOGY0ZDI5NwBGAAAAAABLCXZAC9/fR7JGHNWMb+0pBwDpHfiAZp9LRYnG8zs4k/DGAAAAAAENAADpHfiAZp9LRYnG8zs4k/DGAAAoAqjXAAA=', 'DwAAABYAAADpHfiAZp9LRYnG8zs4k/DGAAAoAq5Q');
 
 
     return new JsonResponse(array('stest' => 'rewt'));

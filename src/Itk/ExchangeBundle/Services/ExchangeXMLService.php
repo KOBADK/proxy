@@ -23,7 +23,7 @@ class ExchangeXMLService {
    *   The date string to convert to unix timestamp.
    *   Formatted as "d-m-Y H:i:s"
    *
-   * @return integer
+   * @return string
    *   Unix timestamp
    */
   private function dateStringToUnixTimestamp($dateString) {

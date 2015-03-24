@@ -255,7 +255,7 @@ class Booking {
   /**
    * Set resource
    *
-   * @param \Itk\ExchangeBundle\Entity\Resource $resource
+   * @param null|\Itk\ExchangeBundle\Entity\Resource $resource
    *
    * @return Booking
    */
@@ -268,7 +268,7 @@ class Booking {
   /**
    * Get resource
    *
-   * @return \Itk\ExchangeBundle\Entity\Resource
+   * @return \Itk\ExchangeBundle\Entity\Resource|null
    */
   public function getResource() {
     return $this->resource;
