@@ -79,7 +79,7 @@ class ExchangeMailService {
     $normalizers = array(new GetSetMethodNormalizer());
     $normalizers[0]->setIgnoredAttributes(array('resource', 'exchangeId'));
     $serializer = new Serializer($normalizers, $encoders);
-    $description = '<!-- KOBA ' . $serializer->serialize($booking, 'json') . 'KOBA --!>';
+    $description = '<koba><id>' . $booking->getId() . '</id><name>' . $booking->getName() . '</name></koba>';
 
     // Set event information.
     $event->setStartDate(\DateTime::createFromFormat( 'U', $booking->getStartTime()))
@@ -88,6 +88,8 @@ class ExchangeMailService {
       ->setDescription($description)
       ->setLocation($booking->getResource()->getName())
       ->getEvent()->setProperty('organizer', $booking->getMail(), array('CN' => $booking->getName()));
+
+    $event->getEvent()->setTransp('TRANSPARENT');
 
     // Set the newly create exchange ID.
     $booking->setExchangeId($event->getProperty('UID'));
@@ -167,6 +169,11 @@ class ExchangeMailService {
       'charset' => 'utf-8',
       'method' => $method,
     ));
+
+    $headers = $message->getHeaders();
+    $headers->addTextHeader('Content-Disposition', 'Content-Disposition: inline; filename=cal.ics');
+
+    echo $message;
 
     // Send the mail.
     $this->mailer->send($message);
