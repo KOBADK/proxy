@@ -75,17 +75,19 @@ class ExchangeMailService {
     $event = $calendar->newEvent();
 
     // Encode booking information in the vevent description.
-    $description = '<koba><id>' . $booking->getId() . '</id><name>' . $booking->getName() . '</name></koba>';
+    $description = '<koba><name>' . $booking->getName() . '</name><description>' . $booking->getDescription() . '</description></koba>';
 
     // Set event information.
     $event->setStartDate(\DateTime::createFromFormat( 'U', $booking->getStartTime()))
       ->setEndDate(\DateTime::createFromFormat( 'U', $booking->getEndTime()))
       ->setName($booking->getSubject())
       ->setDescription($description)
-      ->setLocation($booking->getResource()->getName())
-      ->getEvent()->setProperty('organizer', $booking->getMail(), array('CN' => $booking->getName()));
+      ->setLocation($booking->getResource()->getName());
 
-    $event->getEvent()->setTransp('TRANSPARENT');
+    $e = $event->getEvent();
+    $e->setOrganizer($booking->getMail(), array('CN' => $booking->getName()));
+    $e->setTransp('TRANSPARENT');
+    $e->setClass('PUBLIC');
 
     // Set the newly create exchange ID.
     $booking->setExchangeId($event->getProperty('UID'));
@@ -159,16 +161,13 @@ class ExchangeMailService {
       ->setBody($body, 'text/calendar');
 
     // Set the required headers.
-    $type = $message->getHeaders()->get('Content-Type');
+    $headers = $message->getHeaders();
+    $type = $headers->get('Content-Type');
     $type->setValue('text/calendar');
     $type->setParameters(array(
       'charset' => 'utf-8',
-      'method' => $method,
-      'name' => 'cal.ics',
+      'method' => $method
     ));
-
-    $headers = $message->getHeaders();
-    $headers->addTextHeader('Content-Disposition', 'inline; filename=cal.ics');
 
     echo $message;
 

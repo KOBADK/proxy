@@ -33,12 +33,12 @@ class IndexController extends Controller {
 
     // Create a test booking.
     $b = new Booking();
-    $b->setSubject('Test subject');
-    $b->setDescription('Test description');
+    $b->setSubject('Møde om nogle vigtige ting.');
+    $b->setDescription('Her beskriver vi hvad det er vi skal mødes om.');
     $b->setName($userName);
     $b->setMail($mail);
-    $b->setStartTime(time());
-    $b->setEndTime(time() + 3600);
+    $b->setStartTime(time() + 3600 * 5);
+    $b->setEndTime(time() + 3600 * 6);
     $b->setResource($resource);
 
     $provider = $this->get('itk.exchange_mail_service');
