@@ -91,7 +91,7 @@ class ExchangeMailService {
     $booking->setExchangeId($event->getProperty('UID'));
 
     // Get the calendar as an formatted string and send mail.
-    $this->sendMail($booking->getResource()->getMail(), $booking->getSubject(), $calendar->getCalendar()->createCalendar(), 'REQUEST');
+    $this->sendMail($booking->getResource()->getMail(), $booking->getSubject(), $calendar->returnCalendar(), 'REQUEST');
   }
 
   /**
@@ -164,11 +164,10 @@ class ExchangeMailService {
     $type->setParameters(array(
       'charset' => 'utf-8',
       'method' => $method,
-      'name' => 'cal.ics',
     ));
 
     $headers = $message->getHeaders();
-    $headers->addTextHeader('Content-Disposition', 'inline; filename=cal.ics');
+    $headers->addTextHeader('Content-Disposition', 'inline');
 
     echo $message;
 
