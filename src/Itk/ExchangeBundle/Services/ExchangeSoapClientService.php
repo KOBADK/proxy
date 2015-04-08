@@ -126,15 +126,19 @@ class ExchangeSoapClientService {
     $options[CURLOPT_POSTFIELDS] = $requestBody;
 
     // Initialise and configure cURL.
-    $ch = curl_init($this->exchange['host'] . '/EWS/Exchange.asmx');
+    $ch = curl_init($this->exchange['host'] . '/EWS/');
     curl_setopt_array($ch, $options);
 
     // Send the request.
     $response = curl_exec($ch);
 
     // Check if request went well.
-    if ($response === FALSE) {
-      throw new ExchangeSoapException(curl_error($ch), curl_errno($ch));
+    if ($response === FALSE || curl_getinfo($ch, CURLINFO_HTTP_CODE) !== 200) {
+      $erroNo = curl_errno($ch);
+      if (!$erroNo) {
+        throw new ExchangeSoapException('HTTP error', curl_getinfo($ch, CURLINFO_HTTP_CODE));
+      }
+      throw new ExchangeSoapException(curl_error($ch), $erroNo);
     }
 
     // Close the cURL instance before we return.
