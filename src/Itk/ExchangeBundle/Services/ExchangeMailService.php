@@ -79,7 +79,7 @@ class ExchangeMailService {
     $normalizers = array(new GetSetMethodNormalizer());
     $normalizers[0]->setIgnoredAttributes(array('resource', 'exchangeId'));
     $serializer = new Serializer($normalizers, $encoders);
-    $description = '<!-- KOBA ' . $serializer->serialize($booking, 'json') . 'KOBA -->';
+    $description = '<!-- KOBA ' . $serializer->serialize($booking, 'json') . ' KOBA -->';
 
     // Set event information.
     $event->setStartDate(\DateTime::createFromFormat( 'U', $booking->getStartTime()))
