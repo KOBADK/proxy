@@ -75,7 +75,11 @@ class ExchangeMailService {
     $event = $calendar->newEvent();
 
     // Encode booking information in the vevent description.
-    $description = '<koba><name>' . $booking->getName() . '</name><description>' . $booking->getDescription() . '</description></koba>';
+    $encoders = array(new XmlEncoder(), new JsonEncoder());
+    $normalizers = array(new GetSetMethodNormalizer());
+    $normalizers[0]->setIgnoredAttributes(array('resource', 'exchangeId'));
+    $serializer = new Serializer($normalizers, $encoders);
+    $description = '<!-- KOBA ' . $serializer->serialize($booking, 'json') . 'KOBA -->';
 
     // Set event information.
     $event->setStartDate(\DateTime::createFromFormat( 'U', $booking->getStartTime()))
