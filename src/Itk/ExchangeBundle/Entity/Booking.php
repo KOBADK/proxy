@@ -13,6 +13,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Booking {
   /**
+   * Default data format returned for dates.
+   */
+  CONST DEFAULT_DATAFORMAT = 'Ymd\THis\Z';
+
+  /**
    * Internal booking ID
    *
    * @ORM\Column(type="integer")
@@ -136,10 +141,13 @@ class Booking {
   /**
    * Get startTime
    *
-   * @return integer
+   * @param string $format
+   *   The date format to apply to the date. Defaults to 'Ymd\THis\Z'.
+   *
+   *   * @return integer
    */
-  public function getStartTime() {
-    return $this->startTime;
+  public function getStartTime($format = self::DEFAULT_DATAFORMAT) {
+    return date($format, $this->startTime);
   }
 
   /**
@@ -157,11 +165,13 @@ class Booking {
 
   /**
    * Get endTime
+   * @param string $format
+   *   The date format to apply to the date. Defaults to 'Ymd\THis\Z'.
    *
    * @return integer
    */
-  public function getEndTime() {
-    return $this->endTime;
+  public function getEndTime($format = self::DEFAULT_DATAFORMAT) {
+    return date($format, $this->endTime);
   }
 
   /**
