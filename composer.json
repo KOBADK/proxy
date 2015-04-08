@@ -31,7 +31,9 @@
     "willdurand/rest-extra-bundle": "~1.0",
     "incenteev/composer-parameter-handler": "~2.0",
     "bomo/ical-bundle": "~1.0",
-    "friendsofsymfony/user-bundle": "~2.0@dev"
+    "friendsofsymfony/user-bundle": "~2.0@dev",
+    "snc/redis-bundle": "1.1.x-dev",
+    "predis/predis": "0.8.x-dev"
   },
   "conflict": {
     "symfony/routing": "2.4.1"

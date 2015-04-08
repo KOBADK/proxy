@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains booking controller for MainBundle.
+ * Contains booking controller for ApiBundle.
  */
 
 namespace Koba\ApiBundle\Controller;
@@ -10,6 +10,7 @@ use Koba\MainBundle\Exceptions\NotImplementedException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -58,4 +59,5 @@ class BookingController extends FOSRestController {
     $view = $this->view($content, 200);
     return $this->handleView($view);
   }
+
 }
