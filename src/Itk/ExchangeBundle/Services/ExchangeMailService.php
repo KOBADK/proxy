@@ -86,7 +86,6 @@ class ExchangeMailService {
 
     $e = $event->getEvent();
     $e->setOrganizer($booking->getMail(), array('CN' => $booking->getName()));
-    $e->setTransp('TRANSPARENT');
     $e->setClass('PUBLIC');
 
     // Set the newly create exchange ID.
