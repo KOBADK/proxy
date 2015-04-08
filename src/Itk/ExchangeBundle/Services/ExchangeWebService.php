@@ -70,6 +70,7 @@ class ExchangeWebService {
     }
     catch (ExchangeSoapException $exception) {
       // @TODO: do some error handling.
+
     }
 
     $dom = new \DOMDocument();

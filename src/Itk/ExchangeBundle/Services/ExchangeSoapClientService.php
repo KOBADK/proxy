@@ -133,10 +133,11 @@ class ExchangeSoapClientService {
     $response = curl_exec($ch);
 
     // Check if request went well.
-    if ($response === FALSE || curl_getinfo($ch, CURLINFO_HTTP_CODE) !== 200) {
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    if ($code !== 200 || $response === FALSE) {
       $erroNo = curl_errno($ch);
       if (!$erroNo) {
-        throw new ExchangeSoapException('HTTP error', curl_getinfo($ch, CURLINFO_HTTP_CODE));
+        throw new ExchangeSoapException('HTTP error - ' . $code, $code);
       }
       throw new ExchangeSoapException(curl_error($ch), $erroNo);
     }
