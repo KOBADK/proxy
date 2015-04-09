@@ -61,23 +61,11 @@ class ResourceController extends FOSRestController {
    *   The response object.
    */
   public function getBookingsForResource(Request $request, $groupId, $resourceMail) {
-    // Confirm the apikey is accepted.
-    $apiKey = $this->get('koba.apikey_service')->getApiKey($request);
+    $apiKeyService = $this->get('koba.apikey_service');
 
-    $allowAccess = false;
-    foreach ($apiKey->getConfiguration()['groups'] as $group) {
-      if ($group['id'] === $groupId) {
-        foreach ($group['resources'] as $resource) {
-          if ($resource['mail'] === $resourceMail) {
-            $allowAccess = true;
-            break;
-          }
-        }
-      }
-    }
-    if (!$allowAccess) {
-      throw new AccessDeniedException();
-    }
+    // Confirm the apikey is accepted.
+    $apiKey = $apiKeyService->getApiKey($request);
+    $apiKeyService->checkAccess($apiKey, $groupId, $resourceMail);
 
     $resource = $this->get('doctrine')->getRepository('ItkExchangeBundle:Resource')->findOneByMail($resourceMail);
 

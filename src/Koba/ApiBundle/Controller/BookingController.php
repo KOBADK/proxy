@@ -31,13 +31,9 @@ class BookingController extends FOSRestController {
    *   The response object.
    */
   public function getBookings(Request $request) {
-    // Confirm the apikey is accepted.
-    $this->get('koba.apikey_service')->getApiKey($request);
+    $apiKey = $this->get('koba.apikey_service')->getApiKey($request);
 
     throw new NotImplementedException();
-/*
-    $view = $this->view(array(), 200);
-    return $this->handleView($view);*/
   }
 
   /**
@@ -55,6 +51,8 @@ class BookingController extends FOSRestController {
     $this->get('koba.apikey_service')->getApiKey($request);
 
     $content = $request->getContent();
+
+    throw new NotImplementedException();
 
     $view = $this->view($content, 200);
     return $this->handleView($view);
