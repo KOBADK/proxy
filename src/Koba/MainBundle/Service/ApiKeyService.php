@@ -62,11 +62,14 @@ class ApiKeyService {
    * @param $resourceMail
    */
   public function checkAccess($apiKey, $groupId, $resourceMail) {
-    foreach ($apiKey->getConfiguration()['groups'] as $group) {
-      if ($group['id'] === $groupId) {
-        foreach ($group['resources'] as $resource) {
-          if ($resource['mail'] === $resourceMail) {
-            return;
+    $configuration = $apiKey->getConfiguration();
+    if (isset($configuration['groups'])) {
+      foreach ($configuration['groups'] as $group) {
+        if ($group['id'] === $groupId) {
+          foreach ($group['resources'] as $resource) {
+            if ($resource['mail'] === $resourceMail) {
+              return;
+            }
           }
         }
       }
