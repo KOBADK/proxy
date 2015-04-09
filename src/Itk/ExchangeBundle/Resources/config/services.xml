@@ -5,6 +5,8 @@
       <argument type="service" id="itk.exchange_ad" />
       <argument type="service" id="itk.exchange_resource_repository" />
       <argument type="service" id="itk.exchange_mail_service" />
+      <argument type="service" id="itk.exchange_xml_service" />
+      <argument type="service" id="itk.exchange_web_service" />
     </service>
 
     <!-- Private service for the bundle -->

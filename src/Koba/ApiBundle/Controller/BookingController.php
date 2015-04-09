@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains booking controller for MainBundle.
+ * Contains booking controller for ApiBundle.
  */
 
 namespace Koba\ApiBundle\Controller;
@@ -10,6 +10,7 @@ use Koba\MainBundle\Exceptions\NotImplementedException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -30,13 +31,9 @@ class BookingController extends FOSRestController {
    *   The response object.
    */
   public function getBookings(Request $request) {
-    // Confirm the apikey is accepted.
-    $this->get('koba.apikey_service')->getApiKey($request);
+    $apiKey = $this->get('koba.apikey_service')->getApiKey($request);
 
     throw new NotImplementedException();
-/*
-    $view = $this->view(array(), 200);
-    return $this->handleView($view);*/
   }
 
   /**
@@ -55,7 +52,10 @@ class BookingController extends FOSRestController {
 
     $content = $request->getContent();
 
+    throw new NotImplementedException();
+
     $view = $this->view($content, 200);
     return $this->handleView($view);
   }
+
 }

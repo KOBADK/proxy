@@ -10,6 +10,8 @@ use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @Route("/resources")
@@ -46,5 +48,31 @@ class ResourceController extends FOSRestController {
 
     $view = $this->view($resources, 200);
     return $this->handleView($view);
+  }
+
+  /**
+   * @FOSRest\Get("/{resourceMail}/group/{groupId}/bookings")
+   *
+   * @param Request $request
+   * @param $groupId
+   * @param $resourceMail
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   *   The response object.
+   */
+  public function getBookingsForResource(Request $request, $groupId, $resourceMail) {
+    $apiKeyService = $this->get('koba.apikey_service');
+
+    // Confirm the apikey is accepted.
+    $apiKey = $apiKeyService->getApiKey($request);
+    $apiKeyService->checkAccess($apiKey, $groupId, $resourceMail);
+
+    $resource = $this->get('doctrine')->getRepository('ItkExchangeBundle:Resource')->findOneByMail($resourceMail);
+
+    $calendarService = $this->get('koba.calendar_service');
+
+    $content = $calendarService->getCalendar($resource->getMail(), $resource->getName());
+
+    return new JsonResponse($content);
   }
 }

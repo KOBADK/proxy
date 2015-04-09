@@ -25,6 +25,7 @@ class AppKernel extends Kernel
             new Bazinga\Bundle\RestExtraBundle\BazingaRestExtraBundle(),
             new BOMO\IcalBundle\BOMOIcalBundle(),
             new FOS\UserBundle\FOSUserBundle(),
+            new Snc\RedisBundle\SncRedisBundle(),
 
             // Own
             new Koba\MainBundle\KobaMainBundle(),

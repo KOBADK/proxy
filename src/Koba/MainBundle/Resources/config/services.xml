@@ -8,5 +8,11 @@
     <service id="koba.apikey_service" class="Koba\MainBundle\Service\ApiKeyService">
       <argument type="service" id="koba.apikey_repository" />
     </service>
+
+    <service id="koba.calendar_service" class="Koba\MainBundle\Service\CalendarService">
+      <argument type="service" id="itk.exchange_service" />
+      <argument type="service" id="snc_redis.default" />
+    </service>
+
   </services>
 </container>

@@ -24,11 +24,15 @@ class ExchangeService {
   protected $resourceRepository;
   protected $entityManager;
   protected $exchangeMailService;
+  protected $exchangeXMLService;
+  protected $exchangeWebService;
 
-  public function __construct(ExchangeADService $exchangeADService, ResourceRepository $resourceRepository, ExchangeMailService $exchangeMailService) {
+  public function __construct(ExchangeADService $exchangeADService, ResourceRepository $resourceRepository, ExchangeMailService $exchangeMailService, ExchangeXMLService $exchangeXMLService, ExchangeWebService $exchangeWebService) {
     $this->exchangeADService = $exchangeADService;
     $this->resourceRepository = $resourceRepository;
     $this->exchangeMailService = $exchangeMailService;
+    $this->exchangeXMLService = $exchangeXMLService;
+    $this->exchangeWebService = $exchangeWebService;
   }
 
   /**
@@ -61,6 +65,21 @@ class ExchangeService {
   }
 
   /**
+   * Get bookings for a given resource.
+   *
+   * @param string $resourceId
+   *   The mail of the resource.
+   * @param integer $interestPeriod
+   *   Seconds of interestPeriod.
+   *
+   * @return array
+   */
+  public function getBookingsForResource($resourceId, $interestPeriod) {
+    $now = mktime(0, 0, 0);
+    return $this->exchangeWebService->getRessourceBookings($resourceId, $now, $now + $interestPeriod);
+  }
+
+  /**
    * Create a booking.
    *
    * @param Booking $booking
@@ -68,5 +87,16 @@ class ExchangeService {
    */
   public function createBooking(Booking $booking) {
     $this->exchangeMailService->createBooking($booking);
+  }
+
+  /**
+   * Get exchange XML data.
+   *
+   * @param string $file
+   *
+   * @return array
+   */
+  public function getExchangeXMLData($file) {
+    return $this->exchangeXMLService->importXmlFile($file);
   }
 }
