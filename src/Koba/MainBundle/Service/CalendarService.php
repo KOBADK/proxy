@@ -60,7 +60,7 @@ class CalendarService {
    * Update the xml data.
    */
   public function updateXMLData() {
-    $xmlData = $this->exchangeService->getExchangeXMLData('./web/test.xml');
+    $xmlData = $this->exchangeService->getExchangeXMLData();
 
     foreach ($xmlData as $key => $value) {
       $this->redis->set('xml:' . $key, json_encode($value));

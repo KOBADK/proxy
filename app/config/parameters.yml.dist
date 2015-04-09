@@ -27,3 +27,5 @@ parameters:
     itk_exchange_user_mail: mail@koba2.vm
     itk_exchange_user_name: user
     itk_exchange_user_password: pass
+
+    itk_exchange_xml_file_rc: web/test.xml

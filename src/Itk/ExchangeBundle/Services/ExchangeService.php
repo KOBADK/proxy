@@ -92,11 +92,9 @@ class ExchangeService {
   /**
    * Get exchange XML data.
    *
-   * @param string $file
-   *
    * @return array
    */
-  public function getExchangeXMLData($file) {
-    return $this->exchangeXMLService->importXmlFile($file);
+  public function getExchangeXMLData() {
+    return $this->exchangeXMLService->importXmlFile();
   }
 }

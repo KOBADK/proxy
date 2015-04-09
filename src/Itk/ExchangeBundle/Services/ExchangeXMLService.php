@@ -14,6 +14,16 @@ namespace Itk\ExchangeBundle\Services;
  * @package Itk\ExchangeBundle\Services
  */
 class ExchangeXMLService {
+  private $file;
+
+
+  /**
+   * @TODO
+   */
+  public function __construct($file) {
+    $this->file = $file;
+  }
+
   /**
    * dateStringToUnixTimestamp
    *
@@ -54,13 +64,13 @@ class ExchangeXMLService {
    * @return array
    *   The imported data.
    */
-  public function importXmlFile($file) {
+  public function importXmlFile() {
     // The array of imported data.
     $data = array();
 
     // Initialize the XMLReader and load the file.
     $z = new \XMLReader;
-    $z->open($file);
+    $z->open($this->file);
 
     // This is used for simplexml parsing.
     $doc = new \DOMDocument;
