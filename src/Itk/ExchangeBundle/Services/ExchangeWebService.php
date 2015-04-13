@@ -65,13 +65,12 @@ class ExchangeWebService {
       </ItemIds>
     </GetItem>';
 
-    try {
+//    try {
       $xml = $this->client->request('GetItem', $body);
-    }
-    catch (ExchangeSoapException $exception) {
+//    }
+//    catch (ExchangeSoapException $exception) {
       // @TODO: do some error handling.
-
-    }
+//    }
 
     $dom = new \DOMDocument();
     $dom->loadXML($xml);

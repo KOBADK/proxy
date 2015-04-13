@@ -63,7 +63,8 @@ class IndexController extends Controller {
    * @Route("/list")
    */
   public function getResources() {
-    $id = 'DOKK1-lokale-test1@aarhus.dk';
+//    $id = 'DOKK1-lokale-test1@aarhus.dk';
+    $id = 'Hovedbiblioteket-ITK-Lokale-D@aarhus.dk';
     $ws = $this->get('itk.exchange_web_service');
 
     $ws->getRessourceBookings($id, mktime(0, 0, 0), mktime(23, 59, 59));
