@@ -100,12 +100,12 @@ class ExchangeWebService {
       </ParentFolderIds>
     </FindItem>';
 
-    try {
+//    try {
       $xml = $this->client->request('FindItem', $body, $impersonationId);
-    }
-    catch (ExchangeSoapException $exception) {
+//    }
+//    catch (ExchangeSoapException $exception) {
       // @TODO: do some error handling.
-    }
+//    }
 
     $dom = new \DOMDocument();
     $dom->loadXML($xml);
