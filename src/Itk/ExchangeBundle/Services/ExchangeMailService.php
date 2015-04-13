@@ -92,10 +92,16 @@ class ExchangeMailService {
     $e->setOrganizer($booking->getMail(), array('CN' => $booking->getName()));
     $e->setClass('PUBLIC');
 
+    // Set event mode.
+    $e->setProperty("transp", 'OPAQUE');
+
+    // Set description that will make Exchange pick-up the other description.
+    $e->setProperty("X-ALT-DESC;FMTTYPE=text/plain", $description);
+
     // Set the newly create exchange ID.
     $booking->setExchangeId($event->getProperty('UID'));
 
-    // Get the calendar as an formatted string and send mail.
+       // Get the calendar as an formatted string and send mail.
     $this->sendMail($booking->getResource()->getMail(), $booking->getSubject(), $calendar->returnCalendar(), 'REQUEST');
   }
 
