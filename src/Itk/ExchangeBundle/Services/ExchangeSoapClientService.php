@@ -126,7 +126,7 @@ class ExchangeSoapClientService {
     $options[CURLOPT_POSTFIELDS] = $requestBody;
 
     // Initialise and configure cURL.
-    $ch = curl_init($this->exchange['host'] . '/EWS/');
+    $ch = curl_init($this->exchange['host'] . '/EWS/Exchange.asmx');
     curl_setopt_array($ch, $options);
 
     // Send the request.
