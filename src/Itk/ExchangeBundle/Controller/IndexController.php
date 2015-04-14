@@ -71,12 +71,15 @@ class IndexController extends Controller {
   }
 
   /**
-   * @Route("/get/{id}/{change}")
+   * @Route("/get")
    */
-  public function getResource($id, $change) {
+  public function getResource($request) {
     $ws = $this->get('itk.exchange_web_service');
 
-    $ws->getBooking($id, $change);
+    $id = $request->query->get('id');
+    $key = $request->query->get('key');
+
+    $ws->getBooking($id, $key);
 
 
     return new JsonResponse(array('stest' => 'rewt'));
