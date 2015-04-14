@@ -13,6 +13,7 @@ use Itk\ExchangeBundle\Entity\Resource;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("")
@@ -73,7 +74,7 @@ class IndexController extends Controller {
   /**
    * @Route("/get")
    */
-  public function getResource($request) {
+  public function getResource(Request $request) {
     $ws = $this->get('itk.exchange_web_service');
 
     $id = $request->query->get('id');

@@ -34,6 +34,13 @@ class Booking {
   protected $exchangeId;
 
   /**
+   * ICal event UID
+   *
+   * @ORM\Column(type="string", nullable=true)
+   */
+  protected $icalUid;
+
+  /**
    * Resource that is booked
    *
    * @ORM\ManyToOne(targetEntity="Resource", inversedBy="bookings")
@@ -124,6 +131,29 @@ class Booking {
   public function getExchangeId() {
     return $this->exchangeId;
   }
+
+  /**
+   * Set icalUid
+   *
+   * @param string $icalUid
+   *
+   * @return Booking
+   */
+  public function setIcalUid($icalUid) {
+    $this->icalUid = $icalUid;
+
+    return $this;
+  }
+
+  /**
+   * Get icalUid
+   *
+   * @return string
+   */
+  public function getIcalUid() {
+    return $this->icalUid;
+  }
+
 
   /**
    * Set startTime

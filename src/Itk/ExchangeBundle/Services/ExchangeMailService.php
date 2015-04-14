@@ -114,8 +114,20 @@ class ExchangeMailService {
    *
    * @throws \Itk\ExchangeBundle\Exceptions\ExchangeNotSupportedException
    */
-  public function cancelBooking() {
-    throw new ExchangeNotSupportedException();
+  public function cancelBooking(Booking $booking) {
+    // Get a new ICal calender object.
+    $calendar = $this->createCalendar('CANCEL');
+
+    // Create new event in the calender.
+    $event = $calendar->newEvent();
+
+    // Set event information.
+    $event->setStartDate(new \Datetime($booking->getStartTime()))
+      ->setEndDate(new \DateTime($booking->getEndTime()))
+      ->setUID($booking->getIcalUid())
+      ->setStatus('CANCELLED');
+
+    $this->sendMail($booking->getResource()->getMail(), $booking->getSubject(), $calendar->returnCalendar(), 'CANCEL');
   }
 
   /**
