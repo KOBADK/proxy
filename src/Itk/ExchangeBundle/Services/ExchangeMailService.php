@@ -66,6 +66,10 @@ class ExchangeMailService {
    * Create a booking at Exchange.
    *
    * @param \Itk\ExchangeBundle\Entity\Booking $booking
+   *   The booking entity to use in the request.
+   *
+   * @return string
+   *   The unique id for this booking at Exchange.
    */
   public function createBooking(Booking $booking) {
     // Get a new ICal calender object.
@@ -98,11 +102,11 @@ class ExchangeMailService {
     // Set description that will make Exchange pick-up the other description.
     $e->setProperty("X-ALT-DESC;FMTTYPE=text/plain", $description);
 
-    // Set the newly create exchange ID.
-    $booking->setExchangeId($event->getProperty('UID'));
-
-       // Get the calendar as an formatted string and send mail.
+    // Get the calendar as an formatted string and send mail.
     $this->sendMail($booking->getResource()->getMail(), $booking->getSubject(), $calendar->returnCalendar(), 'REQUEST');
+
+    // Return the UID for the newly create booking.
+    return $event->getProperty('UID');
   }
 
   /**

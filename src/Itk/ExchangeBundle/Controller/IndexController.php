@@ -21,30 +21,29 @@ class IndexController extends Controller {
   /**
    * indexAction.
    *
-   * @Route("/book")
+   * @Route("/book/{offset}")
    */
-  public function indexAction() {
-
-    // Build resource for our test resource.
-    $resource = new Resource('DOKK1-lokale-test1@aarhus.dk', 'DOKK1-lokale-test1');
+  public function indexAction($offset = 0) {
+        // Build resource for our test resource.
+    $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
 
     $userName = $this->container->getParameter('itk_exchange_user_name');
     $mail = $this->container->getParameter('itk_exchange_user_mail');
 
     // Create a test booking.
-    $b = new Booking();
-    $b->setSubject('Møde om nogle vigtige ting.');
-    $b->setDescription('Her beskriver vi hvad det er vi skal mødes om.');
-    $b->setName($userName);
-    $b->setMail($mail);
-    $b->setStartTime(time() + 3600 * 5);
-    $b->setEndTime(time() + 3600 * 6);
-    $b->setResource($resource);
+    $booking = new Booking();
+    $booking->setSubject('Møde om nogle vigtige ting.');
+    $booking->setDescription('Her beskriver vi hvad det er vi skal mødes om.');
+    $booking->setName($userName);
+    $booking->setMail($mail);
+    $booking->setStartTime(time() + ($offset * 1800));
+    $booking->setEndTime(time() + 1800 + ($offset  * 1800));
+    $booking->setResource($resource);
 
     $provider = $this->get('itk.exchange_mail_service');
-    $provider->createBooking($b);
+    $provider->createBooking($booking);
 
-    return new JsonResponse(array('stest' => 'rewt'));
+    return new JsonResponse(array('msg' => 'booking mail sent'));
   }
 
   /**
@@ -63,17 +62,16 @@ class IndexController extends Controller {
    * @Route("/list")
    */
   public function getResources() {
-//    $id = 'DOKK1-lokale-test1@aarhus.dk';
-    $id = 'Hovedbiblioteket-ITK-Lokale-D@aarhus.dk';
+    $resource_id = 'DOKK1-lokale-test1@aarhus.dk';
     $ws = $this->get('itk.exchange_web_service');
 
-    $ws->getRessourceBookings($id, mktime(0, 0, 0), mktime(23, 59, 59));
+    $ws->getRessourceBookings($resource_id, mktime(0, 0, 0), mktime(23, 59, 59));
 
     return new JsonResponse(array('stest' => 'rewt'));
   }
 
   /**
-   * @Route("/get")
+   * @Route("/rooms")
    */
   public function getResource() {
     $ws = $this->get('itk.exchange_web_service');
