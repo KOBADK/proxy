@@ -20,13 +20,13 @@ class ResourceController extends FOSRestController {
   /**
    * Get resources.
    *
-   * @FOSRest\Get("/{groupID}", defaults={"groupID" = "default"})
+   * @FOSRest\Get("/group/{groupID}", defaults={"groupID" = "default"})
    *
    * @param Request $request
    *   The request object.
    * @param string $groupID
    *   The id of the group to get resources for.
-   *   Defaults to DEFAULT
+   *   Defaults to default
    *
    * @return \Symfony\Component\HttpFoundation\Response
    *   The response object.
@@ -56,11 +56,13 @@ class ResourceController extends FOSRestController {
    * @param Request $request
    * @param $groupId
    * @param $resourceMail
+   * @param $from
+   * @param $to
    *
    * @return \Symfony\Component\HttpFoundation\Response
    *   The response object.
    */
-  public function getBookingsForResource(Request $request, $groupId, $resourceMail) {
+  public function getBookingsForResource(Request $request, $groupId, $resourceMail, $from, $to) {
     $apiKeyService = $this->get('koba.apikey_service');
 
     // Confirm the apikey is accepted.
@@ -71,7 +73,7 @@ class ResourceController extends FOSRestController {
 
     $calendarService = $this->get('koba.calendar_service');
 
-    $content = $calendarService->getCalendar($resource->getMail(), $resource->getName());
+    $content = $calendarService->getCalendar($apiKey, $groupId, $resource, $from, $to);
 
     return new JsonResponse($content);
   }
