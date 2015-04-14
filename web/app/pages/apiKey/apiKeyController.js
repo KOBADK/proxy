@@ -147,6 +147,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
                 }
 
                 if (!alreadyAdded) {
+                  resource.display = 'FREE_BUSY';
                   resources.push(resource);
                 }
 
@@ -334,6 +335,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
             }
 
             if (!alreadyAdded) {
+              resource.display = 'FREE_BUSY';
               resources.push(resource);
             }
 
