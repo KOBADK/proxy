@@ -54,6 +54,9 @@ class BookingController extends FOSRestController {
 
     throw new NotImplementedException();
 
+    // Add BOOKING to JSM queue with callback to reservation status...
+
+
     $view = $this->view($content, 200);
     return $this->handleView($view);
   }

@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManager;
 use Itk\ExchangeBundle\Entity\Resource;
 use Itk\ExchangeBundle\Entity\ResourceRepository;
 use Itk\ExchangeBundle\Entity\Booking;
+use Itk\ExchangeBundle\Exceptions\ExchangeNotSupportedException;
 
 /**
  * Class ExchangeService
@@ -80,21 +81,39 @@ class ExchangeService {
   }
 
   /**
-   * Create a booking.
-   *
-   * @param Booking $booking
-   *   The booking to create.
-   */
-  public function createBooking(Booking $booking) {
-    $this->exchangeMailService->createBooking($booking);
-  }
-
-  /**
    * Get exchange XML data.
    *
    * @return array
    */
   public function getExchangeXMLData() {
     return $this->exchangeXMLService->importXmlFile();
+  }
+
+  /**
+   * Create a new booking.
+   *
+   * Side effect is that the Exchange id is set on the booking object.
+   *
+   * @param \Itk\ExchangeBundle\Entity\Booking $booking
+   *   Booking entity to send to Exchange.
+   */
+  public function createBooking(Booking $booking) {
+    $uid = $this->exchangeMailService->createBooking($booking);
+
+    // Store the reference id to Exchange (the booking may not have been
+    // created).
+    $booking->setExchangeId($uid);
+  }
+
+  /**
+   * Check if booking is accepted by Exchange.
+   *
+   * @param \Itk\ExchangeBundle\Entity\Booking $booking
+   *
+   * @return bool
+   *   TRUE if it's created else FALSE.
+   */
+  public function isBookingAccepted(Booking $booking) {
+    throw new ExchangeNotSupportedException();
   }
 }

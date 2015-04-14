@@ -110,6 +110,8 @@ class ExchangeWebService {
     $dom = new \DOMDocument();
     $dom->loadXML($xml);
 
+    echo $xml;
+
     // @TODO: return bookings?
   }
 }
