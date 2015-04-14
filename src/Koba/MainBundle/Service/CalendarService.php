@@ -6,7 +6,10 @@
 
 namespace Koba\MainBundle\Service;
 
+use Itk\ExchangeBundle\Entity\Resource;
+use Itk\ExchangeBundle\Exceptions\ExchangeNotSupportedException;
 use Itk\ExchangeBundle\Services\ExchangeService;
+use Koba\MainBundle\Entity\ApiKey;
 
 /**
  * Class CalendarService
@@ -25,19 +28,24 @@ class CalendarService {
   /**
    * Get the calendar events for a given resource.
    *
-   * @param string $resourceMail
-   *   The mail (id) of the resource.
-   * @param string $resourceName
-   *   The name of the resource.
-   * @param integer $interestPeriod
-   *   The number of seconds to look for data for from exchange.
-   *   Defaults to 7 days = 604800 seconds.
+   * @param ApiKey $apiKey
+   *   The api key.
+   * @param string $groupId
+   *   The group id.
+   * @param Resource $resource
+   *   The resource.
+   * @param integer $from
+   *   Start interest time. Unix timestamp.
+   * @param integer $to
+   *   End interest time. Unix timestamp.
    *
    * @return array
    *   The bookings for the resource.
    */
-  public function getCalendar($resourceMail, $resourceName, $interestPeriod = 604800) {
-    $bookings = $this->redis->get('resources:' . $resourceMail . ':' . $interestPeriod);
+  public function getCalendar(ApiKey $apiKey, $groupId, Resource $resource, $from, $to) {
+    throw new ExchangeNotSupportedException();
+
+    /*$bookings = $this->redis->get('resources:' . $resourceMail . ':' . $interestPeriod);
 
     // If the entry exists return.
     if ($bookings) {
@@ -54,6 +62,7 @@ class CalendarService {
 
       return $xmlBookings;
     }
+    */
   }
 
   /**
