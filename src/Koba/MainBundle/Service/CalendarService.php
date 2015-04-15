@@ -10,6 +10,7 @@ use Itk\ExchangeBundle\Entity\Resource;
 use Itk\ExchangeBundle\Exceptions\ExchangeNotSupportedException;
 use Itk\ExchangeBundle\Services\ExchangeService;
 use Koba\MainBundle\Entity\ApiKey;
+use Predis\NotSupportedException;
 
 /**
  * Class CalendarService
@@ -17,12 +18,12 @@ use Koba\MainBundle\Entity\ApiKey;
  * @package Koba\MainBundle
  */
 class CalendarService {
-  protected $redis;
+  protected $cache;
   protected $exchangeService;
 
-  public function __construct(ExchangeService $exchangeService, $redis) {
+  public function __construct(ExchangeService $exchangeService, CacheInterface $cache) {
     $this->exchangeService = $exchangeService;
-    $this->redis = $redis;
+    $this->cache = $cache;
   }
 
   /**
@@ -34,45 +35,70 @@ class CalendarService {
    *   The group id.
    * @param Resource $resource
    *   The resource.
+   * @param array $resourceConfiguration
+   *   Configuration object for the resource.
    * @param integer $from
    *   Start interest time. Unix timestamp.
    * @param integer $to
    *   End interest time. Unix timestamp.
    *
+   * @throws NotSupportedException
+   *
    * @return array
    *   The bookings for the resource.
    */
-  public function getCalendar(ApiKey $apiKey, $groupId, Resource $resource, $from, $to) {
-    throw new ExchangeNotSupportedException();
+  public function getCalendar(ApiKey $apiKey, $groupId, $resource, $resourceConfiguration, $from, $to) {
+    // Get cache id
+    $cacheId = $apiKey->getApiKey() . ':' . $groupId . ':' . $resource->getMail() . ':' . $from . ':' . $to;
 
-    /*$bookings = $this->redis->get('resources:' . $resourceMail . ':' . $interestPeriod);
+    $bookings = $this->cache->get($cacheId);
 
-    // If the entry exists return.
+    // If the entry exists return it.
     if ($bookings) {
       return json_decode($bookings);
     }
     else {
-      // @TODO: Merge exchangeData and $xmlBookings
-      //$exchangeData = $this->exchangeService->getBookingsForResource($resourceMail, $interestPeriod);
+      $xmlBookings = array();
 
-      $xmlBookings = json_decode($this->redis->get('xml:' . $resourceName));
+      if ($resourceConfiguration['display'] === 'DSS') {
+        $xmlBookings = json_decode($this->cache->get('dss:' . $resource->getName()));
+      }
+      else if ($resourceConfiguration['display'] === 'RC') {
+        $xmlBookings = json_decode($this->cache->get('rc:' . $resource->getName()));
+      }
+      else if ($resourceConfiguration['display'] === 'FREE_BUSY') {
+        throw new NotSupportedException();
+      }
+      else if ($resourceConfiguration['display'] === 'BOOKED_BY') {
+        throw new NotSupportedException();
+      }
+      else if ($resourceConfiguration['display'] === 'KOBA_BOOKING') {
+        throw new NotSupportedException();
+      }
+      else if ($resourceConfiguration['display'] === 'SAFE_TITLE') {
+        throw new NotSupportedException();
+      }
 
-      $this->redis->set('resources:' . $resourceMail . ':' . $interestPeriod, json_encode($xmlBookings));
-      $this->redis->expire('resources:' . $resourceMail . ':' . $interestPeriod, 300);
+      $this->cache->set($cacheId, json_encode($xmlBookings), 300);
 
       return $xmlBookings;
     }
-    */
   }
 
   /**
    * Update the xml data.
    */
   public function updateXMLData() {
-    $xmlData = $this->exchangeService->getExchangeXMLData();
-
+    // Get DSS XML data and add to cache.
+    $xmlData = $this->exchangeService->getExchangeDssXmlData();
     foreach ($xmlData as $key => $value) {
-      $this->redis->set('xml:' . $key, json_encode($value));
+      $this->cache->set('dss:' . $key, json_encode($value));
+    }
+
+    // Get RC XML data and add to cache.
+    $xmlData = $this->exchangeService->getExchangeRcXmlData();
+    foreach ($xmlData as $key => $value) {
+      $this->cache->set('rc:' . $key, json_encode($value));
     }
   }
 }

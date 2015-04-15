@@ -57,24 +57,30 @@ class ApiKeyService {
   /**
    * Check access for an api key with a given groupId for access to a given resource.
    *
+   * @throws AccessDeniedException
+   *
    * @param $apiKey
    * @param $groupId
    * @param $resourceMail
+   *
+   * @returns array
    */
-  public function checkAccess($apiKey, $groupId, $resourceMail) {
+  public function getResourceConfiguration($apiKey, $groupId, $resourceMail) {
     $configuration = $apiKey->getConfiguration();
     if (isset($configuration['groups'])) {
       foreach ($configuration['groups'] as $group) {
         if ($group['id'] === $groupId) {
-          foreach ($group['resources'] as $resource) {
-            if ($resource['mail'] === $resourceMail) {
-              return;
+          foreach ($group['resources'] as $resourceConfiguration) {
+            if ($resourceConfiguration['mail'] === $resourceMail) {
+              // Access granted.
+              return $resourceConfiguration;
             }
           }
         }
       }
     }
 
+    // Access not granted to these credentials.
     throw new AccessDeniedException();
   }
 }

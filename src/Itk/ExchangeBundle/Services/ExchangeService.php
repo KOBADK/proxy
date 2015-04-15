@@ -81,12 +81,21 @@ class ExchangeService {
   }
 
   /**
-   * Get exchange XML data.
+   * Get exchange DSS XML data.
    *
    * @return array
    */
-  public function getExchangeXMLData() {
+  public function getExchangeDssXmlData() {
     return $this->exchangeXMLService->importDssXmlFile();
+  }
+
+  /**
+   * Get exchange RC XML data.
+   *
+   * @return array
+   */
+  public function getExchangeRcXmlData() {
+    return $this->exchangeXMLService->importRcXmlFile();
   }
 
   /**

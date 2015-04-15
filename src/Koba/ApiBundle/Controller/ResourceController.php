@@ -51,7 +51,7 @@ class ResourceController extends FOSRestController {
   }
 
   /**
-   * @FOSRest\Get("/{resourceMail}/group/{groupId}/bookings")
+   * @FOSRest\Get("/{resourceMail}/group/{groupId}/bookings/from/{from}/to/{to}")
    *
    * @param Request $request
    * @param $groupId
@@ -67,13 +67,17 @@ class ResourceController extends FOSRestController {
 
     // Confirm the apikey is accepted.
     $apiKey = $apiKeyService->getApiKey($request);
-    $apiKeyService->checkAccess($apiKey, $groupId, $resourceMail);
 
+    // Get resource configuration and check Access.
+    $resourceConfiguration = $apiKeyService->getResourceConfiguration($apiKey, $groupId, $resourceMail);
+
+    // Get the resource. We get it here to avoid more injections in the service.
     $resource = $this->get('doctrine')->getRepository('ItkExchangeBundle:Resource')->findOneByMail($resourceMail);
 
     $calendarService = $this->get('koba.calendar_service');
 
-    $content = $calendarService->getCalendar($apiKey, $groupId, $resource, $from, $to);
+    // Get calendar content.
+    $content = $calendarService->getCalendar($apiKey, $groupId, $resource, $resourceConfiguration, $from, $to);
 
     return new JsonResponse($content);
   }

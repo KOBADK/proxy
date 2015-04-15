@@ -88,7 +88,7 @@ class ExchangeXMLService {
       $arr = array(
         'event_id' => '',
         'event_name' => trim($node->Eventname->__toString()),
-        'resource_id' => trim($node->Templatename),
+        'room_id' => trim($node->Templatename),
         'start_time' => $this->dateStringToUnixTimestamp(trim($node->Starttime)),
         'end_time' => $this->dateStringToUnixTimestamp(trim($node->Endtime)),
       );

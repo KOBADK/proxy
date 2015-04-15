@@ -9,9 +9,13 @@
       <argument type="service" id="koba.apikey_repository" />
     </service>
 
+    <service id="koba.cache" class="Koba\MainBundle\Service\RedisCache">
+      <argument type="service" id="snc_redis.default" />
+    </service>
+
     <service id="koba.calendar_service" class="Koba\MainBundle\Service\CalendarService">
       <argument type="service" id="itk.exchange_service" />
-      <argument type="service" id="snc_redis.default" />
+      <argument type="service" id="koba.cache" />
     </service>
 
   </services>
