@@ -122,9 +122,7 @@ class ExchangeMailService {
     $event = $calendar->newEvent();
 
     // Set event information.
-    $event->setStartDate(new \Datetime($booking->getStartTime()))
-      ->setEndDate(new \DateTime($booking->getEndTime()))
-      ->setUID($booking->getIcalUid())
+    $event->setUID($booking->getIcalUid())
       ->setStatus('CANCELLED');
 
     $this->sendMail($booking->getResource()->getMail(), $booking->getSubject(), $calendar->returnCalendar(), 'CANCEL');

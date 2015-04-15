@@ -25,7 +25,7 @@ class IndexController extends Controller {
    * @Route("/book/{offset}")
    */
   public function indexAction($offset = 0) {
-        // Build resource for our test resource.
+    // Build resource for our test resource.
     $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
 
     $userName = $this->container->getParameter('itk_exchange_user_name');
@@ -45,6 +45,24 @@ class IndexController extends Controller {
     $provider->createBooking($booking);
 
     return new JsonResponse(array('msg' => 'booking mail sent'));
+  }
+
+  /**
+   * @Route("/cancel/{uid}")
+   */
+  public function cancelBooking($uid) {
+
+    $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
+
+    // Create a test booking.
+    $booking = new Booking();
+    $booking->setIcalUid($uid);
+    $booking->setResource($resource);
+
+    $provider = $this->get('itk.exchange_mail_service');
+    $provider->cancelBooking($booking);
+
+    return new JsonResponse(array('stest' => 'rewt'));
   }
 
   /**
