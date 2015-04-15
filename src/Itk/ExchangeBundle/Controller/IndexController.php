@@ -48,9 +48,11 @@ class IndexController extends Controller {
   }
 
   /**
-   * @Route("/cancel/{uid}")
+   * @Route("/cancel")
    */
-  public function cancelBooking($uid) {
+  public function cancelBooking(Request $request) {
+
+    $uid = $request->query->get('uid');
 
     $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
 
