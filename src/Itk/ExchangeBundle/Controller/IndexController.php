@@ -13,6 +13,7 @@ use Itk\ExchangeBundle\Entity\Resource;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("")
@@ -24,7 +25,7 @@ class IndexController extends Controller {
    * @Route("/book/{offset}")
    */
   public function indexAction($offset = 0) {
-        // Build resource for our test resource.
+    // Build resource for our test resource.
     $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
 
     $userName = $this->container->getParameter('itk_exchange_user_name');
@@ -44,6 +45,26 @@ class IndexController extends Controller {
     $provider->createBooking($booking);
 
     return new JsonResponse(array('msg' => 'booking mail sent'));
+  }
+
+  /**
+   * @Route("/cancel")
+   */
+  public function cancelBooking(Request $request) {
+
+    $uid = $request->query->get('uid');
+
+    $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
+
+    // Create a test booking.
+    $booking = new Booking();
+    $booking->setIcalUid($uid);
+    $booking->setResource($resource);
+
+    $provider = $this->get('itk.exchange_mail_service');
+    $provider->cancelBooking($booking);
+
+    return new JsonResponse(array('stest' => 'rewt'));
   }
 
   /**
@@ -73,7 +94,7 @@ class IndexController extends Controller {
   /**
    * @Route("/get")
    */
-  public function getResource($request) {
+  public function getResource(Request $request) {
     $ws = $this->get('itk.exchange_web_service');
 
     $id = $request->query->get('id');

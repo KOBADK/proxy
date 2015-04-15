@@ -102,7 +102,7 @@ class ExchangeService {
 
     // Store the reference id to Exchange (the booking may not have been
     // created).
-    $booking->setExchangeId($uid);
+    $booking->setIcalUid($uid);
   }
 
   /**

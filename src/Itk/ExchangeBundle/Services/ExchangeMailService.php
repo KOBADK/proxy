@@ -97,10 +97,10 @@ class ExchangeMailService {
     $e->setClass('PUBLIC');
 
     // Set event mode.
-    $e->setProperty("transp", 'OPAQUE');
+    $e->setProperty('transp', 'OPAQUE');
 
     // Set description that will make Exchange pick-up the other description.
-    $e->setProperty("X-ALT-DESC;FMTTYPE=text/plain", $description);
+    $e->setProperty('X-ALT-DESC;FMTTYPE=text/plain', $description);
 
     // Get the calendar as an formatted string and send mail.
     $this->sendMail($booking->getResource()->getMail(), $booking->getSubject(), $calendar->returnCalendar(), 'REQUEST');
@@ -114,8 +114,21 @@ class ExchangeMailService {
    *
    * @throws \Itk\ExchangeBundle\Exceptions\ExchangeNotSupportedException
    */
-  public function cancelBooking() {
-    throw new ExchangeNotSupportedException();
+  public function cancelBooking(Booking $booking) {
+    // Get a new ICal calender object.
+    $calendar = $this->createCalendar('CANCEL');
+
+    // Create new event in the calender.
+    $event = $calendar->newEvent();
+    $event->setStartDate(new \Datetime($booking->getStartTime()))
+      ->setEndDate(new \DateTime($booking->getEndTime()))
+      ->setStatus('CANCELLED');
+
+    // Set event information.
+    $e = $event->getEvent();
+    $e->setProperty('UID', $booking->getIcalUid());
+
+    $this->sendMail($booking->getResource()->getMail(), $booking->getSubject(), $calendar->returnCalendar(), 'CANCEL');
   }
 
   /**
