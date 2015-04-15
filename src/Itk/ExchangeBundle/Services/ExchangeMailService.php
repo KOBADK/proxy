@@ -120,7 +120,9 @@ class ExchangeMailService {
 
     // Create new event in the calender.
     $event = $calendar->newEvent();
-    $event->setStatus('CANCELLED');
+    $event->setStartDate(new \Datetime($booking->getStartTime()))
+      ->setEndDate(new \DateTime($booking->getEndTime()))
+      ->setStatus('CANCELLED');
 
     // Set event information.
     $e = $event->getEvent();
