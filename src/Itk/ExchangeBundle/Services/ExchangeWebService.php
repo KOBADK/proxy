@@ -57,7 +57,6 @@ class ExchangeWebService {
         <t:BaseShape>Default</t:BaseShape>
         <t:AdditionalProperties>
             <t:FieldURI FieldURI="item:TextBody" />
-            <t:FieldURI FieldURI="item:Body" />
         </t:AdditionalProperties>
       </ItemShape>
       <ItemIds>
