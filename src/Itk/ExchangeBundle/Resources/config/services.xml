@@ -37,6 +37,7 @@
 
     <service id="itk.exchange_xml_service" class="Itk\ExchangeBundle\Services\ExchangeXMLService" public="true">
       <argument>%itk_exchange_xml_file_rc%</argument>
+      <argument>%itk_exchange_xml_file_dss%</argument>
     </service>
 
     <service id="itk.exchange_resource_repository" class="Itk\ExchangeBundle\Entity\ResourceRepository" factory-service="doctrine.orm.default_entity_manager" factory-method="getRepository">

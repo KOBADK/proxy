@@ -86,7 +86,7 @@ class ExchangeService {
    * @return array
    */
   public function getExchangeXMLData() {
-    return $this->exchangeXMLService->importXmlFile();
+    return $this->exchangeXMLService->importDssXmlFile();
   }
 
   /**

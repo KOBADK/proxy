@@ -29,3 +29,4 @@ parameters:
     itk_exchange_user_password: pass
 
     itk_exchange_xml_file_rc: web/test.xml
+    itk_exchange_xml_file_dss: web/test2.xml

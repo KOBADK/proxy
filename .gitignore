@@ -16,3 +16,4 @@ config.codekit
 /bin
 *~
 /web/test.xml
+/web/test2.xml
