@@ -92,17 +92,21 @@ class ExchangeService {
   /**
    * Create a new booking.
    *
-   * Side effect is that the Exchange id is set on the booking object.
-   *
    * @param \Itk\ExchangeBundle\Entity\Booking $booking
    *   Booking entity to send to Exchange.
    */
   public function createBooking(Booking $booking) {
-    $uid = $this->exchangeMailService->createBooking($booking);
+    $this->exchangeMailService->createBooking($booking);
+  }
 
-    // Store the reference id to Exchange (the booking may not have been
-    // created).
-    $booking->setIcalUid($uid);
+  /**
+   * Cancel a booking.
+   *
+   * @param \Itk\ExchangeBundle\Entity\Booking $booking
+   *   Booking entity to cancel.
+   */
+  public function cancelBooking(Booking $booking) {
+    $this->exchangeMailService->cancelBooking($booking);
   }
 
   /**

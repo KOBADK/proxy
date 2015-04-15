@@ -67,9 +67,6 @@ class ExchangeMailService {
    *
    * @param \Itk\ExchangeBundle\Entity\Booking $booking
    *   The booking entity to use in the request.
-   *
-   * @return string
-   *   The unique id for this booking at Exchange.
    */
   public function createBooking(Booking $booking) {
     // Get a new ICal calender object.
@@ -92,21 +89,22 @@ class ExchangeMailService {
       ->setDescription($description)
       ->setLocation($booking->getResource()->getName());
 
-    $e = $event->getEvent();
-    $e->setOrganizer($booking->getMail(), array('CN' => $booking->getName()));
-    $e->setClass('PUBLIC');
+    // Set reference to the ics event to be able to send cancel events later.
+    $booking->setIcalUid($event->getProperty('UID'));
+
+    // Get the raw iCalCreator event.
+    $rawEvent = $event->getEvent();
+    $rawEvent->setOrganizer($booking->getMail(), array('CN' => $booking->getName()));
+    $rawEvent->setClass('PUBLIC');
 
     // Set event mode.
-    $e->setProperty('transp', 'OPAQUE');
+    $rawEvent->setProperty('transp', 'OPAQUE');
 
     // Set description that will make Exchange pick-up the other description.
-    $e->setProperty('X-ALT-DESC;FMTTYPE=text/plain', $description);
+    $rawEvent->setProperty('X-ALT-DESC;FMTTYPE=text/plain', $description);
 
     // Get the calendar as an formatted string and send mail.
     $this->sendMail($booking->getResource()->getMail(), $booking->getSubject(), $calendar->returnCalendar(), 'REQUEST');
-
-    // Return the UID for the newly create booking.
-    return $event->getProperty('UID');
   }
 
   /**
