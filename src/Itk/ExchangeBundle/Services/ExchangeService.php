@@ -78,6 +78,7 @@ class ExchangeService {
    *   Enrich the result with information form the bookings body.
    *
    * @return \Itk\ExchangeBundle\Model\ExchangeCalendar
+   *   Exchange calendar object with bookings for the interval.
    */
   public function getBookingsForResource(Resource $resource, $from, $to, $enrich = TRUE) {
     // Get basic calendar information.
@@ -97,6 +98,21 @@ class ExchangeService {
     }
 
     return $calendar;
+  }
+
+  /**
+   * Get single booking.
+   *
+   * @param $id
+   *   The Exchange ID.
+   * @param $changeKey
+   *   The change key for the booking.
+   *
+   * @return bool|\Itk\ExchangeBundle\Model\ExchangeBooking
+   *   Booking information from Exchange.
+   */
+  public function getBooking($id, $changeKey) {
+    return $this->exchangeWebService->getBooking($id, $changeKey);
   }
 
   /**
@@ -146,6 +162,9 @@ class ExchangeService {
    *   TRUE if it's created else FALSE.
    */
   public function isBookingAccepted(Booking $booking) {
+
+    print_r($this->getBookingsForResource($booking->getResource(), $booking->getStartTime('U'), $booking->getEndTime('U'), FALSE));
+
     throw new ExchangeNotSupportedException();
   }
 }

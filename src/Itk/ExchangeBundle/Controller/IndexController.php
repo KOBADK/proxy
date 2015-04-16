@@ -85,7 +85,7 @@ class IndexController extends Controller {
   public function getResources() {
     $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
     $exchange = $this->get('itk.exchange_service');
-    $calendar = $exchange->getBookingsForResource($resource, mktime(0, 0, 0), mktime(23, 59, 29));
+    $calendar = $exchange->getBookingsForResource($resource, mktime(0, 0, 0), mktime(23, 59, 29), TRUE);
 
     print_r($calendar);
 
@@ -96,13 +96,39 @@ class IndexController extends Controller {
    * @Route("/get")
    */
   public function getResource(Request $request) {
-    $ws = $this->get('itk.exchange_web_service');
+    $exchange = $this->get('itk.exchange_service');
 
     $id = $request->query->get('id');
     $key = $request->query->get('key');
 
-    $ws->getBooking($id, $key);
+    $booking = $exchange->getBooking($id, $key);
+    print_r($booking);
 
+    return new JsonResponse(array('stest' => 'rewt'));
+  }
+
+  /**
+   * @Route("/test")
+   */
+  public function testBooking(Request $request) {
+    // Build resource for our test resource.
+    $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
+
+    $userName = $this->container->getParameter('itk_exchange_user_name');
+    $mail = $this->container->getParameter('itk_exchange_user_mail');
+
+    // Create a test booking.
+    $booking = new Booking();
+    $booking->setSubject('Møde om nogle vigtige ting.');
+    $booking->setDescription('Her beskriver vi hvad det er vi skal mødes om.');
+    $booking->setName($userName);
+    $booking->setMail($mail);
+    $booking->setStartTime('1429173225');
+    $booking->setEndTime('1429175025');
+    $booking->setResource($resource);
+
+    $exchange = $this->get('itk.exchange_service');
+    $exchange->isBookingAccepted($booking);
 
     return new JsonResponse(array('stest' => 'rewt'));
   }
