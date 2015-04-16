@@ -109,7 +109,7 @@ class ExchangeWebService {
     $doc = new \DOMDocument();
     $doc->loadXML($xml);
 
-    $xpath = new DOMXpath($doc);
+    $xpath = new \DOMXPath($doc);
     $xpath->registerNamespace('t', 'http://schemas.microsoft.com/exchange/services/2006/types');
 
     // Find the calendar items.
