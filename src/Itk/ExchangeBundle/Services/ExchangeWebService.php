@@ -64,19 +64,13 @@ class ExchangeWebService {
       </ItemIds>
     </GetItem>';
 
-//    try {
-      $xml = $this->client->request('GetItem', $body);
-//    }
-//    catch (ExchangeSoapException $exception) {
-      // @TODO: do some error handling.
-//    }
+    // Send request to EWS.
+    $xml = $this->client->request('GetItem', $body);
 
     $dom = new \DOMDocument();
     $dom->loadXML($xml);
 
     echo $xml;
-
-    // @TODO: return bookings?
   }
 
   /**
@@ -101,18 +95,12 @@ class ExchangeWebService {
       </ParentFolderIds>
     </FindItem>';
 
-//    try {
-      $xml = $this->client->request('FindItem', $body, $impersonationId);
-//    }
-//    catch (ExchangeSoapException $exception) {
-      // @TODO: do some error handling.
-//    }
+    // Send request to EWS.
+    $xml = $this->client->request('FindItem', $body, $impersonationId);
 
     $dom = new \DOMDocument();
     $dom->loadXML($xml);
 
     echo $xml;
-
-    // @TODO: return bookings?
   }
 }

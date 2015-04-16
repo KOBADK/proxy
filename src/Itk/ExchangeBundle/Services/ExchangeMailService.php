@@ -75,12 +75,15 @@ class ExchangeMailService {
     // Create new event in the calender.
     $event = $calendar->newEvent();
 
+    // Set reference to the ics event to be able to send cancel events later.
+    $booking->setIcalUid($event->getProperty('UID'));
+
     // Encode booking information in the vevent description.
     $encoders = array(new XmlEncoder(), new JsonEncoder());
     $normalizers = array(new GetSetMethodNormalizer());
     $normalizers[0]->setIgnoredAttributes(array('resource', 'exchangeId'));
     $serializer = new Serializer($normalizers, $encoders);
-    $description = '<!-- KOBA ' . $serializer->serialize($booking, 'json') . ' KOBA -->';
+    $description = '<KOBA>' . $serializer->serialize($booking, 'json') . '<KOBA>';
 
     // Set event information.
     $event->setStartDate(new \Datetime($booking->getStartTime()))
@@ -88,9 +91,6 @@ class ExchangeMailService {
       ->setName($booking->getSubject())
       ->setDescription($description)
       ->setLocation($booking->getResource()->getName());
-
-    // Set reference to the ics event to be able to send cancel events later.
-    $booking->setIcalUid($event->getProperty('UID'));
 
     // Get the raw iCalCreator event.
     $rawEvent = $event->getEvent();
@@ -110,6 +110,9 @@ class ExchangeMailService {
   /**
    * Cancel an exiting booking.
    *
+   * @param \Itk\ExchangeBundle\Entity\Booking $booking
+   *   The booking entity to cancel.
+   *
    * @throws \Itk\ExchangeBundle\Exceptions\ExchangeNotSupportedException
    */
   public function cancelBooking(Booking $booking) {
@@ -126,6 +129,7 @@ class ExchangeMailService {
     $e = $event->getEvent();
     $e->setProperty('UID', $booking->getIcalUid());
 
+    // Get the calendar as an formatted string and send mail.
     $this->sendMail($booking->getResource()->getMail(), $booking->getSubject(), $calendar->returnCalendar(), 'CANCEL');
   }
 
@@ -192,8 +196,6 @@ class ExchangeMailService {
       'charset' => 'utf-8',
       'method' => $method
     ));
-
-    echo $message;
 
     // Send the mail.
     $this->mailer->send($message);
