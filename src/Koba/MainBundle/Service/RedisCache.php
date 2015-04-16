@@ -34,7 +34,7 @@ class RedisCache implements CacheInterface {
    */
   public function set($key, $value, $expire = NULL) {
     $this->redis->set($key, $value);
-    if ($expire) {
+    if ($expire !== NULL) {
       $this->redis->expire($key, $expire);
     }
   }
