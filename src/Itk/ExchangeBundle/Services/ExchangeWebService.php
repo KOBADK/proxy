@@ -158,10 +158,8 @@ class ExchangeWebService {
     $booking->setSubject($xpath->evaluate('./t:Subject', $calendarItem)->item(0)->nodeValue);
 
     // Set timestamps.
-    $start = \DateTime::createFromFormat('c', $xpath->evaluate('./t:Start', $calendarItem)->item(0)->nodeValue);
-    $end = \DateTime::createFromFormat('c', $xpath->evaluate('./t:End', $calendarItem)->item(0)->nodeValue);
-    $booking->setStart($start);
-    $booking->setEnd($end);
+    $booking->setStart(strtotime($xpath->evaluate('./t:Start', $calendarItem)->item(0)->nodeValue));
+    $booking->setEnd(strtotime($xpath->evaluate('./t:End', $calendarItem)->item(0)->nodeValue));
 
     $body = $xpath->evaluate('./t:TextBody', $calendarItem);
     if ($body->length) {
