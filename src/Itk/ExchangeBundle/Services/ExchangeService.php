@@ -89,10 +89,11 @@ class ExchangeService {
      */
     // Check if body information should be included.
     if ($enrich) {
-      $bookings = &$calendar->getBookings();
+      $bookings = $calendar->getBookings();
       foreach($bookings as &$booking) {
         $booking = $this->exchangeWebService->getBooking($booking->getId(), $booking->getChangeKey());
       }
+      $calendar->setBookings($bookings);
     }
 
     return $calendar;
