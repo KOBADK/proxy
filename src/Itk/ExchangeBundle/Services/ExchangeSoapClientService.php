@@ -94,10 +94,8 @@ class ExchangeSoapClientService {
     // Render and store the final request string.
     $requestBodyString = $doc->saveXML();
 
-    echo $requestBodyString;
-
     // Send the SOAP request to the server via CURL.
-    //return $this->curlRequest($action, $requestBodyString, $options);
+    return $this->curlRequest($action, $requestBodyString, $options);
   }
 
   /**

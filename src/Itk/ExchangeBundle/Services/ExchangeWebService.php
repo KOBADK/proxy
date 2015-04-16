@@ -80,23 +80,23 @@ class ExchangeWebService {
    *
    * @param \Itk\ExchangeBundle\Entity\Resource $resource
    *   The resource to list.
-   * @param $start
+   * @param $from
    *   Unix timestamp for the start date to query Exchange.
-   * @param $end
+   * @param $to
    *   Unix timestamp for the end date to query Exchange.
    *
    * @return ExchangeCalendar
    *   Exchange calender with all bookings in the interval.
    */
-  public function getRessourceBookings($resource, $start, $end) {
-    $calendar = new ExchangeCalendar($resource, $start, $end);
+  public function getRessourceBookings($resource, $from, $to) {
+    $calendar = new ExchangeCalendar($resource, $from, $to);
 
     // Build XML body.
     $body = '<FindItem  Traversal="Shallow" xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
       <ItemShape>
         <t:BaseShape>Default</t:BaseShape>
       </ItemShape>
-      <CalendarView StartDate="' . date('Y-m-d\TH:i:s\Z', $start) . '" EndDate="' . date('Y-m-d\TH:i:s\Z', $end) . '"/>
+      <CalendarView StartDate="' . date('Y-m-d\TH:i:s\Z', $from) . '" EndDate="' . date('Y-m-d\TH:i:s\Z', $to) . '"/>
       <ParentFolderIds>
         <t:DistinguishedFolderId Id="calendar"/>
       </ParentFolderIds>
