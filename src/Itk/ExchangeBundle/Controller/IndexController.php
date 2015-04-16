@@ -83,10 +83,11 @@ class IndexController extends Controller {
    * @Route("/list")
    */
   public function getResources() {
-    $resource_id = 'DOKK1-lokale-test1@aarhus.dk';
-    $ws = $this->get('itk.exchange_web_service');
+    $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
+    $exchange = $this->get('itk.exchange_service');
+    $calendar = $exchange->getRessourceBookings($resource, mktime(0, 0, 0), mktime(23, 59, 29));
 
-    $ws->getRessourceBookings($resource_id, mktime(0, 0, 0), mktime(23, 59, 59));
+    print_r($calendar);
 
     return new JsonResponse(array('stest' => 'rewt'));
   }

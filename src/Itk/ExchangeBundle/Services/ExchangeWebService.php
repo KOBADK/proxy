@@ -8,6 +8,8 @@ namespace Itk\ExchangeBundle\Services;
 
 use Itk\ExchangeBundle\Exceptions\ExchangeNotSupportedException;
 use Itk\ExchangeBundle\Exceptions\ExchangeSoapException;
+use Itk\ExchangeBundle\Model\ExchangeBooking;
+use Itk\ExchangeBundle\Model\ExchangeCalendar;
 
 /**
  * Class ExchangeWS
@@ -76,14 +78,19 @@ class ExchangeWebService {
   /**
    * Get bookings on a resource.
    *
-   * @param $impersonationId
-   *   The id of the resource (mail address).
+   * @param \Itk\ExchangeBundle\Entity\Resource $resource
+   *   The resource to list.
    * @param $start
    *   Unix timestamp for the start date to query Exchange.
    * @param $end
    *   Unix timestamp for the end date to query Exchange.
+   *
+   * @return ExchangeCalendar
+   *   Exchange calender with all bookings in the interval.
    */
-  public function getRessourceBookings($impersonationId, $start, $end) {
+  public function getRessourceBookings($resource, $start, $end) {
+    $calendar = new ExchangeCalendar($resource, $start, $end);
+
     // Build XML body.
     $body = '<FindItem  Traversal="Shallow" xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
       <ItemShape>
@@ -96,11 +103,29 @@ class ExchangeWebService {
     </FindItem>';
 
     // Send request to EWS.
-    $xml = $this->client->request('FindItem', $body, $impersonationId);
+    $xml = $this->client->request('FindItem', $body, $resource->getMail());
 
-    $dom = new \DOMDocument();
-    $dom->loadXML($xml);
+    // Parse the response.
+    $doc = new \DOMDocument();
+    $doc->loadXML($xml);
 
-    echo $xml;
+    $xpath = new DOMXpath($doc);
+    $xpath->registerNamespace('t', 'http://schemas.microsoft.com/exchange/services/2006/types');
+
+    // Find the calendar items.
+    $calendarItems = $xpath->query('//t:CalendarItem');
+
+    foreach ($calendarItems as $calendarItem) {
+      $itemId = $xpath->evaluate('./t:ItemId', $calendarItem);
+
+      $booking = new ExchangeBooking($itemId->item(0)->getAttribute('Id'), $itemId->item(0)->getAttribute('ChangeKey'));
+      $booking->setSubject($xpath->evaluate('./t:Subject', $calendarItem)->item(0)->nodeValue);
+      $booking->setStart($xpath->evaluate('./t:Start', $calendarItem)->item(0)->nodeValue);
+      $booking->setEnd($xpath->evaluate('./t:End', $calendarItem)->item(0)->nodeValue);
+
+      $calendar->addBooking($booking);
+    }
+
+    return $calendar;
   }
 }

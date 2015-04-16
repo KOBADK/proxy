@@ -68,16 +68,17 @@ class ExchangeService {
   /**
    * Get bookings for a given resource.
    *
-   * @param string $resourceId
+   * @param \Itk\ExchangeBundle\Entity\Resource $resource
    *   The mail of the resource.
-   * @param integer $interestPeriod
-   *   Seconds of interestPeriod.
+   * @param int $from
+   *   The the start of the interval as unix timestamp.
+   * @param int $to
+   *   The the end of the interval as unix timestamp.
    *
-   * @return array
+   * @return \Itk\ExchangeBundle\Model\ExchangeCalendar
    */
-  public function getBookingsForResource($resourceId, $interestPeriod) {
-    $now = mktime(0, 0, 0);
-    return $this->exchangeWebService->getRessourceBookings($resourceId, $now, $now + $interestPeriod);
+  public function getBookingsForResource(Resource $resource, $from, $to) {
+    return $this->exchangeWebService->getRessourceBookings($resource, $from, $to);
   }
 
   /**
