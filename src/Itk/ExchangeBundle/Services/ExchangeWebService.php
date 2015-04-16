@@ -51,6 +51,9 @@ class ExchangeWebService {
    *   The Exchange ID for the booking.
    * @param $changeKey
    *   The Exchange change key (revision id).
+   *
+   * @return bool|\Itk\ExchangeBundle\Model\ExchangeBooking
+   *   If the booking exists return it else FALSE.
    */
   public function getBooking($id, $changeKey) {
     // Build XML body.
@@ -69,10 +72,23 @@ class ExchangeWebService {
     // Send request to EWS.
     $xml = $this->client->request('GetItem', $body);
 
-    $dom = new \DOMDocument();
-    $dom->loadXML($xml);
+    $doc = new \DOMDocument();
+    $doc->loadXML($xml);
 
-    echo $xml;
+    /**
+     * @TODO: Look for error message and log theme.
+     */
+
+    // Parse the booking if it exists.
+    $xpath = new \DOMXPath($doc);
+    $xpath->registerNamespace('t', 'http://schemas.microsoft.com/exchange/services/2006/types');
+    $items = $xpath->query('//t:CalendarItem');
+    if ($items->length) {
+      return $this->parseBookingXML($items->item(0), $xpath);
+    }
+
+    // Booking not found.
+    return FALSE;
   }
 
   /**
@@ -109,6 +125,10 @@ class ExchangeWebService {
     $doc = new \DOMDocument();
     $doc->loadXML($xml);
 
+    /**
+     * @TODO: Look for error message and log theme.
+     */
+
     $xpath = new \DOMXPath($doc);
     $xpath->registerNamespace('t', 'http://schemas.microsoft.com/exchange/services/2006/types');
 
@@ -116,16 +136,38 @@ class ExchangeWebService {
     $calendarItems = $xpath->query('//t:CalendarItem');
 
     foreach ($calendarItems as $calendarItem) {
-      $itemId = $xpath->evaluate('./t:ItemId', $calendarItem);
-
-      $booking = new ExchangeBooking($itemId->item(0)->getAttribute('Id'), $itemId->item(0)->getAttribute('ChangeKey'));
-      $booking->setSubject($xpath->evaluate('./t:Subject', $calendarItem)->item(0)->nodeValue);
-      $booking->setStart($xpath->evaluate('./t:Start', $calendarItem)->item(0)->nodeValue);
-      $booking->setEnd($xpath->evaluate('./t:End', $calendarItem)->item(0)->nodeValue);
-
-      $calendar->addBooking($booking);
+      $calendar->addBooking($this->parseBookingXML($calendarItem, $xpath));
     }
 
     return $calendar;
+  }
+
+  /**
+   * Parse DOMNode with calendarItem data.
+   *
+   * @param \DOMNode $calendarItem
+   *   Node with calendar item data from XML.
+   *
+   * @return \Itk\ExchangeBundle\Model\ExchangeBooking
+   *   The parsed Exchange booking object.
+   */
+  private function parseBookingXML(\DOMNode $calendarItem, \DOMXPath $xpath) {
+    $itemId = $xpath->evaluate('./t:ItemId', $calendarItem);
+
+    $booking = new ExchangeBooking($itemId->item(0)->getAttribute('Id'), $itemId->item(0)->getAttribute('ChangeKey'));
+    $booking->setSubject($xpath->evaluate('./t:Subject', $calendarItem)->item(0)->nodeValue);
+
+    // Set timestamps.
+    $start = \DateTime::createFromFormat('c', $xpath->evaluate('./t:Start', $calendarItem)->item(0)->nodeValue);
+    $end = \DateTime::createFromFormat('c', $xpath->evaluate('./t:End', $calendarItem)->item(0)->nodeValue);
+    $booking->setStart($start);
+    $booking->setEnd($end);
+
+    $body = $xpath->evaluate('./t:TextBody', $calendarItem);
+    if (body->length) {
+      $booking->setBody($xpath->evaluate('./t:TextBody', $calendarItem)->item(0)->nodeValue);
+    }
+
+    return $booking;
   }
 }

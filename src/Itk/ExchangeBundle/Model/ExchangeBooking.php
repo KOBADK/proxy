@@ -16,13 +16,29 @@ class ExchangeBooking {
   private $subject;
   private $start;
   private $end;
+  private $body;
 
-  function __construct($id, $changeKey, $subject = '', $start = 0, $end = 0) {
+  function __construct($id, $changeKey, $subject = '', $start = 0, $end = 0, $body = NULL) {
     $this->id = $id;
     $this->changeKey = $changeKey;
     $this->subject = $subject;
     $this->start = $start;
     $this->end = $end;
+    $this->body = $body;
+  }
+
+  /**
+   * @return null
+   */
+  public function getBody() {
+    return $this->body;
+  }
+
+  /**
+   * @param null $body
+   */
+  public function setBody($body) {
+    $this->body = $body;
   }
 
   /**

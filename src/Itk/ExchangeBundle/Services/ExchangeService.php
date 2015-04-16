@@ -74,11 +74,28 @@ class ExchangeService {
    *   The the start of the interval as unix timestamp.
    * @param int $to
    *   The the end of the interval as unix timestamp.
+   * @param bool $enrich
+   *   Enrich the result with information form the bookings body.
    *
    * @return \Itk\ExchangeBundle\Model\ExchangeCalendar
    */
-  public function getBookingsForResource(Resource $resource, $from, $to) {
-    return $this->exchangeWebService->getRessourceBookings($resource, $from, $to);
+  public function getBookingsForResource(Resource $resource, $from, $to, $enrich = TRUE) {
+    // Get basic calendar information.
+    $calendar = $this->exchangeWebService->getRessourceBookings($resource, $from, $to);
+
+    /**
+     * @TODO: Rename the bookings -> ExchangeBookings to remove mis-use to
+     *        booking entity.
+     */
+    // Check if body information should be included.
+    if ($enrich) {
+      $bookings = &$calendar->getBookings();
+      foreach($bookings as &$booking) {
+        $booking = $this->exchangeWebService->getBooking($booking->getId(), $booking->getChangeKey());
+      }
+    }
+
+    return $calendar;
   }
 
   /**
