@@ -164,8 +164,8 @@ class ExchangeWebService {
     $booking->setEnd($end);
 
     $body = $xpath->evaluate('./t:TextBody', $calendarItem);
-    if (body->length) {
-      $booking->setBody($xpath->evaluate('./t:TextBody', $calendarItem)->item(0)->nodeValue);
+    if ($body->length) {
+      $booking->setBody($body->item(0)->nodeValue);
     }
 
     return $booking;
