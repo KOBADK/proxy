@@ -24,7 +24,7 @@ interface CacheInterface {
    *   Cache key.
    * @param $value
    *   The value to set.
-   * @param null $expire
+   * @param integer|null $expire
    *   Optional expire time in seconds.
    */
   public function set($key, $value, $expire = NULL);
