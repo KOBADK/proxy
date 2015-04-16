@@ -21,6 +21,12 @@ class CalendarService {
   protected $cache;
   protected $exchangeService;
 
+  /**
+   * Constructor
+   *
+   * @param ExchangeService $exchangeService
+   * @param CacheInterface $cache
+   */
   public function __construct(ExchangeService $exchangeService, CacheInterface $cache) {
     $this->exchangeService = $exchangeService;
     $this->cache = $cache;
@@ -51,6 +57,7 @@ class CalendarService {
     // Get cache id
     $cacheId = $apiKey->getApiKey() . ':' . $groupId . ':' . $resource->getMail() . ':' . $from . ':' . $to;
 
+    // Get the bookings from the cache.
     $bookings = $this->cache->get($cacheId);
 
     // If the entry exists return it.
@@ -60,6 +67,14 @@ class CalendarService {
     else {
       $xmlBookings = array();
 
+      // Dependant on the resourceConfiguration['display'] we get bookings in various ways.
+      //   DSS - from the dss XML file
+      //   RC  - from the rc XML file
+      //   FREE_BUSY - from exchange, only free/busy times
+      //   BOOKED_BY - shows "Booked by [first_name]" as title
+      //   KOBA_BOOKING - all data from a booking made in KOBA
+      //   SAFE_TITLE - the title is from a special tag added to the body of a
+      //     booking made from exchange.
       if ($resourceConfiguration['display'] === 'DSS') {
         $xmlBookings = json_decode($this->cache->get('dss:' . $resource->getName()));
       }
@@ -79,6 +94,7 @@ class CalendarService {
         throw new NotSupportedException();
       }
 
+      // Save bookings in the cache.
       $this->cache->set($cacheId, json_encode($xmlBookings), 300);
 
       return $xmlBookings;

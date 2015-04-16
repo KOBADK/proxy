@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Contains the interface for the KOBA cache.
+ */
 
 namespace Koba\MainBundle\Service;
 

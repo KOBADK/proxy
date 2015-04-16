@@ -1,13 +1,17 @@
 <?php
 /**
  * @file
- * Customer Exception for methods not supported yet.
+ * Custom Exception for methods not supported yet.
  */
 
 namespace Koba\MainBundle\Exceptions;
 
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
+/**
+ * Class NotImplementedException
+ * @package Koba\MainBundle\Exceptions
+ */
 class NotImplementedException extends HttpException {
   /**
    * Constructor.

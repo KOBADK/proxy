@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class ResourceController extends FOSRestController {
   /**
-   * Get resources.
+   * Get all resources the apikey with group id has access to.
    *
    * @FOSRest\Get("/group/{groupID}", defaults={"groupID" = "default"})
    *

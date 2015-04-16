@@ -7,6 +7,7 @@
 namespace Koba\MainBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+
 /**
  * ApiKey.
  *

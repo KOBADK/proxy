@@ -1,4 +1,7 @@
 <?php
+/**
+ * Contains the redis cache.
+ */
 
 namespace Koba\MainBundle\Service;
 

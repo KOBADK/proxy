@@ -17,6 +17,5 @@
       <argument type="service" id="itk.exchange_service" />
       <argument type="service" id="koba.cache" />
     </service>
-
   </services>
 </container>

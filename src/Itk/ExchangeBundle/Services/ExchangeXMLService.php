@@ -19,6 +19,11 @@ class ExchangeXMLService {
 
   /**
    * Constructor
+   *
+   * @param string $rcFile
+   *   Path to the RC xml file.
+   * @param string $dssFile
+   *   Path to the DSS xml file.
    */
   public function __construct($rcFile, $dssFile) {
     $this->rcFile = $rcFile;
@@ -88,17 +93,17 @@ class ExchangeXMLService {
       $arr = array(
         'event_id' => '',
         'event_name' => trim($node->Eventname->__toString()),
-        'room_id' => trim($node->Templatename),
+        'resource_id' => trim($node->Templatename),
         'start_time' => $this->dateStringToUnixTimestamp(trim($node->Starttime)),
         'end_time' => $this->dateStringToUnixTimestamp(trim($node->Endtime)),
       );
 
       // Initialize array index for room-id if it does not exist.
-      if (!isset($data[$arr['room_id']])) {
-        $data[$arr['room_id']] = array();
+      if (!isset($data[$arr['resource_id']])) {
+        $data[$arr['resource_id']] = array();
       }
       // Save the event under the correct room in the return array.
-      $data[$arr['room_id']][] = $arr;
+      $data[$arr['resource_id']][] = $arr;
 
       // Go to next Event.
       $z->next('Event');
@@ -113,8 +118,9 @@ class ExchangeXMLService {
    * This methods assumes a XML document formed as:
    *   <Events>
    *     <Event>
+   *      <EventID>{{ Event id }}</EventID>
    *      <Eventname>{{ Name of event }}</Eventname>
-   *      <Templatename>{{ Room id }}</Templatename>
+   *      <Roomname>{{ Room id }}</Roomname>
    *      <Starttime>{{ Date formatted as "d-m-Y H:i:s" in Europe/Copenhagen timezone }}</Starttime>
    *      <Endtime>{{ Date formatted as "d-m-Y H:i:s" in Europe/Copenhagen timezone }}</Endtime>
    *     </Event>
@@ -165,17 +171,17 @@ class ExchangeXMLService {
       $arr = array(
         'event_id' => trim($node->EventID),
         'event_name' => trim($node->Eventname->__toString()),
-        'room_id' => trim($node->Roomname->__toString()),
+        'resource_id' => trim($node->Roomname->__toString()),
         'start_time' => $startTime,
         'end_time' => $endTime,
       );
 
       // Initialize array index for room-id if it does not exist.
-      if (!isset($data[$arr['room_id']])) {
-        $data[$arr['room_id']] = array();
+      if (!isset($data[$arr['resource_id']])) {
+        $data[$arr['resource_id']] = array();
       }
       // Save the event under the correct room in the return array.
-      $data[$arr['room_id']][] = $arr;
+      $data[$arr['resource_id']][] = $arr;
 
       // Go to next Event.
       $z->next('Event');

@@ -3,6 +3,7 @@
  * @file
  * Load bundle configuration and merge with main config file.
  */
+
 namespace Koba\ApiBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;

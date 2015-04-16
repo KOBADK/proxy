@@ -16,7 +16,11 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 
 /**
+ * Class ApiKeyController
+ *
  * @Route("/apikeys")
+ *
+ * @package Koba\AdminBundle\Controller
  */
 class ApiKeyController extends Controller {
   /**
@@ -36,10 +40,11 @@ class ApiKeyController extends Controller {
    *
    * @FOSRest\Get("/{key}")
    *
-   * @param $key
-   *   The apikey.
+   * @param string $key
+   *   The apikey string.
    *
    * @return ApiKey
+   *   The ApiKey.
    */
   public function getApiKey($key) {
     $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey($key);
@@ -62,10 +67,12 @@ class ApiKeyController extends Controller {
   public function postApiKey(Request $request) {
     $content = json_decode($request->getContent());
 
+    // Get POST parameters.
     $postApiKey = $content->api_key;
     $postConfiguration = $content->configuration;
     $postName = $content->name;
 
+    // Try to get the apikey, check for duplicate.
     $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey($postApiKey);
 
     if ($apiKeyEntity) {
@@ -74,6 +81,7 @@ class ApiKeyController extends Controller {
 
     $manager = $this->getDoctrine()->getManager();
 
+    // Save the ApiKey entity.
     $apiKey = new ApiKey();
     $apiKey->setApiKey($postApiKey);
     $apiKey->setName($postName);
