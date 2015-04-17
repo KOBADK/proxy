@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Route("")
@@ -40,6 +41,7 @@ class IndexController extends Controller {
     $booking->setStartTime(time() + ($offset * 1800));
     $booking->setEndTime(time() + 1800 + ($offset  * 1800));
     $booking->setResource($resource);
+    $booking->setStatusPending();
 
     $provider = $this->get('itk.exchange_mail_service');
     $provider->createBooking($booking);

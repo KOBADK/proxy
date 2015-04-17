@@ -13,11 +13,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Booking {
   /**
-   * Default data format returned for dates.
-   */
-  CONST DEFAULT_DATAFORMAT = 'Ymd\THis\Z';
-
-  /**
    * Internal booking ID
    *
    * @ORM\Column(type="integer")
@@ -100,6 +95,15 @@ class Booking {
    */
   protected $mail;
 
+  /**
+   * @ORM\Column(name="status", type="text")
+   *
+   * @TODO: Find a better way to set status, using bit-string or enmu in the
+   *        database.
+   *
+   * @Assert\NotBlank
+   */
+  protected $status;
 
   /**
    * Get id
@@ -171,13 +175,10 @@ class Booking {
   /**
    * Get startTime
    *
-   * @param string $format
-   *   The date format to apply to the date. Defaults to 'Ymd\THis\Z'.
-   *
-   *   * @return integer
+   * @return integer
    */
-  public function getStartTime($format = self::DEFAULT_DATAFORMAT) {
-    return date($format, $this->startTime);
+  public function getStartTime() {
+    return $this->startTime;
   }
 
   /**
@@ -290,6 +291,59 @@ class Booking {
    */
   public function getMail() {
     return $this->mail;
+  }
+
+  /**
+   * Set status to pending
+   *
+   * @return Booking
+   */
+  public function setStatusPending() {
+    $this->status = 'PENDING';
+
+    return $this;
+  }
+
+  /**
+   * Set status to pending
+   *
+   * @return Booking
+   */
+  public function setStatusDenied() {
+    $this->status = 'DENIED';
+
+    return $this;
+  }
+
+  /**
+   * Set status to pending
+   *
+   * @return Booking
+   */
+  public function setStatusAccepted() {
+    $this->status = 'ACCEPTED';
+
+    return $this;
+  }
+
+  /**
+   * Set status to pending
+   *
+   * @return Booking
+   */
+  public function setStatusCanceled() {
+    $this->status = 'CANCELED';
+
+    return $this;
+  }
+
+  /**
+   * Get status
+   *
+   * @return string
+   */
+  public function getStatus() {
+    return $this->status;
   }
 
   /**
