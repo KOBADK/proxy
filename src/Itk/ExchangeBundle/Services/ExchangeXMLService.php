@@ -33,17 +33,17 @@ class ExchangeXMLService {
   /**
    * dateStringToUnixTimestamp
    *
-   * Change the date-string from "d-m-Y H:i:s" to a Unix timestamp.
+   * Change the date-string from "m-d-Y H:i:s" to a Unix timestamp.
    *
    * @param $dateString
    *   The date string to convert to unix timestamp.
-   *   Formatted as "d-m-Y H:i:s"
+   *   Formatted as "m-d-Y H:i:s"
    *
    * @return string
    *   Unix timestamp
    */
   private function dateStringToUnixTimestamp($dateString) {
-    return \DateTime::createFromFormat('d-m-Y H:i:s', $dateString, new \DateTimeZone('Europe/Copenhagen'))->format('U');
+    return \DateTime::createFromFormat('m-d-Y H:i:s', $dateString, new \DateTimeZone('Europe/Copenhagen'))->format('U');
   }
 
   /**
@@ -54,8 +54,8 @@ class ExchangeXMLService {
    *     <Event>
    *      <Eventname>{{ Name of event }}</Eventname>
    *      <Templatename>{{ Room id }}</Templatename>
-   *      <Starttime>{{ Date formatted as "d-m-Y H:i:s" in Europe/Copenhagen timezone }}</Starttime>
-   *      <Endtime>{{ Date formatted as "d-m-Y H:i:s" in Europe/Copenhagen timezone }}</Endtime>
+   *      <Starttime>{{ Date formatted as "m-d-Y H:i:s" in Europe/Copenhagen timezone }}</Starttime>
+   *      <Endtime>{{ Date formatted as "m-d-Y H:i:s" in Europe/Copenhagen timezone }}</Endtime>
    *     </Event>
    *     <Event>
    *     ...
@@ -121,8 +121,8 @@ class ExchangeXMLService {
    *      <EventID>{{ Event id }}</EventID>
    *      <Eventname>{{ Name of event }}</Eventname>
    *      <Roomname>{{ Room id }}</Roomname>
-   *      <Starttime>{{ Date formatted as "d-m-Y H:i:s" in Europe/Copenhagen timezone }}</Starttime>
-   *      <Endtime>{{ Date formatted as "d-m-Y H:i:s" in Europe/Copenhagen timezone }}</Endtime>
+   *      <Starttime>{{ Date formatted as "m-d-Y H:i:s" in Europe/Copenhagen timezone }}</Starttime>
+   *      <Endtime>{{ Date formatted as "m-d-Y H:i:s" in Europe/Copenhagen timezone }}</Endtime>
    *     </Event>
    *     <Event>
    *     ...

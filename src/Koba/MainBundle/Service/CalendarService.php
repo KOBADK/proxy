@@ -7,7 +7,6 @@
 namespace Koba\MainBundle\Service;
 
 use Itk\ExchangeBundle\Entity\Resource;
-use Itk\ExchangeBundle\Exceptions\ExchangeNotSupportedException;
 use Itk\ExchangeBundle\Services\ExchangeService;
 use Koba\MainBundle\Entity\ApiKey;
 use Predis\NotSupportedException;
@@ -65,7 +64,7 @@ class CalendarService {
       return json_decode($bookings);
     }
     else {
-      $xmlBookings = array();
+      $bookings = array();
 
       // Dependant on the resourceConfiguration['display'] we get bookings in various ways.
       //   DSS - from the dss XML file
@@ -77,9 +76,15 @@ class CalendarService {
       //     booking made from exchange.
       if ($resourceConfiguration['display'] === 'DSS') {
         $xmlBookings = json_decode($this->cache->get('dss:' . $resource->getName()));
+
+        // Filter out bookings that are not from between $from and $to.
+        $bookings = $this->filterBookings($xmlBookings, $from, $to);
       }
       else if ($resourceConfiguration['display'] === 'RC') {
         $xmlBookings = json_decode($this->cache->get('rc:' . $resource->getName()));
+
+        // Filter out bookings that are not from between $from and $to.
+        $bookings = $this->filterBookings($xmlBookings, $from, $to);
       }
       else if ($resourceConfiguration['display'] === 'FREE_BUSY') {
         throw new NotSupportedException();
@@ -95,14 +100,41 @@ class CalendarService {
       }
 
       // Save bookings in the cache.
-      $this->cache->set($cacheId, json_encode($xmlBookings), 300);
+      $this->cache->set($cacheId, json_encode($bookings), 300);
 
-      return $xmlBookings;
+      return $bookings;
     }
   }
 
   /**
+   * Filter bookings, so that only bookings that occur between from and end
+   *   are left.
+   *
+   * @param $bookings
+   *   Array of bookings.
+   * @param integer $from
+   *   From (unixtimestamp)
+   * @param integer $to
+   *   To (unixtimestamp)
+   * @return array
+   *   The filtered array of bookings.
+   */
+  private function filterBookings($bookings, $from, $to) {
+    $results = array();
+
+    foreach ($bookings as $booking) {
+      if ($booking->start_time > $from && $booking->end_time < $to) {
+        $results[] = $booking;
+      }
+    }
+
+    return $results;
+  }
+
+  /**
    * Update the xml data.
+   *
+   * Used by cron process to cache data from the xml files.
    */
   public function updateXMLData() {
     // Get DSS XML data and add to cache.
