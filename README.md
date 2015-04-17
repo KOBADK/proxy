@@ -1,6 +1,17 @@
 # KOBA - Kalender og Booking API
 This project is based on Symfony Rest Edition.
 
+## Cron setup
+To continually update calendar information from the xml files, add a cron job.
+<pre>
+$ crontab -e
+</pre>
+
+Add the following line:
+<pre>
+*/1 * * * * path_to_php/php path_to_backend/app/console koba:calendar:update
+</pre>
+
 ## Initial Installation
 <pre>
  $ composer install
@@ -38,35 +49,3 @@ ssh -D 8080 -f -C -q -N deploy@namor.aakb.dk
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/KOBADK/backend/badges/build.png?b=development)](https://scrutinizer-ci.com/g/KOBADK/backend/?branch=development)
 
 
-
-## APIs
-
-### /api
-
-All /api calls should have the get parameter ApiKey defined or will get access denied.
-
-#### GET /api/resources/{groupID = default}
-Gets all resources for groupID and ApiKey.
-
-#### GET /api/bookings
-Gets all bookings made with the given ApiKey.
-
-#### POST /api/bookings
-Create a new booking.
-
-Request body:
-<pre>
-{
-  id (string): *,
-  starttime (unix timestamp): *,
-  endtime (unix timestamp): *,
-  description (string): *,
-  summary (string): *,
-  name (string): *,
-  mail (string): *,
-  tlf (string): *
-}
-</pre>
-
-Response:
-?

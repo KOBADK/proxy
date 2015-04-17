@@ -77,14 +77,18 @@ class CalendarService {
       if ($resourceConfiguration['display'] === 'DSS') {
         $xmlBookings = json_decode($this->cache->get('dss:' . $resource->getName()));
 
-        // Filter out bookings that are not from between $from and $to.
-        $bookings = $this->filterBookings($xmlBookings, $from, $to);
+        if ($xmlBookings) {
+          // Filter out bookings that are not from between $from and $to.
+          $bookings = $this->filterBookings($xmlBookings, $from, $to);
+        }
       }
       else if ($resourceConfiguration['display'] === 'RC') {
         $xmlBookings = json_decode($this->cache->get('rc:' . $resource->getName()));
 
-        // Filter out bookings that are not from between $from and $to.
-        $bookings = $this->filterBookings($xmlBookings, $from, $to);
+        if ($xmlBookings) {
+          // Filter out bookings that are not from between $from and $to.
+          $bookings = $this->filterBookings($xmlBookings, $from, $to);
+        }
       }
       else if ($resourceConfiguration['display'] === 'FREE_BUSY') {
         throw new NotSupportedException();
