@@ -163,6 +163,7 @@ class ExchangeService {
    */
   public function isBookingAccepted(Booking $booking) {
 
+
     print_r($this->getBookingsForResource($booking->getResource(), $booking->getStartTime('U'), $booking->getEndTime('U'), FALSE));
 
     throw new ExchangeNotSupportedException();

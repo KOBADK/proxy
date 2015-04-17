@@ -92,7 +92,7 @@ class ExchangeWebService {
       <ItemShape>
         <t:BaseShape>Default</t:BaseShape>
       </ItemShape>
-      <CalendarView StartDate="' . date('Y-m-d\TH:i:s\Z', $from) . '" EndDate="' . date('Y-m-d\TH:i:s\Z', $to) . '"/>
+      <CalendarView StartDate="' . date('c', $from) . '" EndDate="' . date('c', $to) . '"/>
       <ParentFolderIds>
         <t:DistinguishedFolderId Id="calendar"/>
       </ParentFolderIds>
@@ -107,6 +107,13 @@ class ExchangeWebService {
 
     /**
      * @TODO: Look for error message and log theme.
+     *
+     * <m:FindItemResponseMessage ResponseClass="Success">
+     *   <m:ResponseCode>NoError</m:ResponseCode>
+     *   <m:RootFolder TotalItemsInView="0" IncludesLastItemInRange="true">
+     *     <t:Items/>
+     *   </m:RootFolder>
+     * </m:FindItemResponseMessage>
      */
 
     $xpath = new \DOMXPath($doc);
