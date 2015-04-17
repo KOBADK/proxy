@@ -10,6 +10,10 @@ use Itk\ExchangeBundle\Exceptions\ExchangeNotSupportedException;
 use Itk\ExchangeBundle\Exceptions\ExchangeSoapException;
 use Itk\ExchangeBundle\Model\ExchangeBooking;
 use Itk\ExchangeBundle\Model\ExchangeCalendar;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * Class ExchangeWS
@@ -148,11 +152,28 @@ class ExchangeWebService {
     $booking->setStart(strtotime($xpath->evaluate('./t:Start', $calendarItem)->item(0)->nodeValue));
     $booking->setEnd(strtotime($xpath->evaluate('./t:End', $calendarItem)->item(0)->nodeValue));
 
+
     $body = $xpath->evaluate('./t:TextBody', $calendarItem);
     if ($body->length) {
-      $booking->setBody((string) $body->item(0)->nodeValue);
+      $this->parseBodyField($booking, (string) $body->item(0)->nodeValue);
     }
 
     return $booking;
+  }
+
+  private function parseBodyField($body, ExchangeBooking $exchangeBooking) {
+    if (preg_match('/<!--\sKOBA\s(.+)\sKOBA\s-->/', $body, $matches)) {
+      if (isset($matches[1])) {
+        // Decode booking information.
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new GetSetMethodNormalizer());
+        $normalizers[0]->setIgnoredAttributes(array('resource', 'exchangeId'));
+        $serializer = new Serializer($normalizers, $encoders);
+
+        // Set type and set data.
+        $exchangeBooking->setTypeKoba();
+        $exchangeBooking->setBody($serializer->deserialize($matches[1], 'Itk\ExchangeBundle\Entity\Booking', 'json'));
+      }
+    }
   }
 }
