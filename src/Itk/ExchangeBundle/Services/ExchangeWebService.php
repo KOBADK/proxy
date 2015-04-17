@@ -161,7 +161,13 @@ class ExchangeWebService {
     return $booking;
   }
 
-  private function parseBodyField($body, ExchangeBooking $exchangeBooking) {
+  /**
+   * Parse body.
+   *
+   * @param \Itk\ExchangeBundle\Model\ExchangeBooking $exchangeBooking
+   * @param $body
+   */
+  private function parseBodyField(ExchangeBooking $exchangeBooking, $body) {
     if (preg_match('/<!--\sKOBA\s(.+)\sKOBA\s-->/', $body, $matches)) {
       if (isset($matches[1])) {
         // Decode booking information.
