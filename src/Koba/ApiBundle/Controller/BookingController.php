@@ -31,10 +31,7 @@ class BookingController extends FOSRestController {
    *   The response object.
    */
   public function getBookings(Request $request) {
-    $apiKey = $this->get('koba.apikey_service')->getApiKey($request);
-
     // @TODO: Implement this!
-
     throw new NotImplementedException();
   }
 
@@ -49,20 +46,9 @@ class BookingController extends FOSRestController {
    *   The response object.
    */
   public function postBooking(Request $request) {
-    // Confirm the apikey is accepted.
-    $this->get('koba.apikey_service')->getApiKey($request);
-
-    $content = $request->getContent();
-
     // @TODO: Implement this!
-
     throw new NotImplementedException();
-
     // @TODO: Add BOOKING to JSM queue with callback to reservation status...
-
-
-    $view = $this->view($content, 200);
-    return $this->handleView($view);
   }
-
 }
+
