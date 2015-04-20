@@ -162,10 +162,18 @@ class ExchangeService {
    *   TRUE if it's created else FALSE.
    */
   public function isBookingAccepted(Booking $booking) {
+    // Start by getting the booking from exchange.
+    $exchangeCalendar = $this->getBookingsForResource($booking->getResource(), $booking->getStartTime(), $booking->getEndTime());
 
+    // Check that booking exists.
+    $exchangeBookings = $exchangeCalendar->getBookings();
+    if (!empty($exchangeBookings)) {
+      // Check if it's the right booking.
+      if ($exchangeBookings[0]->getType() == 'KOBA' && $exchangeBookings[0]->getBody()->getIcalUid() == $booking->getIcalUid()) {
+        return TRUE;
+      }
+    }
 
-    print_r($this->getBookingsForResource($booking->getResource(), $booking->getStartTime('U'), $booking->getEndTime('U'), FALSE));
-
-    throw new ExchangeNotSupportedException();
+    return FALSE;
   }
 }

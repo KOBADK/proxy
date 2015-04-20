@@ -121,16 +121,23 @@ class IndexController extends Controller {
 
     // Create a test booking.
     $booking = new Booking();
+    $booking->setIcalUid('20150420T131807CEST-44328UjGLM@10.215.16.26');
     $booking->setSubject('Møde om nogle vigtige ting.');
     $booking->setDescription('Her beskriver vi hvad det er vi skal mødes om.');
     $booking->setName($userName);
     $booking->setMail($mail);
-    $booking->setStartTime('1429173225');
-    $booking->setEndTime('1429175025');
+    $booking->setStartTime('1429532287');
+    $booking->setEndTime('1429534087');
     $booking->setResource($resource);
 
     $exchange = $this->get('itk.exchange_service');
-    $exchange->isBookingAccepted($booking);
+
+    if ($exchange->isBookingAccepted($booking)) {
+      echo 'Booked';
+    }
+    else {
+      echo 'Not booked';
+    }
 
     return new JsonResponse(array('stest' => 'rewt'));
   }
