@@ -86,8 +86,8 @@ class ExchangeMailService {
     $description = '<!-- KOBA ' . $serializer->serialize($booking, 'json') . ' KOBA -->';
 
     // Set event information.
-    $event->setStartDate(\Datetime::createFromFormat('u', $booking->getStartTime()))
-      ->setEndDate(\DateTime::createFromFormat('u', $booking->getEndTime()))
+    $event->setStartDate(\Datetime::createFromFormat('U', $booking->getStartTime()))
+      ->setEndDate(\DateTime::createFromFormat('U', $booking->getEndTime()))
       ->setName($booking->getSubject())
       ->setDescription($description)
       ->setLocation($booking->getResource()->getName());
