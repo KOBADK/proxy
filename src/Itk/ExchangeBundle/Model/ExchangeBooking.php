@@ -140,6 +140,13 @@ class ExchangeBooking {
   }
 
   /**
+   * @return string
+   */
+  public function getType() {
+    return $this->type;
+  }
+
+  /**
    * @return $this
    */
   public function setTypeKoba() {
