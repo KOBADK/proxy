@@ -85,9 +85,17 @@ class ExchangeMailService {
     $serializer = new Serializer($normalizers, $encoders);
     $description = '<!-- KOBA ' . $serializer->serialize($booking, 'json') . ' KOBA -->';
 
+    // Set start date with correct timezone.
+    $startDate = \DateTime::createFromFormat('U', $booking->getStartTime());
+    $startDate->setTimeZone(new \DateTimeZone('Europe/Copenhagen'));
+
+    // Set end date with correct timezone.
+    $endDate = \DateTime::createFromFormat('U', $booking->getEndTime());
+    $endDate->setTimeZone(new \DateTimeZone('Europe/Copenhagen'));
+
     // Set event information.
-    $event->setStartDate(\Datetime::createFromFormat('U', $booking->getStartTime()))
-      ->setEndDate(\DateTime::createFromFormat('U', $booking->getEndTime()))
+    $event->setStartDate($startDate)
+      ->setEndDate($endDate)
       ->setName($booking->getSubject())
       ->setDescription($description)
       ->setLocation($booking->getResource()->getName());
@@ -119,10 +127,18 @@ class ExchangeMailService {
     // Get a new ICal calender object.
     $calendar = $this->createCalendar('CANCEL');
 
+    // Set start date with correct timezone.
+    $startDate = \DateTime::createFromFormat('U', $booking->getStartTime());
+    $startDate->setTimeZone(new \DateTimeZone('Europe/Copenhagen'));
+
+    // Set end date with correct timezone.
+    $endDate = \DateTime::createFromFormat('U', $booking->getEndTime());
+    $endDate->setTimeZone(new \DateTimeZone('Europe/Copenhagen'));
+
     // Create new event in the calender.
     $event = $calendar->newEvent();
-    $event->setStartDate(new \Datetime($booking->getStartTime()))
-      ->setEndDate(new \DateTime($booking->getEndTime()))
+    $event->setStartDate($startDate)
+      ->setEndDate($endDate)
       ->setStatus('CANCELLED');
 
     // Set event information.
