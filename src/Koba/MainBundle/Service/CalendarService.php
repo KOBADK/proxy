@@ -109,7 +109,7 @@ class CalendarService {
           );
         }
       }
-      else if ($resourceConfiguration['display'] === 'KOBA_BOOKING') {
+      else if ($resourceConfiguration['display'] === 'KOBA') {
         $exchangeCalendar = $this->exchangeService->getBookingsForResource($resource, $from, $to, TRUE);
 
         foreach ($exchangeCalendar->getBookings() as $booking) {
