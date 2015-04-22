@@ -14,6 +14,7 @@ use Itk\ExchangeBundle\Entity\Resource;
 use Itk\ExchangeBundle\Entity\ResourceRepository;
 use Itk\ExchangeBundle\Entity\Booking;
 use Itk\ExchangeBundle\Exceptions\ExchangeNotSupportedException;
+use Itk\ExchangeBundle\Model\ExchangeBooking;
 
 /**
  * Class ExchangeService
@@ -169,7 +170,7 @@ class ExchangeService {
     $exchangeBookings = $exchangeCalendar->getBookings();
     if (!empty($exchangeBookings)) {
       // Check if it's the right booking.
-      if ($exchangeBookings[0]->getType() == 'KOBA' && $exchangeBookings[0]->getBody()->getIcalUid() == $booking->getIcalUid()) {
+      if ($exchangeBookings[0]->getType() == ExchangeBooking::$type_koba && $exchangeBookings[0]->getBody()->getIcalUid() == $booking->getIcalUid()) {
         return TRUE;
       }
     }
