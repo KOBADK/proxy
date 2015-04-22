@@ -52,7 +52,7 @@ class CalendarService {
    * @return array
    *   The bookings for the resource.
    */
-  public function getCalendar(ApiKey $apiKey, $groupId, $resource, $resourceConfiguration, $from, $to) {
+  public function getCalendar(ApiKey $apiKey, $groupId, Resource $resource, $resourceConfiguration, $from, $to) {
     // Get cache id
     $cacheId = $apiKey->getApiKey() . ':' . $groupId . ':' . $resource->getMail() . ':' . $from . ':' . $to;
 
@@ -91,6 +91,10 @@ class CalendarService {
         }
       }
       else if ($resourceConfiguration['display'] === 'FREE_BUSY') {
+        $exchangeCalendar = $this->exchangeService->getBookingsForResource($resource, $from, $to, FALSE);
+
+        $exchangeCalendar->getBookings()
+
         throw new NotSupportedException();
       }
       else if ($resourceConfiguration['display'] === 'BOOKED_BY') {
