@@ -78,34 +78,56 @@ class CalendarService {
         $xmlBookings = json_decode($this->cache->get('dss:' . $resource->getName()));
 
         if ($xmlBookings) {
-          // Filter out bookings that are not from between $from and $to.
-          $bookings = $this->filterBookings($xmlBookings, $from, $to);
+          $bookings = $xmlBookings;
         }
       }
       else if ($resourceConfiguration['display'] === 'RC') {
         $xmlBookings = json_decode($this->cache->get('rc:' . $resource->getName()));
 
         if ($xmlBookings) {
-          // Filter out bookings that are not from between $from and $to.
-          $bookings = $this->filterBookings($xmlBookings, $from, $to);
+          $bookings = $xmlBookings;
         }
       }
       else if ($resourceConfiguration['display'] === 'FREE_BUSY') {
         $exchangeCalendar = $this->exchangeService->getBookingsForResource($resource, $from, $to, FALSE);
 
-        $exchangeCalendar->getBookings()
-
-        throw new NotSupportedException();
+        foreach ($exchangeCalendar->getBookings() as $booking) {
+          $bookings[] = array(
+            'start_time' => $booking['startTime'],
+            'end_time' => $booking['endTime'],
+          );
+        }
       }
       else if ($resourceConfiguration['display'] === 'BOOKED_BY') {
-        throw new NotSupportedException();
+        $exchangeCalendar = $this->exchangeService->getBookingsForResource($resource, $from, $to, TRUE);
+
+        foreach ($exchangeCalendar->getBookings() as $booking) {
+          $bookings[] = array(
+            'start_time' => $booking['startTime'],
+            'end_time' => $booking['endTime'],
+            'name' => $booking['body']['name']
+          );
+        }
       }
       else if ($resourceConfiguration['display'] === 'KOBA_BOOKING') {
-        throw new NotSupportedException();
+        $exchangeCalendar = $this->exchangeService->getBookingsForResource($resource, $from, $to, TRUE);
+
+        foreach ($exchangeCalendar->getBookings() as $booking) {
+          $bookings[] = array(
+            'start_time' => $booking['startTime'],
+            'end_time' => $booking['endTime'],
+            'event_name' => $booking['body']['subject'],
+            'event_description' => $booking['body']['description'],
+            'name' => $booking['body']['name'],
+          );
+        }
       }
       else if ($resourceConfiguration['display'] === 'SAFE_TITLE') {
         throw new NotSupportedException();
       }
+
+      // Filter out bookings that are not from between $from and $to.
+      $bookings = $this->filterBookings($bookings, $from, $to);
 
       // Save bookings in the cache.
       $this->cache->set($cacheId, json_encode($bookings), 300);
