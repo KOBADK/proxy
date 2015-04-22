@@ -95,6 +95,7 @@ class CalendarService {
           $bookings[] = (object) array(
             'start_time' => $booking->getStart(),
             'end_time' => $booking->getEnd(),
+            'resource_id' => $resource->getName()
           );
         }
       }
@@ -105,7 +106,8 @@ class CalendarService {
           $bookings[] = (object) array(
             'start_time' => $booking->getStart(),
             'end_time' => $booking->getEnd(),
-            'name' => $booking->getBody()->getName()
+            'name' => $booking->getBody()->getName(),
+            'resource_id' => $resource->getName()
           );
         }
       }
@@ -119,6 +121,7 @@ class CalendarService {
             'event_name' => $booking->getBody()->getSubject(),
             'event_description' => $booking->getBody()->getDescription(),
             'name' => $booking->getBody()->getName(),
+            'resource_id' => $resource->getName()
           );
         }
       }
