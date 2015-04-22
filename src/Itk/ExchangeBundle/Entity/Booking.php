@@ -196,13 +196,11 @@ class Booking {
 
   /**
    * Get endTime
-   * @param string $format
-   *   The date format to apply to the date. Defaults to 'Ymd\THis\Z'.
    *
    * @return integer
    */
-  public function getEndTime($format = self::DEFAULT_DATAFORMAT) {
-    return date($format, $this->endTime);
+  public function getEndTime() {
+    return $this->endTime;
   }
 
   /**

@@ -177,8 +177,9 @@ class ExchangeWebService {
         $serializer = new Serializer($normalizers, $encoders);
 
         // Set type and set data.
+        $json = str_replace("'", '"', $matches[1]);
         $exchangeBooking->setTypeKoba();
-        $exchangeBooking->setBody($serializer->deserialize($matches[1], 'Itk\ExchangeBundle\Entity\Booking', 'json'));
+        $exchangeBooking->setBody($serializer->deserialize($json, 'Itk\ExchangeBundle\Entity\Booking', 'json'));
       }
     }
   }
