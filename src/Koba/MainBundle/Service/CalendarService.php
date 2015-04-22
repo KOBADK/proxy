@@ -92,7 +92,7 @@ class CalendarService {
         $exchangeCalendar = $this->exchangeService->getBookingsForResource($resource, $from, $to, FALSE);
 
         foreach ($exchangeCalendar->getBookings() as $booking) {
-          $bookings[] = array(
+          $bookings[] = (object) array(
             'start_time' => $booking->getStart(),
             'end_time' => $booking->getEnd(),
           );
@@ -102,7 +102,7 @@ class CalendarService {
         $exchangeCalendar = $this->exchangeService->getBookingsForResource($resource, $from, $to, TRUE);
 
         foreach ($exchangeCalendar->getBookings() as $booking) {
-          $bookings[] = array(
+          $bookings[] = (object) array(
             'start_time' => $booking->getStart(),
             'end_time' => $booking->getEnd(),
             'name' => $booking->getBody()->getName()
@@ -113,7 +113,7 @@ class CalendarService {
         $exchangeCalendar = $this->exchangeService->getBookingsForResource($resource, $from, $to, TRUE);
 
         foreach ($exchangeCalendar->getBookings() as $booking) {
-          $bookings[] = array(
+          $bookings[] = (object) array(
             'start_time' => $booking->getStartTime(),
             'end_time' => $booking->getEndTime(),
             'event_name' => $booking->getBody()->getSubject(),
