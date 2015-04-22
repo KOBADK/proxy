@@ -97,7 +97,8 @@ class CalendarService {
           $bookings[] = (object) array(
             'start_time' => $booking->getStart(),
             'end_time' => $booking->getEnd(),
-            'resource_id' => $resource->getName()
+            'resource_id' => $resource->getName(),
+            'event_name' => "Optaget",
           );
         }
       }
