@@ -93,8 +93,8 @@ class CalendarService {
 
         foreach ($exchangeCalendar->getBookings() as $booking) {
           $bookings[] = array(
-            'start_time' => $booking->getStartTime(),
-            'end_time' => $booking->getEndTime(),
+            'start_time' => $booking->getStart(),
+            'end_time' => $booking->getEnd(),
           );
         }
       }
@@ -103,9 +103,9 @@ class CalendarService {
 
         foreach ($exchangeCalendar->getBookings() as $booking) {
           $bookings[] = array(
-            'start_time' => $booking->getStartTime(),
-            'end_time' => $booking->getEndTime(),
-            'name' => $booking->getBody()->name
+            'start_time' => $booking->getStart(),
+            'end_time' => $booking->getEnd(),
+            'name' => $booking->getBody()->getName()
           );
         }
       }
@@ -116,9 +116,9 @@ class CalendarService {
           $bookings[] = array(
             'start_time' => $booking->getStartTime(),
             'end_time' => $booking->getEndTime(),
-            'event_name' => $booking->getBody()->subject,
-            'event_description' => $booking->getBody()->description,
-            'name' => $booking->getBody()->name,
+            'event_name' => $booking->getBody()->getSubject(),
+            'event_description' => $booking->getBody()->getDescription(),
+            'name' => $booking->getBody()->getName(),
           );
         }
       }
