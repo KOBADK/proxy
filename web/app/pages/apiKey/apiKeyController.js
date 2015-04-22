@@ -252,10 +252,6 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
             {
               "id": "default",
               "resources": []
-            },
-            {
-              "id": "display",
-              "resources": []
             }
           ]
         }
