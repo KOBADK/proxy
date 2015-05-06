@@ -117,6 +117,8 @@ class CalendarService {
       else if ($resourceConfiguration['display'] === 'KOBA') {
         $exchangeCalendar = $this->exchangeService->getBookingsForResource($resource, $from, $to, TRUE);
 
+        // @TODO: Merge with free/busy or other source.
+
         foreach ($exchangeCalendar->getBookings() as $booking) {
           $bookings[] = (object) array(
             'start_time' => $booking->getStartTime(),

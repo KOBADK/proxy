@@ -80,6 +80,8 @@ class ExchangeService {
    *
    * @return \Itk\ExchangeBundle\Model\ExchangeCalendar
    *   Exchange calendar object with bookings for the interval.
+   *
+   * @TODO: Rename function to match exchangeWebService->getRessourceBookings
    */
   public function getBookingsForResource(Resource $resource, $from, $to, $enrich = TRUE) {
     // Get basic calendar information.

@@ -81,4 +81,56 @@ class ResourceController extends FOSRestController {
 
     return new JsonResponse($content);
   }
+
+
+  /**
+   * @FOSRest\Get("/{resourceMail}/group/{groupId}/freebusy/from/{from}/to/{to}")
+   *
+   * @param Request $request
+   * @param $groupId
+   * @param $resourceMail
+   * @param $from
+   * @param $to
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   *   The response object.
+   */
+  public function getResourceFreeBusy(Request $request, $groupId, $resourceMail, $from, $to) {
+    $apiKeyService = $this->get('koba.apikey_service');
+
+    // Confirm the apikey is accepted.
+    $apiKey = $apiKeyService->getApiKey($request);
+
+    // Check Access.
+    $apiKeyService->getResourceConfiguration($apiKey, $groupId, $resourceMail);
+
+    // Get the resource. We get it here to avoid more injections in the service.
+    $resource = $this->get('doctrine')->getRepository('ItkExchangeBundle:Resource')->findOneByMail($resourceMail);
+
+    $exchangeService = $this->get('itk.exchange_service');
+
+    $content = $exchangeService->getBookingsForResource($resource, $from, $to, false);
+
+    $bookings = array();
+
+    foreach ($content as $b) {
+      $bookings[] = (object) array('start' => $b->getStart(), 'end' => $b->getEnd());
+    }
+
+    return new JsonResponse($bookings);
+/*
+    // Hack for testing.
+    $now = time();
+    return new JsonResponse([
+        (object) array(
+          "start" => $now - $now % 3600,
+          "end" =>   $now - $now % 3600 + 3600
+        ),
+        (object) array(
+          "start" => $now - $now % 3600 + 3600 * 2,
+          "end" =>   $now - $now % 3600 + 3600 * 3
+        ),
+    ]
+    );*/
+  }
 }
