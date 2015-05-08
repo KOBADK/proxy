@@ -115,11 +115,13 @@ class ApiKeyController extends Controller {
 
     $postConfiguration = $content->configuration;
     $postName = $content->name;
+    $postCallback = $content->callback;
 
     $manager = $this->getDoctrine()->getManager();
 
     $apiKeyEntity->setConfiguration($postConfiguration);
     $apiKeyEntity->setName($postName);
+    $apiKeyEntity->setCallback($postCallback);
 
     $manager->flush();
 

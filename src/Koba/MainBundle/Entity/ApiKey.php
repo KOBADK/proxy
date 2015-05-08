@@ -34,6 +34,29 @@ class ApiKey {
   protected $configuration;
 
   /**
+   * @ORM\Column(type="string", nullable=false)
+   */
+  protected $callback;
+
+  /**
+   * Get callback.
+   *
+   * @return string
+   */
+  public function getCallback() {
+    return $this->callback;
+  }
+
+  /**
+   * Set callback
+   *
+   * @param string $callback
+   */
+  public function setCallback($callback) {
+    $this->callback = $callback;
+  }
+
+  /**
    * Set apiKey
    *
    * @param string $apiKey
