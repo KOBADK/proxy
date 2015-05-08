@@ -9,7 +9,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * A booking. The internal representation of a booking.
  *
- * @ORM\Table(name="koba_booking")
+ * @ORM\Table(name="exchange_booking")
+ * @ORM\Entity()
  */
 class Booking {
   /**
@@ -39,11 +40,25 @@ class Booking {
    * Resource that is booked
    *
    * @ORM\ManyToOne(targetEntity="Resource", inversedBy="bookings")
-   * @ORM\JoinColumn(name="resource_id", referencedColumnName="id")
+   * @ORM\JoinColumn(name="resource", referencedColumnName="mail")
    *
    * @Assert\NotNull
    */
   protected $resource;
+
+  /**
+   * Phone number.
+   *
+   * @ORM\Column(name="phone", type="string", nullable=true)
+   */
+  protected $phone;
+
+  /**
+   * Api key.
+   *
+   * @ORM\Column(name="api_key", type="string", nullable=true)
+   */
+  protected $apiKey;
 
   /**
    * Start time
@@ -104,6 +119,43 @@ class Booking {
    * @Assert\NotBlank
    */
   protected $status;
+
+
+  /**
+   * Get the apiKey
+   *
+   * @return string
+   */
+  public function getApiKey() {
+    return $this->apiKey;
+  }
+
+  /**
+   * Set the apiKey.
+   *
+   * @param string $apiKey
+   */
+  public function setApiKey($apiKey) {
+    $this->apiKey = $apiKey;
+  }
+
+  /**
+   * Get phone.
+   *
+   * @return string
+   */
+  public function getPhone() {
+    return $this->phone;
+  }
+
+  /**
+   * Set the phone.
+   *
+   * @param string $phone
+   */
+  public function setPhone($phone) {
+    $this->phone = $phone;
+  }
 
   /**
    * Get id

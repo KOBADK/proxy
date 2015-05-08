@@ -33,7 +33,8 @@
     "bomo/ical-bundle": "~1.0",
     "friendsofsymfony/user-bundle": "~2.0@dev",
     "snc/redis-bundle": "1.1.x-dev",
-    "predis/predis": "0.8.x-dev"
+    "predis/predis": "0.8.x-dev",
+    "jms/job-queue-bundle": "1.1.*"
   },
   "conflict": {
     "symfony/routing": "2.4.1"

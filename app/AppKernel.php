@@ -26,6 +26,7 @@ class AppKernel extends Kernel
             new BOMO\IcalBundle\BOMOIcalBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new Snc\RedisBundle\SncRedisBundle(),
+            new JMS\JobQueueBundle\JMSJobQueueBundle(),
 
             // Own
             new Koba\MainBundle\KobaMainBundle(),

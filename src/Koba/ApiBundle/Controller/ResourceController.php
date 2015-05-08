@@ -33,7 +33,7 @@ class ResourceController extends FOSRestController {
    */
   public function getResources(Request $request, $groupID) {
     // Confirm the apikey is accepted.
-    $apiKey = $this->get('koba.apikey_service')->getApiKey($request);
+    $apiKey = $this->get('koba.apikey_service')->getApiKey($request->query->get('apikey'));
 
     $configuration = $apiKey->getConfiguration();
 
@@ -66,7 +66,7 @@ class ResourceController extends FOSRestController {
     $apiKeyService = $this->get('koba.apikey_service');
 
     // Confirm the apikey is accepted.
-    $apiKey = $apiKeyService->getApiKey($request);
+    $apiKey = $apiKeyService->getApiKey($request->query->get('apikey'));
 
     // Get resource configuration and check Access.
     $resourceConfiguration = $apiKeyService->getResourceConfiguration($apiKey, $groupId, $resourceMail);
@@ -99,7 +99,7 @@ class ResourceController extends FOSRestController {
     $apiKeyService = $this->get('koba.apikey_service');
 
     // Confirm the apikey is accepted.
-    $apiKey = $apiKeyService->getApiKey($request);
+    $apiKey = $apiKeyService->getApiKey($request->query->get('apikey'));
 
     // Check Access.
     $apiKeyService->getResourceConfiguration($apiKey, $groupId, $resourceMail);
@@ -108,7 +108,7 @@ class ResourceController extends FOSRestController {
     $resource = $this->get('doctrine')->getRepository('ItkExchangeBundle:Resource')->findOneByMail($resourceMail);
 
     $exchangeService = $this->get('itk.exchange_service');
-
+/*
     $content = $exchangeService->getBookingsForResource($resource, $from, $to, false);
 
     $bookings = array();
@@ -118,7 +118,7 @@ class ResourceController extends FOSRestController {
     }
 
     return new JsonResponse($bookings);
-/*
+*/
     // Hack for testing.
     $now = time();
     return new JsonResponse([
@@ -131,6 +131,6 @@ class ResourceController extends FOSRestController {
           "end" =>   $now - $now % 3600 + 3600 * 3
         ),
     ]
-    );*/
+    );
   }
 }

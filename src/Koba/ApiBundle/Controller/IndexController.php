@@ -30,7 +30,7 @@ class IndexController extends FOSRestController {
    */
   public function indexAction(Request $request) {
     // Confirm the apikey is accepted.
-    $this->get('koba.apikey_service')->getApiKey($request);
+    $this->get('koba.apikey_service')->getApiKey($request->query->get('apikey'));
 
     $view = $this->view(array(), 200);
     return $this->handleView($view);
