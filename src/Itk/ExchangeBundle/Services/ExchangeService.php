@@ -88,8 +88,7 @@ class ExchangeService {
     $calendar = $this->exchangeWebService->getRessourceBookings($resource, $from, $to);
 
     /**
-     * @TODO: Rename the bookings -> ExchangeBookings to remove mis-use to
-     *        booking entity.
+     * @TODO: Rename the bookings -> ExchangeBookings to remove mis-use to booking entity.
      */
     // Check if body information should be included.
     if ($enrich) {
@@ -172,6 +171,7 @@ class ExchangeService {
     $exchangeBookings = $exchangeCalendar->getBookings();
     if (!empty($exchangeBookings)) {
       // Check if it's the right booking.
+      // @TODO: Why == and not ===
       if ($exchangeBookings[0]->getType() == ExchangeBooking::$type_koba && $exchangeBookings[0]->getBody()->getIcalUid() == $booking->getIcalUid()) {
         return TRUE;
       }

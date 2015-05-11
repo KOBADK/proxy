@@ -94,21 +94,21 @@ class Resource {
   /**
    * Add bookings
    *
-   * @param \Koba\MainBundle\Entity\Booking $bookings
+   * @param \Itk\ExchangeBundle\Entity\Booking $booking
    *
    * @return Resource
    */
-  public function addBooking(\Koba\MainBundle\Entity\Booking $bookings) {
-    $this->bookings[] = $bookings;
+  public function addBooking(\Itk\ExchangeBundle\Entity\Booking $booking) {
+    $this->bookings[] = $booking;
     return $this;
   }
   /**
    * Remove bookings
    *
-   * @param \Koba\MainBundle\Entity\Booking $bookings
+   * @param \Itk\ExchangeBundle\Entity\Booking $booking
    */
-  public function removeBooking(\Koba\MainBundle\Entity\Booking $bookings) {
-    $this->bookings->removeElement($bookings);
+  public function removeBooking(\Itk\ExchangeBundle\Entity\Booking $booking) {
+    $this->bookings->removeElement($booking);
   }
   /**
    * Get bookings

@@ -81,7 +81,12 @@ class ExchangeMailService {
     // Encode booking information in the vevent description.
     $encoders = array(new XmlEncoder(), new JsonEncoder());
     $normalizers = array(new GetSetMethodNormalizer());
-    $normalizers[0]->setIgnoredAttributes(array('resource', 'exchangeId'));
+    $normalizers[0]->setIgnoredAttributes(array(
+        'resource',
+        'exchangeId',
+        'apiKey',
+        'status'
+      ));
     $serializer = new Serializer($normalizers, $encoders);
     $description = '<!-- KOBA ' . $serializer->serialize($booking, 'json') . ' KOBA -->';
 
@@ -112,7 +117,8 @@ class ExchangeMailService {
     $rawEvent->setProperty('X-ALT-DESC;FMTTYPE=text/plain', $description);
 
     // Get the calendar as an formatted string and send mail.
-    $this->sendMail($booking->getResource()->getMail(), $booking->getSubject(), $calendar->returnCalendar(), 'REQUEST');
+    $this->sendMail($booking->getResource()
+        ->getMail(), $booking->getSubject(), $calendar->returnCalendar(), 'REQUEST');
   }
 
   /**
@@ -146,7 +152,8 @@ class ExchangeMailService {
     $e->setProperty('UID', $booking->getIcalUid());
 
     // Get the calendar as an formatted string and send mail.
-    $this->sendMail($booking->getResource()->getMail(), $booking->getSubject(), $calendar->returnCalendar(), 'CANCEL');
+    $this->sendMail($booking->getResource()
+        ->getMail(), $booking->getSubject(), $calendar->returnCalendar(), 'CANCEL');
   }
 
   /**
@@ -208,10 +215,12 @@ class ExchangeMailService {
     $headers = $message->getHeaders();
     $type = $headers->get('Content-Type');
     $type->setValue('text/calendar');
-    $type->setParameters(array(
-      'charset' => 'utf-8',
-      'method' => $method
-    ));
+    $type->setParameters(
+      array(
+        'charset' => 'utf-8',
+        'method' => $method
+      )
+    );
 
     // Send the mail.
     $this->mailer->send($message);

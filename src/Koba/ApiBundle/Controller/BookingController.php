@@ -17,6 +17,12 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use Itk\ExchangeBundle\Entity\Booking;
+use JMS\JobQueueBundle\Entity\Job;
+
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * @Route("/bookings")
@@ -33,6 +39,12 @@ class BookingController extends FOSRestController {
    *   The response object.
    */
   public function getBookings(Request $request) {
+    phpinfo();
+
+    die(__FILE__);
+
+
+
     // @TODO: Implement this!
     throw new NotImplementedException();
   }
@@ -65,8 +77,6 @@ class BookingController extends FOSRestController {
   public function postBooking(Request $request) {
     $body = $request->getContent();
 
-    print_r($body);
-
     if (!isset($body)) {
       throw new NotFoundHttpException('resource not set');
     }
@@ -84,8 +94,8 @@ class BookingController extends FOSRestController {
       throw new NotFoundHttpException('resource not found');
     }
 
-    // Get resource configuration and check Access.
-    $apiKeyConfiguration = $apiKeyService->getResourceConfiguration($apiKey, $bodyObj->group_id, $resource->getMail());
+    // Check Access.
+    $apiKeyService->getResourceConfiguration($apiKey, $bodyObj->group_id, $resource->getMail());
 
     // Create a test booking.
     $booking = new Booking();
@@ -100,15 +110,34 @@ class BookingController extends FOSRestController {
     $booking->setApiKey($apiKey->getApiKey());
     $booking->setStatusPending();
 
-    $manager = $this->container->get('doctrine')->getManager();
+    $em = $this->container->get('doctrine')->getManager();
 
-    $manager->persist($booking);
-    $manager->flush();
+    $em->persist($booking);
+    $em->flush();
 
+    // @TODO:
     // Create job queue items.
     // 1. send booking
     // 2. confirm booking
     // 3. send reply to callback
+    $sendJob = new Job('koba:booking:send', array('id' => $booking->getId()));
+    $sendJob->addRelatedEntity($booking);
+    $sendJob->setMaxRetries(5);
 
+    $confirmJob = new Job('koba:booking:confirm', array('id' => $booking->getId()));
+    $confirmJob->addRelatedEntity($booking);
+    $confirmJob->setMaxRetries(2);
+
+    $callbackJob = new Job('koba:booking:callback', array('id' => $booking->getId()));
+    $callbackJob->addRelatedEntity($booking);
+
+    $confirmJob->addDependency($sendJob);
+    $callbackJob->addDependency($confirmJob);
+
+    $em->persist($sendJob);
+    $em->persist($confirmJob);
+    $em->persist($callbackJob);
+
+    $em->flush();
   }
 }

@@ -8,6 +8,8 @@ namespace Koba\MainBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class SendBookingCommand command.
@@ -20,7 +22,11 @@ class SendBookingCommand extends ContainerAwareCommand {
    */
   protected function configure() {
     $this->setName('koba:booking:send')
-      ->addArgument('id')
+      ->addArgument(
+        'id',
+        InputArgument::REQUIRED,
+        'Which booking entity to send?'
+      )
       ->setDescription('Send booking to Exchange');
   }
 
@@ -32,10 +38,20 @@ class SendBookingCommand extends ContainerAwareCommand {
    * @return int|null|void
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $output->writeln('Sending booking to exchange...');
+    $container = $this->getContainer();
+    $doctrine = $container->get('doctrine');
 
+    $id = $input->getArgument('id');
 
+    $booking = $doctrine->getRepository('ItkExchangeBundle:Booking')->findOneBy(array('id' => $id));
 
-    $output->writeln('Done.');
+    if (!$booking) {
+      throw new NotFoundHttpException('booking with id:' . $id . ' not found');
+    }
+
+    $exchangeService = $container->get('itk.exchange_service');
+    $exchangeService->createBooking($booking);
+
+    return true;
   }
 }
