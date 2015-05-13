@@ -120,6 +120,24 @@ class Booking {
    */
   protected $status;
 
+  /**
+   * @ORM\Column(name="client_booking_id", type="text", nullable=true)
+   */
+  protected $clientBookingId;
+
+  /**
+   * @return mixed
+   */
+  public function getClientBookingId() {
+    return $this->clientBookingId;
+  }
+
+  /**
+   * @param mixed $clientBookingId
+   */
+  public function setClientBookingId($clientBookingId) {
+    $this->clientBookingId = $clientBookingId;
+  }
 
   /**
    * Get the apiKey

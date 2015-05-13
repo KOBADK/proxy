@@ -39,12 +39,6 @@ class BookingController extends FOSRestController {
    *   The response object.
    */
   public function getBookings(Request $request) {
-    phpinfo();
-
-    die(__FILE__);
-
-
-
     // @TODO: Implement this!
     throw new NotImplementedException();
   }
@@ -67,6 +61,7 @@ class BookingController extends FOSRestController {
    *         "start_time": -,
    *         "end_time: -,
    *         "resource": -,
+   *         "client_booking_id": -,
    *         "group_id"; -,
    *         "apikey": -
    *       }
@@ -108,6 +103,7 @@ class BookingController extends FOSRestController {
     $booking->setEndTime($bodyObj->end_time);
     $booking->setResource($resource);
     $booking->setApiKey($apiKey->getApiKey());
+    $booking->setClientBookingId($bodyObj->client_booking_id);
     $booking->setStatusPending();
 
     $em = $this->container->get('doctrine')->getManager();
@@ -115,7 +111,6 @@ class BookingController extends FOSRestController {
     $em->persist($booking);
     $em->flush();
 
-    // @TODO:
     // Create job queue items.
     // 1. send booking
     // 2. confirm booking
@@ -126,10 +121,11 @@ class BookingController extends FOSRestController {
 
     $confirmJob = new Job('koba:booking:confirm', array('id' => $booking->getId()));
     $confirmJob->addRelatedEntity($booking);
-    $confirmJob->setMaxRetries(2);
+    $confirmJob->setMaxRetries(5);
 
     $callbackJob = new Job('koba:booking:callback', array('id' => $booking->getId()));
     $callbackJob->addRelatedEntity($booking);
+    $callbackJob->setMaxRetries(5);
 
     $confirmJob->addDependency($sendJob);
     $callbackJob->addDependency($confirmJob);
@@ -137,6 +133,41 @@ class BookingController extends FOSRestController {
     $em->persist($sendJob);
     $em->persist($confirmJob);
     $em->persist($callbackJob);
+
+    $em->flush();
+  }
+
+
+  /**
+   * Delete a booking.
+   *
+   * @FOSRest\Delete("/{clientBookingId}")
+   */
+  public function deleteBooking(Request $request, $clientBookingId) {
+    $apiKeyService = $this->get('koba.apikey_service');
+
+    // Confirm the apikey is accepted.
+    $apiKey = $apiKeyService->getApiKey($request->query->apikey);
+
+    // Get the resource. We get it here to avoid more injections in the service.
+    $booking = $this->get('doctrine')->getRepository('ItkExchangeBundle:Booking')->findOneByClient($clientBookingId);
+
+    if (!isset($booking)) {
+      throw new NotFoundHttpException('booking not found');
+    }
+
+    $container = $this->getContainer();
+    $doctrine = $container->get('doctrine');
+    $em = $doctrine->getManager();
+
+    // Create job queue items.
+    // 1. delete booking
+    // 2. confirm delete @TODO: Implement this!
+    $deleteJob = new Job('koba:booking:delete', array('id' => $booking->getId()));
+    $deleteJob->addRelatedEntity($booking);
+    $deleteJob->setMaxRetries(5);
+
+    $em->persist($deleteJob);
 
     $em->flush();
   }
