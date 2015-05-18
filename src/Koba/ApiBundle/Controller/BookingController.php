@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -136,8 +137,10 @@ class BookingController extends FOSRestController {
     $em->persist($callbackJob);
 
     $em->flush();
-  }
 
+    // Return response to the request (created).
+    return new Response('Request received.', 201);
+  }
 
   /**
    * Delete a booking.
@@ -171,5 +174,8 @@ class BookingController extends FOSRestController {
     $em->persist($deleteJob);
 
     $em->flush();
+
+    // Return response to the request (accepted).
+    return new Response('Request received.', 202);
   }
 }
