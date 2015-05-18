@@ -15,6 +15,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Class ConfirmBookingCommand command.
  *
  * @package Koba\MainBundle\Command
+ *
+ * @TODO: Implements what interface?
  */
 class ConfirmBookingCommand extends ContainerAwareCommand {
   /**

@@ -90,6 +90,7 @@ class BookingController extends FOSRestController {
     }
 
     // Check Access.
+    // @TODO: Split into two functions. chechAccess & getConfiguration()
     $apiKeyService->getResourceConfiguration($apiKey, $bodyObj->group_id, $resource->getMail());
 
     // Create a test booking.
