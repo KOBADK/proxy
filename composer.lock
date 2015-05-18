@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "44528e417e46ccd9468959c5e4a77849",
+    "hash": "7bfb30dc8ac04ae4a426d329b1dff3a1",
     "packages": [
         {
             "name": "bomo/ical-bundle",
@@ -406,7 +406,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/v1.2.0",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/765b0d87fcc3e839c74817b7211258cbef3a4fb9",
                 "reference": "v1.2.0",
                 "shasum": ""
             },
@@ -1415,17 +1415,17 @@
         },
         {
             "name": "jms/job-queue-bundle",
-            "version": "1.1.0",
+            "version": "dev-feature/retry",
             "target-dir": "JMS/JobQueueBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/schmittjoh/JMSJobQueueBundle.git",
-                "reference": "77b67f01e6aa4370128d0cd17044008e04c36216"
+                "url": "https://github.com/KOBADK/JMSJobQueueBundle.git",
+                "reference": "7d709e261e5d7e597caccf60d08f39b5a26824ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/JMSJobQueueBundle/zipball/77b67f01e6aa4370128d0cd17044008e04c36216",
-                "reference": "77b67f01e6aa4370128d0cd17044008e04c36216",
+                "url": "https://api.github.com/repos/KOBADK/JMSJobQueueBundle/zipball/7d709e261e5d7e597caccf60d08f39b5a26824ab",
+                "reference": "7d709e261e5d7e597caccf60d08f39b5a26824ab",
                 "shasum": ""
             },
             "require": {
@@ -1465,16 +1465,13 @@
                     "JMS\\JobQueueBundle": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache2"
             ],
             "authors": [
                 {
-                    "name": "Johannes Schmitt",
-                    "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
-                    "role": "Developer of wrapped JMSSerializerBundle"
+                    "name": "Johannes M. Schmitt",
+                    "email": "schmittjoh@gmail.com"
                 }
             ],
             "description": "Allows to schedule Symfony2 console commands as jobs.",
@@ -1483,7 +1480,10 @@
                 "job",
                 "queue"
             ],
-            "time": "2014-03-06 21:13:39"
+            "support": {
+                "source": "https://github.com/KOBADK/JMSJobQueueBundle/tree/feature/retry"
+            },
+            "time": "2015-05-18 11:44:55"
         },
         {
             "name": "jms/metadata",
@@ -1542,12 +1542,12 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "git://github.com/schmittjoh/parser-lib",
+                "url": "https://github.com/schmittjoh/parser-lib.git",
                 "reference": "1.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/schmittjoh/parser-lib/archive/1.0.0.zip",
+                "url": "https://api.github.com/repos/schmittjoh/parser-lib/zipball/c509473bc1b4866415627af0e1c6cc8ac97fa51d",
                 "reference": "1.0.0",
                 "shasum": ""
             },
@@ -2076,12 +2076,12 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/php-fig/log",
+                "url": "https://github.com/php-fig/log.git",
                 "reference": "1.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/php-fig/log/archive/1.0.0.zip",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/fe0936ee26643249e916849d48e3a51d5f5e278b",
                 "reference": "1.0.0",
                 "shasum": ""
             },
@@ -2711,12 +2711,12 @@
             "version": "v1.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fabpot/Twig-extensions.git",
+                "url": "https://github.com/twigphp/Twig-extensions.git",
                 "reference": "f91a82ec225e5bb108e01a0f93c9be04f84dcfa0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
+                "url": "https://api.github.com/repos/twigphp/Twig-extensions/zipball/f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
                 "reference": "f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
                 "shasum": ""
             },
@@ -3873,7 +3873,8 @@
         "willdurand/hateoas-bundle": 20,
         "friendsofsymfony/user-bundle": 20,
         "snc/redis-bundle": 20,
-        "predis/predis": 20
+        "predis/predis": 20,
+        "jms/job-queue-bundle": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
