@@ -119,14 +119,20 @@ class BookingController extends FOSRestController {
     // 3. send reply to callback
     $sendJob = new Job('koba:booking:send', array('id' => $booking->getId()));
     $sendJob->addRelatedEntity($booking);
+    $sendJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\FixedIntervalStrategy');
+    $sendJob->setRetryStrategyConfig(array('interval' => '+15 seconds'));
     $sendJob->setMaxRetries(5);
 
     $confirmJob = new Job('koba:booking:confirm', array('id' => $booking->getId()));
     $confirmJob->addRelatedEntity($booking);
+    $confirmJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\FixedIntervalStrategy');
+    $confirmJob->setRetryStrategyConfig(array('interval' => '+15 seconds'));
     $confirmJob->setMaxRetries(5);
 
     $callbackJob = new Job('koba:booking:callback', array('id' => $booking->getId()));
     $callbackJob->addRelatedEntity($booking);
+    $callbackJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\FixedIntervalStrategy');
+    $callbackJob->setRetryStrategyConfig(array('interval' => '+15 seconds'));
     $callbackJob->setMaxRetries(5);
 
     $confirmJob->addDependency($sendJob);
