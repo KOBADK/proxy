@@ -373,7 +373,7 @@ class Booking {
   }
 
   /**
-   * Set status to pending
+   * Set status to denied
    *
    * @return Booking
    */
@@ -384,7 +384,7 @@ class Booking {
   }
 
   /**
-   * Set status to pending
+   * Set status to accepted
    *
    * @return Booking
    */
@@ -395,12 +395,23 @@ class Booking {
   }
 
   /**
-   * Set status to pending
+   * Set status to cancelled
    *
    * @return Booking
    */
   public function setStatusCanceled() {
     $this->status = 'CANCELED';
+
+    return $this;
+  }
+
+  /**
+   * Set status to request
+   *
+   * @return $this
+   */
+  public function setStatusRequest() {
+    $this->status = 'REQUEST';
 
     return $this;
   }

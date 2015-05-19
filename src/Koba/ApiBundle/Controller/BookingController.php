@@ -91,7 +91,7 @@ class BookingController extends FOSRestController {
     }
 
     // Check Access.
-    // @TODO: Split into two functions. chechAccess & getConfiguration()
+    // @TODO: Split into two functions. checkAccess() & getConfiguration()
     $apiKeyService->getResourceConfiguration($apiKey, $bodyObj->group_id, $resource->getMail());
 
     // Create a test booking.
@@ -106,7 +106,7 @@ class BookingController extends FOSRestController {
     $booking->setResource($resource);
     $booking->setApiKey($apiKey->getApiKey());
     $booking->setClientBookingId($bodyObj->client_booking_id);
-    $booking->setStatusPending();
+    $booking->setStatusRequest();
 
     $em = $this->container->get('doctrine')->getManager();
 
@@ -127,6 +127,10 @@ class BookingController extends FOSRestController {
     $confirmJob->addRelatedEntity($booking);
     $confirmJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\FixedIntervalStrategy');
     $confirmJob->setRetryStrategyConfig(array('interval' => '+15 seconds'));
+    // Max retries for the confirm jobs should be 2 or more, since the last
+    // attempt always results in the confirm job concluding that the request
+    // was not accepted.
+    // @TODO: Add a more fine grained method, so we know if the time slot has been taken.
     $confirmJob->setMaxRetries(5);
 
     $callbackJob = new Job('koba:booking:callback', array('id' => $booking->getId()));

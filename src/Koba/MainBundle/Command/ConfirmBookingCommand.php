@@ -39,7 +39,6 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
    * @param OutputInterface $output
    * @return int|null|void
    *
-   *
    * @TODO: Find better way to handle last retry. At the moment we only try
    *   maxRetries - 1 times before given up.
    */

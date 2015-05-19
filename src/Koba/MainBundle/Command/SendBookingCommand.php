@@ -41,6 +41,7 @@ class SendBookingCommand extends ContainerAwareCommand {
   protected function execute(InputInterface $input, OutputInterface $output) {
     $container = $this->getContainer();
     $doctrine = $container->get('doctrine');
+    $em = $doctrine->getManager();
 
     $id = $input->getArgument('id');
 
@@ -52,6 +53,9 @@ class SendBookingCommand extends ContainerAwareCommand {
 
     $exchangeService = $container->get('itk.exchange_service');
     $exchangeService->createBooking($booking);
+
+    $booking->setStatusPending();
+    $em->flush();
 
     return true;
   }
