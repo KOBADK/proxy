@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "hash": "7bfb30dc8ac04ae4a426d329b1dff3a1",
@@ -1420,12 +1420,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/KOBADK/JMSJobQueueBundle.git",
-                "reference": "7d709e261e5d7e597caccf60d08f39b5a26824ab"
+                "reference": "ec040ae78031d5da3cce6c3cbc9384d95b51ac85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KOBADK/JMSJobQueueBundle/zipball/7d709e261e5d7e597caccf60d08f39b5a26824ab",
-                "reference": "7d709e261e5d7e597caccf60d08f39b5a26824ab",
+                "url": "https://api.github.com/repos/KOBADK/JMSJobQueueBundle/zipball/ec040ae78031d5da3cce6c3cbc9384d95b51ac85",
+                "reference": "ec040ae78031d5da3cce6c3cbc9384d95b51ac85",
                 "shasum": ""
             },
             "require": {
@@ -1483,7 +1483,7 @@
             "support": {
                 "source": "https://github.com/KOBADK/JMSJobQueueBundle/tree/feature/retry"
             },
-            "time": "2015-05-18 11:44:55"
+            "time": "2015-05-18 13:46:44"
         },
         {
             "name": "jms/metadata",
