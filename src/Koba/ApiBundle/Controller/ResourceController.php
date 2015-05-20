@@ -121,7 +121,7 @@ class ResourceController extends FOSRestController {
 */
     // Hack for testing.
     $now = time();
-    return new JsonResponse([
+    return new JsonResponse(array(
         (object) array(
           "start" => $now - $now % 3600,
           "end" =>   $now - $now % 3600 + 3600
@@ -130,7 +130,7 @@ class ResourceController extends FOSRestController {
           "start" => $now - $now % 3600 + 3600 * 2,
           "end" =>   $now - $now % 3600 + 3600 * 3
         ),
-    ]
+      )
     );
   }
 }
