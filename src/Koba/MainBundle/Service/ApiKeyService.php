@@ -34,15 +34,13 @@ class ApiKeyService {
    *
    * @throws AccessDeniedException
    *
-   * @param Request $request
-   *   The Request object.
+   * @param string $apiKey
+   *   The api key string.
    *
    * @return ApiKey
    *   The found ApiKey.
    */
-  public function getApiKey(Request $request) {
-    $apiKey = $request->query->get('apikey');
-
+  public function getApiKey($apiKey) {
     if (!isset($apiKey)) {
       throw new AccessDeniedException();
     }

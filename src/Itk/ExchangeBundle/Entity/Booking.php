@@ -9,7 +9,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * A booking. The internal representation of a booking.
  *
- * @ORM\Table(name="koba_booking")
+ * @ORM\Table(name="exchange_booking")
+ * @ORM\Entity()
  */
 class Booking {
   /**
@@ -39,11 +40,25 @@ class Booking {
    * Resource that is booked
    *
    * @ORM\ManyToOne(targetEntity="Resource", inversedBy="bookings")
-   * @ORM\JoinColumn(name="resource_id", referencedColumnName="id")
+   * @ORM\JoinColumn(name="resource", referencedColumnName="mail")
    *
    * @Assert\NotNull
    */
   protected $resource;
+
+  /**
+   * Phone number.
+   *
+   * @ORM\Column(name="phone", type="string", nullable=true)
+   */
+  protected $phone;
+
+  /**
+   * Api key.
+   *
+   * @ORM\Column(name="api_key", type="string", nullable=true)
+   */
+  protected $apiKey;
 
   /**
    * Start time
@@ -104,6 +119,61 @@ class Booking {
    * @Assert\NotBlank
    */
   protected $status;
+
+  /**
+   * @ORM\Column(name="client_booking_id", type="text", nullable=true)
+   */
+  protected $clientBookingId;
+
+  /**
+   * @return mixed
+   */
+  public function getClientBookingId() {
+    return $this->clientBookingId;
+  }
+
+  /**
+   * @param mixed $clientBookingId
+   */
+  public function setClientBookingId($clientBookingId) {
+    $this->clientBookingId = $clientBookingId;
+  }
+
+  /**
+   * Get the apiKey
+   *
+   * @return string
+   */
+  public function getApiKey() {
+    return $this->apiKey;
+  }
+
+  /**
+   * Set the apiKey.
+   *
+   * @param string $apiKey
+   */
+  public function setApiKey($apiKey) {
+    $this->apiKey = $apiKey;
+  }
+
+  /**
+   * Get phone.
+   *
+   * @return string
+   */
+  public function getPhone() {
+    return $this->phone;
+  }
+
+  /**
+   * Set the phone.
+   *
+   * @param string $phone
+   */
+  public function setPhone($phone) {
+    $this->phone = $phone;
+  }
 
   /**
    * Get id
@@ -303,7 +373,7 @@ class Booking {
   }
 
   /**
-   * Set status to pending
+   * Set status to denied
    *
    * @return Booking
    */
@@ -314,7 +384,7 @@ class Booking {
   }
 
   /**
-   * Set status to pending
+   * Set status to accepted
    *
    * @return Booking
    */
@@ -325,12 +395,23 @@ class Booking {
   }
 
   /**
-   * Set status to pending
+   * Set status to cancelled
    *
    * @return Booking
    */
   public function setStatusCanceled() {
     $this->status = 'CANCELED';
+
+    return $this;
+  }
+
+  /**
+   * Set status to request
+   *
+   * @return $this
+   */
+  public function setStatusRequest() {
+    $this->status = 'REQUEST';
 
     return $this;
   }

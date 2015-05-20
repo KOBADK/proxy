@@ -12,19 +12,26 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Resource {
   /**
+   * Resource mail
+   *
+   * @ORM\Column(name="mail", type="string")
+   * @ORM\Id
+   */
+  protected $mail;
+
+  /**
    * Resource name
    *
-   * @ORM\Column(type="string")
-   * @ORM\Id
+   * @ORM\Column(name="name", type="string")
    */
   protected $name;
 
   /**
-   * Resource mail
+   * Bookings of the resource
    *
-   * @ORM\Column(type="string")
-   */
-  protected $mail;
+   * @ORM\OneToMany(targetEntity="Booking", mappedBy="resource")
+   **/
+  protected $bookings;
 
   /**
    * Constructor.
@@ -37,6 +44,7 @@ class Resource {
   public function __construct($mail = NULL, $name = NULL) {
     $this->mail = $mail;
     $this->name = $name;
+    $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
   }
 
   /**
@@ -81,5 +89,33 @@ class Resource {
    */
   public function getMail() {
     return $this->mail;
+  }
+
+  /**
+   * Add bookings
+   *
+   * @param \Itk\ExchangeBundle\Entity\Booking $booking
+   *
+   * @return Resource
+   */
+  public function addBooking(\Itk\ExchangeBundle\Entity\Booking $booking) {
+    $this->bookings[] = $booking;
+    return $this;
+  }
+  /**
+   * Remove bookings
+   *
+   * @param \Itk\ExchangeBundle\Entity\Booking $booking
+   */
+  public function removeBooking(\Itk\ExchangeBundle\Entity\Booking $booking) {
+    $this->bookings->removeElement($booking);
+  }
+  /**
+   * Get bookings
+   *
+   * @return \Doctrine\Common\Collections\Collection
+   */
+  public function getBookings() {
+    return $this->bookings;
   }
 }
