@@ -108,7 +108,7 @@ class ResourceController extends FOSRestController {
     $resource = $this->get('doctrine')->getRepository('ItkExchangeBundle:Resource')->findOneByMail($resourceMail);
 
     $exchangeService = $this->get('itk.exchange_service');
-/*
+
     $content = $exchangeService->getBookingsForResource($resource, $from, $to, false);
 
     $bookings = array();
@@ -118,19 +118,5 @@ class ResourceController extends FOSRestController {
     }
 
     return new JsonResponse($bookings);
-*/
-    // Hack for testing.
-    $now = time();
-    return new JsonResponse(array(
-        (object) array(
-          "start" => $now - $now % 3600,
-          "end" =>   $now - $now % 3600 + 3600
-        ),
-        (object) array(
-          "start" => $now - $now % 3600 + 3600 * 2,
-          "end" =>   $now - $now % 3600 + 3600 * 3
-        ),
-      )
-    );
   }
 }
