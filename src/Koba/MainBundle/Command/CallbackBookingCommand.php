@@ -70,6 +70,10 @@ class CallbackBookingCommand extends ContainerAwareCommand {
     ));
     $response = $request->send();
 
+    /**
+     * @TODO: Handle response and fail if status code is not 200.
+     */
+
     return true;
   }
 }
