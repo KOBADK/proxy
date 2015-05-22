@@ -12,13 +12,13 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class ConfirmBookingCommand command.
+ * Class ConfirmDeleteBookingCommand command.
  *
  * @package Koba\MainBundle\Command
  *
  * @TODO: Implements what interface?
  */
-class ConfirmBookingCommand extends ContainerAwareCommand {
+class ConfirmDeleteBookingCommand extends ContainerAwareCommand {
   /**
    * Configure the command
    */
