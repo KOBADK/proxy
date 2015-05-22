@@ -166,7 +166,7 @@ class BookingController extends FOSRestController {
     $apiKey = $apiKeyService->getApiKey($apiKey);
 
     // Get the resource. We get it here to avoid more injections in the service.
-    $booking = $this->get('doctrine')->getRepository('ItkExchangeBundle:Booking')->findOneByClient($clientBookingId);
+    $booking = $this->get('doctrine')->getRepository('ItkExchangeBundle:Booking')->findOneByClientId($clientBookingId);
 
     if (!isset($booking)) {
       throw new NotFoundHttpException('booking not found');
