@@ -176,8 +176,7 @@ class BookingController extends FOSRestController {
     // @TODO: Split into two functions. checkAccess() & getConfiguration()
     $apiKeyService->getResourceConfiguration($apiKey, $group, $booking->getResource()->getMail());
 
-    $container = $this->getContainer();
-    $doctrine = $container->get('doctrine');
+    $doctrine = $this->get('doctrine');
     $em = $doctrine->getManager();
 
     // Create job queue items.
