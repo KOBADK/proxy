@@ -107,7 +107,7 @@ class ExchangeMailService {
 
     // Get the raw iCalCreator event.
     $rawEvent = $event->getEvent();
-    $rawEvent->setOrganizer($booking->getMail(), array('CN' => $booking->getName()));
+    $rawEvent->setOrganizer($this->account['mail'], array('CN' => $this->account['username']));
     $rawEvent->setClass('PUBLIC');
 
     // Set event mode.
@@ -117,8 +117,7 @@ class ExchangeMailService {
     $rawEvent->setProperty('X-ALT-DESC;FMTTYPE=text/plain', $description);
 
     // Get the calendar as an formatted string and send mail.
-    $this->sendMail($booking->getResource()
-        ->getMail(), $booking->getSubject(), $calendar->returnCalendar(), 'REQUEST');
+    $this->sendMail($booking->getResource()->getMail(), $booking->getSubject(), $calendar->returnCalendar(), 'REQUEST');
   }
 
   /**

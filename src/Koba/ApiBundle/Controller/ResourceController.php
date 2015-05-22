@@ -105,15 +105,15 @@ class ResourceController extends FOSRestController {
     $apiKeyService->getResourceConfiguration($apiKey, $groupId, $resourceMail);
 
     // Get the resource. We get it here to avoid more injections in the service.
-    $resource = $this->get('doctrine')->getRepository('ItkExchangeBundle:Resource')->findOneByMail($resourceMail);
+    $resource = $this->get('itk.exchange_resource_repository')->findOneByMail($resourceMail);
 
     $exchangeService = $this->get('itk.exchange_service');
 
-    $content = $exchangeService->getBookingsForResource($resource, $from, $to, false);
+    $content = $exchangeService->getBookingsForResource($resource, $from, $to, FALSE);
 
     $bookings = array();
 
-    foreach ($content as $b) {
+    foreach ($content->getBookings() as $b) {
       $bookings[] = (object) array('start' => $b->getStart(), 'end' => $b->getEnd());
     }
 

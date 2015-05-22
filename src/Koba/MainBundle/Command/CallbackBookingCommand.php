@@ -58,13 +58,22 @@ class CallbackBookingCommand extends ContainerAwareCommand {
 
     $client = new Client();
 
-    $client->post($callback, null,
+    $request = $client->post($callback, array(
+      'Content-Type' => 'application/json',
+      'Accept' => 'application/json',
+    ), array());
+    $request->setBody(json_encode(
       array(
         'action' => 'REQUEST',
         'status' => $booking->getStatus(),
         'client_booking_id' => $booking->getClientBookingId(),
       )
-    );
+    ));
+    $response = $request->send();
+
+    /**
+     * @TODO: Handle response and fail if status code is not 200.
+     */
 
     return true;
   }
