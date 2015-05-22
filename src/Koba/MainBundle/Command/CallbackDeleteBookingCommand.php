@@ -58,13 +58,18 @@ class CallbackDeleteBookingCommand extends ContainerAwareCommand {
 
     $client = new Client();
 
-    $client->post($callback, null,
+    $request = $client->post($callback, array(
+      'Content-Type' => 'application/json',
+      'Accept' => 'application/json',
+    ), array());
+    $request->setBody(json_encode(
       array(
         'action' => 'DELETE',
         'status' => $booking->getStatus(),
         'client_booking_id' => $booking->getClientBookingId(),
       )
-    );
+    ));
+    $response = $request->send();
 
     return true;
   }
