@@ -12,22 +12,24 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class DeleteBookingCommand command.
+ * Class ConfirmBookingCommand command.
  *
  * @package Koba\MainBundle\Command
+ *
+ * @TODO: Implements what interface?
  */
-class DeleteBookingCommand extends ContainerAwareCommand {
+class ConfirmBookingCommand extends ContainerAwareCommand {
   /**
    * Configure the command
    */
   protected function configure() {
-    $this->setName('koba:booking:delete')
+    $this->setName('koba:booking:delete:confirm')
       ->addArgument(
         'id',
         InputArgument::REQUIRED,
-        'Which booking entity to delete?'
+        'Which booking entity to confirm?'
       )
-      ->setDescription('Remove booking from Exchange');
+      ->setDescription('Confirm delete booking in Exchange');
   }
 
   /**
@@ -51,7 +53,15 @@ class DeleteBookingCommand extends ContainerAwareCommand {
 
     // Check Exchange to see if the booking has been accepted.
     $exchangeService = $container->get('itk.exchange_service');
+    $accepted = $exchangeService->isBookingAccepted($booking);
 
-    $exchangeService->cancelBooking($booking);
+    if (!$accepted) {
+      $booking->setStatusCanceled();
+      $em->flush();
+      return true;
+    }
+
+    // Retry.
+    throw new NotFoundHttpException("Booking still exists / Retry");
   }
 }

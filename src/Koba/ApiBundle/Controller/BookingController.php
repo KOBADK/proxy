@@ -176,12 +176,30 @@ class BookingController extends FOSRestController {
 
     // Create job queue items.
     // 1. delete booking
-    // 2. confirm delete @TODO: Implement this!
+    // 2. confirm delete
+    // 3. callback
     $deleteJob = new Job('koba:booking:delete', array('id' => $booking->getId()));
     $deleteJob->addRelatedEntity($booking);
     $deleteJob->setMaxRetries(5);
 
+    $confirmJob = new Job('koba:booking:delete:confirm', array('id' => $booking->getId()));
+    $confirmJob->addRelatedEntity($booking);
+    $confirmJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\FixedIntervalStrategy');
+    $confirmJob->setRetryStrategyConfig(array('interval' => '+15 seconds'));
+    $confirmJob->setMaxRetries(5);
+
+    $callbackJob = new Job('koba:booking:delete:callback', array('id' => $booking->getId()));
+    $callbackJob->addRelatedEntity($booking);
+    $callbackJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\FixedIntervalStrategy');
+    $callbackJob->setRetryStrategyConfig(array('interval' => '+15 seconds'));
+    $callbackJob->setMaxRetries(5);
+
+    $confirmJob->addDependency($deleteJob);
+    $callbackJob->addDependency($confirmJob);
+
     $em->persist($deleteJob);
+    $em->persist($confirmJob);
+    $em->persist($callbackJob);
 
     $em->flush();
 

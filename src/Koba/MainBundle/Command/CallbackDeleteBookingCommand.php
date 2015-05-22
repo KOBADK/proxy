@@ -1,10 +1,11 @@
 <?php
 /**
  * @file
- * Contains the command for ConfirmBookingCommand.
+ * Contains the command for CallbackBookingCommand.
  */
 namespace Koba\MainBundle\Command;
 
+use Guzzle\Http\Client;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,22 +13,22 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class DeleteBookingCommand command.
+ * Class CallbackDeleteBookingCommand command.
  *
  * @package Koba\MainBundle\Command
  */
-class DeleteBookingCommand extends ContainerAwareCommand {
+class CallbackDeleteBookingCommand extends ContainerAwareCommand {
   /**
    * Configure the command
    */
   protected function configure() {
-    $this->setName('koba:booking:delete')
+    $this->setName('koba:booking:delete:callback')
       ->addArgument(
         'id',
         InputArgument::REQUIRED,
         'Which booking entity to delete?'
       )
-      ->setDescription('Remove booking from Exchange');
+      ->setDescription('Callback from delete in Exchange');
   }
 
   /**
@@ -40,18 +41,31 @@ class DeleteBookingCommand extends ContainerAwareCommand {
   protected function execute(InputInterface $input, OutputInterface $output) {
     $container = $this->getContainer();
     $doctrine = $container->get('doctrine');
-    $em = $doctrine->getManager();
 
-    // Get booking.
     $id = $input->getArgument('id');
     $booking = $doctrine->getRepository('ItkExchangeBundle:Booking')->findOneBy(array('id' => $id));
     if (!$booking) {
       throw new NotFoundHttpException('booking with id:' . $id . ' not found');
     }
 
-    // Check Exchange to see if the booking has been accepted.
-    $exchangeService = $container->get('itk.exchange_service');
+    $apiKey = $booking->getApiKey();
+    $apiKey = $doctrine->getRepository('KobaMainBundle:ApiKey')->findOneBy(array('apiKey' => $apiKey));
+    if (!$apiKey) {
+      throw new NotFoundHttpException('api key not found');
+    }
 
-    $exchangeService->cancelBooking($booking);
+    $callback = $apiKey->getCallback();
+
+    $client = new Client();
+
+    $client->post($callback, null,
+      array(
+        'action' => 'DELETE',
+        'status' => $booking->getStatus(),
+        'client_booking_id' => $booking->getClientBookingId(),
+      )
+    );
+
+    return true;
   }
 }

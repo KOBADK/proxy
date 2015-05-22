@@ -60,6 +60,7 @@ class CallbackBookingCommand extends ContainerAwareCommand {
 
     $client->post($callback, null,
       array(
+        'action' => 'REQUEST',
         'status' => $booking->getStatus(),
         'client_booking_id' => $booking->getClientBookingId(),
       )
