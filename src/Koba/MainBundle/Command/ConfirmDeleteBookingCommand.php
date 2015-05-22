@@ -70,7 +70,7 @@ class ConfirmDeleteBookingCommand extends ContainerAwareCommand {
     $accepted = $exchangeService->isBookingAccepted($booking);
 
     if (!$accepted) {
-      $booking->setStatusCanceled();
+      $booking->setStatusCancelled();
       $em->flush();
       return true;
     }

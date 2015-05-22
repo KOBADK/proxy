@@ -399,8 +399,8 @@ class Booking {
    *
    * @return Booking
    */
-  public function setStatusCanceled() {
-    $this->status = 'CANCELED';
+  public function setStatusCancelled() {
+    $this->status = 'CANCELLED';
 
     return $this;
   }

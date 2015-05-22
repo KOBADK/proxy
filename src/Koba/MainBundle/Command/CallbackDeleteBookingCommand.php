@@ -60,7 +60,7 @@ class CallbackDeleteBookingCommand extends ContainerAwareCommand {
 
     $status = $booking->getStatus();
     if ($status === 'ACCEPTED') {
-      $status = 'NOT_DELETED';
+      $status = 'NOT CANCELLED';
     }
 
     $request = $client->post($callback, array(
