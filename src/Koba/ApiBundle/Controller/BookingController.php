@@ -155,13 +155,15 @@ class BookingController extends FOSRestController {
   /**
    * Delete a booking.
    *
-   * @FOSRest\Delete("/{clientBookingId}")
+   * @TODO: Fix this path so it makes more sense.
+   *
+   * @FOSRest\Delete("/group/{group}/apikey/{apiKey}/booking/{clientBookingId}")
    */
-  public function deleteBooking(Request $request, $clientBookingId) {
+  public function deleteBooking(Request $request, $group, $apiKey, $clientBookingId) {
     $apiKeyService = $this->get('koba.apikey_service');
 
     // Confirm the apikey is accepted.
-    $apiKey = $apiKeyService->getApiKey($request->query->apikey);
+    $apiKey = $apiKeyService->getApiKey($apiKey);
 
     // Get the resource. We get it here to avoid more injections in the service.
     $booking = $this->get('doctrine')->getRepository('ItkExchangeBundle:Booking')->findOneByClient($clientBookingId);
@@ -169,6 +171,10 @@ class BookingController extends FOSRestController {
     if (!isset($booking)) {
       throw new NotFoundHttpException('booking not found');
     }
+
+    // Check Access.
+    // @TODO: Split into two functions. checkAccess() & getConfiguration()
+    $apiKeyService->getResourceConfiguration($apiKey, $group, $booking->getResource()->getMail());
 
     $container = $this->getContainer();
     $doctrine = $container->get('doctrine');
