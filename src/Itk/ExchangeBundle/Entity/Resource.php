@@ -3,6 +3,7 @@
 namespace Itk\ExchangeBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * A resource. Is hooked up with a mail in Exchange.
@@ -16,6 +17,8 @@ class Resource {
    *
    * @ORM\Column(name="mail", type="string")
    * @ORM\Id
+   *
+   * @JMS\Groups("admin")
    */
   protected $mail;
 
@@ -23,6 +26,8 @@ class Resource {
    * Resource name
    *
    * @ORM\Column(name="name", type="string")
+   *
+   * @JMS\Groups("admin")
    */
   protected $name;
 
@@ -37,6 +42,8 @@ class Resource {
    * Alias
    *
    * @ORM\Column(name="alias", type="string")
+   *
+   * @JMS\Groups("admin")
    */
   protected $alias;
 

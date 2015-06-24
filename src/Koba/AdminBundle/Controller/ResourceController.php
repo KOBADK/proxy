@@ -9,7 +9,9 @@ namespace Koba\AdminBundle\Controller;
 use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\Controller\Annotations\View;
 
 /**
  * @Route("/resources")
@@ -20,9 +22,10 @@ class ResourceController extends FOSRestController {
    *
    * @FOSRest\Get("")
    *
+   * @View(serializerGroups={"admin"})
    * @return array
    */
-  public function getResources() {
+  public function getResourcesAction() {
     return $this->get('itk.exchange_service')->getResources();
   }
 

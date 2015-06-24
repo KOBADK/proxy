@@ -7,6 +7,7 @@
 namespace Koba\MainBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * ApiKey.
@@ -20,21 +21,29 @@ class ApiKey {
    *
    * @ORM\Column(name="api_key", type="string", nullable=false)
    * @ORM\Id
+   *
+   * @JMS\Groups("admin")
    */
   protected $apiKey;
 
   /**
    * @ORM\Column(type="string", nullable=false)
+   *
+   * @JMS\Groups("admin")
    */
   protected $name;
 
   /**
    * @ORM\Column(type="json_array", nullable=false)
+   *
+   * @JMS\Groups("admin")
    */
   protected $configuration;
 
   /**
    * @ORM\Column(type="string", nullable=true)
+   *
+   * @JMS\Groups("admin")
    */
   protected $callback;
 
