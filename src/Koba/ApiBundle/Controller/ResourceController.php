@@ -30,7 +30,7 @@ class ResourceController extends FOSRestController {
    * @return \Symfony\Component\HttpFoundation\Response
    *   The response object.
    */
-  public function getResources(Request $request, $groupID) {
+  public function getResourcesForGroup(Request $request, $groupID) {
     // Confirm the apikey is accepted.
     $apiKey = $this->get('koba.apikey_service')->getApiKey($request->query->get('apikey'));
 
