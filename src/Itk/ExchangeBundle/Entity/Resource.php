@@ -47,10 +47,13 @@ class Resource {
    *   Resource mail address.
    * @param string|null $name
    *   Resource name.
+   * @param string|null $alias
+   *   Resource alias.
    */
-  public function __construct($mail = NULL, $name = NULL) {
+  public function __construct($mail = NULL, $name = NULL, $alias = '') {
     $this->mail = $mail;
     $this->name = $name;
+    $this->alias = $alias;
     $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
   }
 
