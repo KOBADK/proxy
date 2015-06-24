@@ -1,0 +1,22 @@
+<form role="form">
+  <!-- messages -->
+  <div data-ng-show="message" class="alert {{ messageClass }}" role="alert">{{ message }}</div>
+
+	<!-- Name -->
+	<div class="form-group">
+		<label for="name">Name</label>
+		<input type="text" disabled="disabled"  class="form-control" id="name" placeholder="Enter Name" data-ng-model="resource.name">
+	</div>
+
+  <!-- Mail -->
+  <div class="form-group">
+    <label for="name">Mail</label>
+    <input type="text" disabled="disabled" class="form-control" id="mail" data-ng-model="resource.mail">
+  </div>
+
+  <!-- Alias -->
+  <div class="form-group">
+    <label for="name">Alias</label>
+    <input type="text" class="form-control" id="alias" placeholder="Enter an alias for the resource" data-ng-model="resource.alias">
+  </div>
+</form>

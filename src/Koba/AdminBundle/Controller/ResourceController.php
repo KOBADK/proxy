@@ -9,6 +9,7 @@ namespace Koba\AdminBundle\Controller;
 use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/resources")
@@ -32,5 +33,19 @@ class ResourceController extends FOSRestController {
    */
   public function refreshResources() {
     $this->get('itk.exchange_service')->refreshResources();
+  }
+
+  /**
+   * Update resource alias
+   *
+   * @FOSRest\Put("/{resourceMail}/alias")
+   *
+   * @param Request $request
+   * @param string $resourceMail
+   */
+  public function setResourceAlias(Request $request, $resourceMail) {
+    $resource = json_decode($request->getContent());
+
+    $this->get('itk.exchange_service')->setResourceAlias($resourceMail, $resource->alias);
   }
 }

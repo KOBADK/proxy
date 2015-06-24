@@ -34,6 +34,13 @@ class Resource {
   protected $bookings;
 
   /**
+   * Alias
+   *
+   * @ORM\Column(name="alias", type="string")
+   */
+  protected $alias;
+
+  /**
    * Constructor.
    *
    * @param string|null $mail
@@ -117,5 +124,27 @@ class Resource {
    */
   public function getBookings() {
     return $this->bookings;
+  }
+
+  /**
+   * Set alias
+   *
+   * @param string $alias
+   *
+   * @return Resource
+   */
+  public function setAlias($alias) {
+    $this->alias = $alias;
+
+    return $this;
+  }
+
+  /**
+   * Get alias
+   *
+   * @return string
+   */
+  public function getAlias() {
+    return $this->alias;
   }
 }

@@ -67,6 +67,20 @@ class ExchangeService {
   }
 
   /**
+   * Set the alias for a resource.
+   *
+   * @param $resourceMail
+   *   Mail of the resource
+   * @param $alias
+   *   Alias
+   */
+  public function setResourceAlias($resourceMail, $alias) {
+    $resource = $this->resourceRepository->findOneByMail($resourceMail);
+    $resource->setAlias($alias);
+    $this->resourceRepository->getEntityManager()->flush();
+  }
+
+  /**
    * Get bookings for a given resource.
    *
    * @param \Itk\ExchangeBundle\Entity\Resource $resource

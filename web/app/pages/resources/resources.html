@@ -11,6 +11,14 @@
 
 <!-- Page content -->
 <div class="jumbotron">
+  <!-- Refresh resources -->
+  <div class="panel">
+    <button type="button" class="btn btn-info" data-ng-click="refreshResources()">
+      <span class="fa fa-plus" aria-hidden="true"></span> Refresh resources
+    </button>
+  </div>
+
+  <!-- Display resources -->
   <div class="panel panel-default">
     <table class="table table-hover">
       <thead>
@@ -18,18 +26,22 @@
         <th>#</th>
         <th>Name</th>
         <th>Email</th>
+        <th>Alias</th>
+        <th>Actions</th>
       </tr>
       </thead>
       <tr data-ng-repeat="resource in resources">
         <td>{{ $index + 1 }}</td>
         <td>{{ resource.name }}</td>
         <td>{{ resource.mail }}</td>
+        <td>{{ resource.alias }}</td>
+        <td>
+          <!-- Edit index -->
+          <button type="button" class="btn btn-success btn-xs" data-ng-click="edit(resource)">
+            <span class="fa fa-wrench" aria-hidden="true"></span> Edit
+          </button>
+        </td>
       </tr>
     </table>
   </div>
-
-  <!-- Add new key -->
-  <button type="button" class="btn btn-info" data-ng-click="refreshResources()">
-    <span class="fa fa-plus" aria-hidden="true"></span> Refresh resources
-  </button>
 </div>
