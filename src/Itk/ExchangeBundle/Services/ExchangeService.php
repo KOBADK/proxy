@@ -9,6 +9,7 @@
  */
 
 namespace Itk\ExchangeBundle\Services;
+
 use Doctrine\ORM\EntityManager;
 use Itk\ExchangeBundle\Entity\Resource;
 use Itk\ExchangeBundle\Entity\ResourceRepository;
@@ -50,6 +51,8 @@ class ExchangeService {
   public function refreshResources() {
     $resources = $this->exchangeADService->getResources();
     $em = $this->resourceRepository->getEntityManager();
+
+    // @TODO: Remove resources that are not in the list from AD.
 
     foreach ($resources as $key => $value) {
       $resource = $this->resourceRepository->findOneByMail($key);
