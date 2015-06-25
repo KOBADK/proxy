@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+  <services>
+    <service id="itk.exchange_service" class="Itk\ExchangeBundle\Services\ExchangeService">
+      <argument type="service" id="itk.exchange_ad" />
+      <argument type="service" id="itk.exchange_resource_repository" />
+      <argument type="service" id="itk.exchange_mail_service" />
+      <argument type="service" id="itk.exchange_xml_service" />
+      <argument type="service" id="itk.exchange_web_service" />
+    </service>
+
+    <!-- Private service for the bundle -->
+    <service id="itk.exchange_mail_service" class="Itk\ExchangeBundle\Services\ExchangeMailService" public="true">
+      <argument>%itk_exchange_user_name%</argument>
+      <argument>%itk_exchange_user_password%</argument>
+      <argument>%itk_exchange_user_mail%</argument>
+      <argument type="service" id="mailer"/>
+      <argument type="service" id="bomo_ical.ics_provider"/>
+    </service>
+
+    <service id="itk.exchange_ad" class="Itk\ExchangeBundle\Services\ExchangeADService" public="true">
+      <argument>%itk_exchange_ad_host%</argument>
+      <argument>%itk_exchange_ad_user%</argument>
+      <argument>%itk_exchange_ad_password%</argument>
+    </service>
+
+    <service id="itk.exchange_web_service" class="Itk\ExchangeBundle\Services\ExchangeWebService" public="true">
+      <argument type="service" id="itk.exchange_soap_client"/>
+    </service>
+
+    <service id="itk.exchange_soap_client" class="Itk\ExchangeBundle\Services\ExchangeSoapClientService" public="true">
+      <argument>%itk_exchange_ws_host%</argument>
+      <argument>%itk_exchange_ws_user%</argument>
+      <argument>%itk_exchange_ws_password%</argument>
+      <argument>%itk_exchange_ws_version%</argument>
+    </service>
+
+    <service id="itk.exchange_xml_service" class="Itk\ExchangeBundle\Services\ExchangeXMLService" public="true">
+      <argument>%itk_exchange_xml_file_rc%</argument>
+      <argument>%itk_exchange_xml_file_dss%</argument>
+    </service>
+
+    <service id="itk.exchange_resource_repository" class="Itk\ExchangeBundle\Entity\ResourceRepository" factory-service="doctrine.orm.default_entity_manager" factory-method="getRepository">
+      <argument>Itk\ExchangeBundle\Entity\Resource</argument>
+    </service>
+  </services>
+</container>

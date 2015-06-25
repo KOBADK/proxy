@@ -1,0 +1,33 @@
+parameters:
+    database_driver:   pdo_mysql
+    database_host:     127.0.0.1
+    database_port:     ~
+    database_name:     symfony
+    database_user:     root
+    database_password: ~
+
+    mailer_transport:   smtp
+    mailer_host:        127.0.0.1
+    mailer_port:        587
+    mailer_user:        ~
+    mailer_password:    ~
+    mailer_dev_address: ~
+
+    locale:            en
+    secret:            ThisTokenIsNotSoSecretChangeIt
+
+    itk_exchange_ws_host: https://mail.adm.aarhuskommune.dk
+    itk_exchange_ws_user: user
+    itk_exchange_ws_password: pass
+    itk_exchange_ws_version: Exchange2010
+
+    itk_exchange_ad_host: adm.aarhuskommune.dk
+    itk_exchange_ad_user: user
+    itk_exchange_ad_password: pass
+
+    itk_exchange_user_mail: mail@koba2.vm
+    itk_exchange_user_name: user
+    itk_exchange_user_password: pass
+
+    itk_exchange_xml_file_rc: web/test.xml
+    itk_exchange_xml_file_dss: web/test2.xml

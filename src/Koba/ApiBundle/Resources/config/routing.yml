@@ -1,0 +1,4 @@
+controllers:
+  resource: "@KobaApiBundle/Controller"
+  type: annotation
+  defaults: {_format: json}

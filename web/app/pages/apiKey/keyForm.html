@@ -1,0 +1,106 @@
+<form role="form">
+  <!-- messages -->
+  <div data-ng-show="message" class="alert {{ messageClass }}" role="alert">{{ message }}</div>
+
+	<!-- Key -->
+	<fieldset disabled>
+		<div class="form-group">
+			<label for="index" class="control-label">ID</label>
+			<input type="text" class="form-control" id="index" placeholder="API Key" data-ng-model="api.api_key">
+			<span class="help-block">The API key is automatically generated.</span>
+		</div>
+	</fieldset>
+
+	<!-- Name -->
+	<div class="form-group">
+		<label for="name">Name</label>
+		<input type="text" class="form-control" id="name" placeholder="Enter Name" data-ng-model="api.name">
+	</div>
+
+  <!-- Callback Url -->
+  <div class="form-group">
+    <label for="name">Callback (url)</label>
+    <input type="text" class="form-control" id="callback" placeholder="Enter callback url" data-ng-model="api.callback">
+    <span class="help-block">Register a callback url for the bookings.</span>
+  </div>
+
+  <!-- Groups -->
+  <div class="form-group">
+    <label>Group</label>
+    <table class="table table-hover">
+      <tr>
+        <td>
+          <input type="text" class="form-control" id="addGroup" placeholder="Enter Name" data-ng-model="groupName">
+        </td>
+        <td>
+          <button type="button" class="btn btn-info" data-ng-click="addGroup(groupName)">
+            <span class="fa fa-plus" aria-hidden="true"></span> Add group
+          </button>
+        </td>
+      </tr>
+    </table>
+
+    <div>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <td>GroupID</td>
+            <td>Actions</td>
+            <td>Resources</td>
+          </tr>
+        </thead>
+        <tbody data-ng-repeat="group in api.configuration.groups">
+          <tr>
+            <td>{{ group.id }}</td>
+            <td>
+              <button type="button" class="btn btn-danger btn-s" data-ng-click="removeGroup(group.id)">
+                <span class="fa fa-minus" aria-hidden="true"></span> Remove group
+              </button>
+            </td>
+            <td>
+              <div>
+                <button data-ng-show="!showAddResource" type="button" class="btn btn-success" data-ng-click="showAddResource = !showAddResource">
+                  <span class="fa fa-wrench" aria-hidden="true"></span> Resources
+                </button>
+                <button data-ng-show="showAddResource" type="button" class="btn btn-success inline" data-ng-click="showAddResource = !showAddResource">
+                  <span class="fa fa-minus"></span>
+                </button>
+                <input data-ng-show="showAddResource" type="text" class="form-control inline" placeholder="Search resources..." data-ng-model="filterResource">
+                <ul class="max-height-list" data-ng-if="showAddResource">
+                  <li data-ng-repeat="resource in resources | filter: filterResource" data-ng-if="!resourceSelected(group.id, resource)">
+                    <a data-ng-click="addResourceToGroup(group.id, resource)">{{ resource.name }}</a>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+          <tr data-ng-repeat="resource in group.resources" data-ng-if="showAddResource">
+            <td></td>
+            <td>
+              {{ resource.name }}
+            </td>
+            <td>
+              <button type="button" class="btn btn-danger btn-xs" data-ng-click="removeResourceFromGroup(group.id, resource)">
+                <span class="fa fa-minus" aria-hidden="true"></span> Remove resource
+              </button>
+              <div class="dropdown inline">
+                <button class="btn btn-default btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                  {{resource.display}}
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                  <li role="presentation"><a role="menuitem" tabindex="-1" data-ng-click="resource.display = 'DSS'">DSS</a></li>
+                  <li role="presentation"><a role="menuitem" tabindex="-1" data-ng-click="resource.display = 'RC'">RC</a></li>
+                  <li role="presentation"><a role="menuitem" tabindex="-1" data-ng-click="resource.display = 'FREE_BUSY'">FREE_BUSY</a></li>
+                  <li role="presentation"><a role="menuitem" tabindex="-1" data-ng-click="resource.display = 'BOOKED_BY'">BOOKED_BY</a></li>
+                  <li role="presentation"><a role="menuitem" tabindex="-1" data-ng-click="resource.display = 'KOBA'">KOBA</a></li>
+                  <li role="presentation"><a role="menuitem" tabindex="-1" data-ng-click="resource.display = 'SAFE_TITLE'">SAFE_TITLE</a></li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</form>

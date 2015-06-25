@@ -10,14 +10,15 @@ framework:
         resource: "%kernel.root_dir%/config/routing.yml"
         strict_requirements: %kernel.debug%
     form:            ~
-    csrf_protection: false
+    csrf_protection: true
     validation:      { enable_annotations: true }
     templating:
         engines: ['twig']
         #assets_version: SomeVersionScheme
     default_locale:  "%locale%"
     trusted_proxies: ~
-    session:         false
+    session:
+        handler_id:  ~
     fragments:       ~
 
 # Twig Configuration
@@ -63,38 +64,18 @@ swiftmailer:
     host:      %mailer_host%
     username:  %mailer_user%
     password:  %mailer_password%
+    port:      %mailer_port%
+    encryption: tls
+    auth_mode: login
     spool:     { type: memory }
 
 sensio_framework_extra:
     view: { annotations: false }
 
 fos_rest:
-    disable_csrf_role: ROLE_API
     param_fetcher_listener: true
     view:
-        mime_types:
-            json: ['application/json', 'application/json;version=1.0', 'application/json;version=1.1']
-        view_response_listener: 'force'
-        formats:
-            xml:  true
-            json: true
-        templating_formats:
-            html: true
-    format_listener:
-        rules:
-            - { path: ^/, priorities: [ html, json, xml ], fallback_format: ~, prefer_extension: true }
-        media_type:
-            version_regex: '/(v|version)=(?P<version>[0-9\.]+)/'
-    exception:
-        codes:
-            'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
-            'Doctrine\ORM\OptimisticLockException': HTTP_CONFLICT
-        messages:
-            'Symfony\Component\Routing\Exception\ResourceNotFoundException': true
-    allowed_methods_listener: true
-    access_denied_listener:
-        json: true
-    body_listener: true
+        view_response_listener: force
 
 fos_http_cache:
     cache_control:
@@ -108,3 +89,15 @@ fos_http_cache:
                     cache_control: { public: true, max_age: 15, s_maxage: 30 }
                     last_modified: "-1 hour"
                     vary: [Accept-Encoding, Accept-Language]
+
+fos_user:
+    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+    firewall_name: admin
+    user_class: Koba\AdminBundle\Entity\User
+
+snc_redis:
+    clients:
+        default:
+            type: predis
+            alias: default
+            dsn: redis://localhost

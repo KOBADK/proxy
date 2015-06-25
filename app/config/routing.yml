@@ -1,3 +1,23 @@
-NelmioApiDocBundle:
-  resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
-  prefix:   /api/doc
+koba_api:
+    resource: "@KobaApiBundle/Resources/config/routing.yml"
+    prefix:   /api
+
+koba_admin:
+    resource: "@KobaAdminBundle/Resources/config/routing.yml"
+    prefix:   /admin
+
+koba_main:
+    resource: "@KobaMainBundle/Resources/config/routing.yml"
+    prefix:   /
+
+exchange:
+    resource: "@ItkExchangeBundle/Resources/config/routing.yml"
+    prefix:   /exchange
+
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+JMSJobQueueBundle:
+    resource: "@JMSJobQueueBundle/Controller/"
+    type: annotation
+    prefix: /jobs

@@ -8,6 +8,7 @@ class AppKernel extends Kernel
     public function registerBundles()
     {
         $bundles = array(
+            // Vendors
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
@@ -18,15 +19,25 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new FOS\RestBundle\FOSRestBundle(),
-            new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new FOS\HttpCacheBundle\FOSHttpCacheBundle(),
             new Bazinga\Bundle\HateoasBundle\BazingaHateoasBundle(),
             new Hautelook\TemplatedUriBundle\HautelookTemplatedUriBundle(),
             new Bazinga\Bundle\RestExtraBundle\BazingaRestExtraBundle(),
+            new BOMO\IcalBundle\BOMOIcalBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
+            new Snc\RedisBundle\SncRedisBundle(),
+            new JMS\JobQueueBundle\JMSJobQueueBundle(),
+            new JMS\DiExtraBundle\JMSDiExtraBundle($this),
+            new JMS\AopBundle\JMSAopBundle(),
+
+            // Own
+            new Koba\MainBundle\KobaMainBundle(),
+            new Koba\ApiBundle\KobaApiBundle(),
+            new Koba\AdminBundle\KobaAdminBundle(),
+            new Itk\ExchangeBundle\ItkExchangeBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
-            $bundles[] = new Acme\DemoBundle\AcmeDemoBundle();
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
             $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
