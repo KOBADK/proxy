@@ -12,6 +12,7 @@ use FOS\RestBundle\Controller\Annotations as FOSRest;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations\View;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @Route("/resources")
@@ -28,6 +29,19 @@ class ResourceController extends FOSRestController {
   public function getResourcesAction() {
     return $this->get('itk.exchange_service')->getResources();
   }
+
+  /**
+   * Get resource by mail.
+   *
+   * @FOSRest\Get("/{mail}")
+   *
+   * @View(serializerGroups={"admin"})
+   * @return Resource
+   */
+  public function getResourceByMailAction($mail) {
+    return $this->get('itk.exchange_service')->getResourceByMail($mail);
+  }
+
 
   /**
    * Refresh resources.

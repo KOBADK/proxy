@@ -40,9 +40,23 @@ class ExchangeService {
 
   /**
    * Get all resources from Exchange.
+   *
+   * @return array
    */
   public function getResources() {
     return $this->resourceRepository->findAll();
+  }
+
+  /**
+   * Get resources from Exchange.
+   *
+   * @param $mail
+   *   Mail of the resource.
+   *
+   * @return Resource
+   */
+  public function getResourceByMail($mail) {
+    return $this->resourceRepository->findOneByMail($mail);
   }
 
   /**

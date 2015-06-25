@@ -39,38 +39,46 @@ angular.module('KobaAdminApp').controller('ResourceController', ['$scope', 'ngOv
      * Edit resource callback.
      */
     $scope.edit = function edit(resource) {
-      var scope = $scope.$new(true);
+      dataService.fetch('get', '/admin/resources/' + resource.mail).then(
+        function success(data) {
+          var scope = $scope.$new(true);
 
-      // Set resource information.
-      scope.resource = resource;
+          // Set resource information.
+          scope.resource = data;
 
-      /**
-       * Save resource callback.
-       */
-      scope.save = function save() {
-        dataService.send('put', '/admin/resources/' + scope.resource.mail + '/alias', scope.resource).then(
-          function (data) {
-            $scope.message = data;
-            $scope.messageClass = 'alert-success';
+          /**
+           * Save resource callback.
+           */
+          scope.save = function save() {
+            dataService.send('put', '/admin/resources/' + scope.resource.mail + '/alias', scope.resource).then(
+              function () {
+                $scope.message = 'Resource save complete.';
+                $scope.messageClass = 'alert-success';
 
-            // Reload API key list.
-            loadResources();
+                // Reload API key list.
+                loadResources();
 
-            // Close overlay.
-            overlay.close();
-          },
-          function (reason) {
-            $scope.message = reason.message;
-            $scope.messageClass = 'alert-danger';
-          }
-        );
-      };
+                // Close overlay.
+                overlay.close();
+              },
+              function (reason) {
+                $scope.message = reason.message;
+                $scope.messageClass = 'alert-danger';
+              }
+            );
+          };
 
-      // Open the overlay.
-      var overlay = ngOverlay.open({
-        template: "app/pages/resources/resourceEdit.html",
-        scope: scope
-      });
+          // Open the overlay.
+          var overlay = ngOverlay.open({
+            template: "app/pages/resources/resourceEdit.html",
+            scope: scope
+          });
+        },
+        function error(reason) {
+          $scope.message = reason.message;
+          $scope.messageClass = 'alert-danger';
+        }
+      );
     }
   }
 ]);

@@ -72,8 +72,6 @@ class CalendarService {
       //   FREE_BUSY - from exchange, only free/busy times
       //   BOOKED_BY - shows "Booked by [first_name]" as title
       //   KOBA_BOOKING - all data from a booking made in KOBA
-      //   SAFE_TITLE - the title is from a special tag added to the body of a
-      //     booking made from exchange.
       if ($resourceConfiguration['display'] === 'DSS') {
         $xmlBookings = json_decode($this->cache->get('dss:' . $resource->getName()));
 
