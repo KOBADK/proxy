@@ -11,7 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use FOS\RestBundle\Controller\Annotations\View;
 
 /**
  * @Route("/resources")
@@ -28,10 +28,11 @@ class ResourceController extends FOSRestController {
    *   The id of the group to get resources for.
    *   Defaults to default
    *
-   * @return \Symfony\Component\HttpFoundation\Response
-   *   The response object.
+   * @View(serializerGroups={"admin"})
+   *
+   * @return array
    */
-  public function getResources(Request $request, $groupID) {
+  public function getResourcesForGroupAction(Request $request, $groupID) {
     // Confirm the apikey is accepted.
     $apiKey = $this->get('koba.apikey_service')->getApiKey($request->query->get('apikey'));
 
@@ -46,18 +47,22 @@ class ResourceController extends FOSRestController {
       }
     }
 
-    $view = $this->view($resources, 200);
-    return $this->handleView($view);
+    return $resources;
   }
 
   /**
    * @FOSRest\Get("/{resourceMail}/group/{groupId}/bookings/from/{from}/to/{to}")
    *
    * @param Request $request
+   *   The request.
    * @param $groupId
+   *   The group id.
    * @param $resourceMail
+   *   The mail of the resource.
    * @param $from
+   *   The from time (unix timestamp).
    * @param $to
+   *   The to time (unix timestamp).
    *
    * @return \Symfony\Component\HttpFoundation\Response
    *   The response object.
@@ -87,10 +92,15 @@ class ResourceController extends FOSRestController {
    * @FOSRest\Get("/{resourceMail}/group/{groupId}/freebusy/from/{from}/to/{to}")
    *
    * @param Request $request
+   *   The request.
    * @param $groupId
+   *   The group id.
    * @param $resourceMail
+   *   The mail of the resource.
    * @param $from
+   *   The from time (unix timestamp).
    * @param $to
+   *   The to time (unix timestamp).
    *
    * @return \Symfony\Component\HttpFoundation\Response
    *   The response object.

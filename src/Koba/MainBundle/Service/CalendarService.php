@@ -72,14 +72,17 @@ class CalendarService {
       //   FREE_BUSY - from exchange, only free/busy times
       //   BOOKED_BY - shows "Booked by [first_name]" as title
       //   KOBA_BOOKING - all data from a booking made in KOBA
-      //   SAFE_TITLE - the title is from a special tag added to the body of a
-      //     booking made from exchange.
       if ($resourceConfiguration['display'] === 'DSS') {
         $xmlBookings = json_decode($this->cache->get('dss:' . $resource->getName()));
 
         if ($xmlBookings) {
           // Filter out bookings that are not from between $from and $to.
           $bookings = $this->filterBookings($xmlBookings, $from, $to);
+
+          // Set resource alias.
+          foreach ($bookings as $booking) {
+            $booking->resource_alias = $resource->getAlias();
+          }
         }
       }
       else if ($resourceConfiguration['display'] === 'RC') {
@@ -88,6 +91,11 @@ class CalendarService {
         if ($xmlBookings) {
           // Filter out bookings that are not from between $from and $to.
           $bookings = $this->filterBookings($xmlBookings, $from, $to);
+
+          // Set resource alias.
+          foreach ($bookings as $booking) {
+            $booking->resource_alias = $resource->getAlias();
+          }
         }
       }
       else if ($resourceConfiguration['display'] === 'FREE_BUSY') {
@@ -98,6 +106,7 @@ class CalendarService {
             'start_time' => $booking->getStart(),
             'end_time' => $booking->getEnd(),
             'resource_id' => $resource->getName(),
+            'resource_alias' => $resource->getAlias(),
           );
         }
       }
@@ -110,6 +119,7 @@ class CalendarService {
             'end_time' => $booking->getEnd(),
             'name' => $booking->getBody()->getName(),
             'resource_id' => $resource->getName(),
+            'resource_alias' => $resource->getAlias(),
           );
         }
       }
@@ -126,10 +136,11 @@ class CalendarService {
             'event_description' => $booking->getBody()->getDescription(),
             'name' => $booking->getBody()->getName(),
             'resource_id' => $resource->getName(),
+            'resource_alias' => $resource->getAlias(),
           );
         }
       }
-      else if ($resourceConfiguration['display'] === 'SAFE_TITLE') {
+      else {
         throw new NotSupportedException();
       }
 

@@ -24,6 +24,13 @@ angular.module('KobaAdminApp').factory('dataService', ['$http', '$q', function($
 
     $http({method: method, url: uri}).
       success(function(data) {
+        if (data.code && (data.code < 200 || data.code >= 300)) {
+          deferred.reject({
+            'status': data.status,
+            'message': data.message
+          });
+          return;
+        }
 
         // Resolve promise an return data.
         deferred.resolve(data);
@@ -56,6 +63,13 @@ angular.module('KobaAdminApp').factory('dataService', ['$http', '$q', function($
 
     $http({ "method": method, "url": uri, "data": data }).
       success(function(data) {
+        if (data.code && (data.code < 200 || data.code >= 300)) {
+          deferred.reject({
+            'status': data.status,
+            'message': data.message
+          });
+          return;
+        }
 
         // Resolve promise.
         deferred.resolve(data);

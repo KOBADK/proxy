@@ -3,6 +3,7 @@
 namespace Itk\ExchangeBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * A resource. Is hooked up with a mail in Exchange.
@@ -16,6 +17,8 @@ class Resource {
    *
    * @ORM\Column(name="mail", type="string")
    * @ORM\Id
+   *
+   * @JMS\Groups("admin")
    */
   protected $mail;
 
@@ -23,6 +26,8 @@ class Resource {
    * Resource name
    *
    * @ORM\Column(name="name", type="string")
+   *
+   * @JMS\Groups("admin")
    */
   protected $name;
 
@@ -34,16 +39,28 @@ class Resource {
   protected $bookings;
 
   /**
+   * Alias
+   *
+   * @ORM\Column(name="alias", type="string")
+   *
+   * @JMS\Groups("admin")
+   */
+  protected $alias;
+
+  /**
    * Constructor.
    *
    * @param string|null $mail
    *   Resource mail address.
    * @param string|null $name
    *   Resource name.
+   * @param string|null $alias
+   *   Resource alias.
    */
-  public function __construct($mail = NULL, $name = NULL) {
+  public function __construct($mail = NULL, $name = NULL, $alias = '') {
     $this->mail = $mail;
     $this->name = $name;
+    $this->alias = $alias;
     $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
   }
 
@@ -117,5 +134,27 @@ class Resource {
    */
   public function getBookings() {
     return $this->bookings;
+  }
+
+  /**
+   * Set alias
+   *
+   * @param string $alias
+   *
+   * @return Resource
+   */
+  public function setAlias($alias) {
+    $this->alias = $alias;
+
+    return $this;
+  }
+
+  /**
+   * Get alias
+   *
+   * @return string
+   */
+  public function getAlias() {
+    return $this->alias;
   }
 }

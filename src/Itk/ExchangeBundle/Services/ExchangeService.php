@@ -9,6 +9,7 @@
  */
 
 namespace Itk\ExchangeBundle\Services;
+
 use Doctrine\ORM\EntityManager;
 use Itk\ExchangeBundle\Entity\Resource;
 use Itk\ExchangeBundle\Entity\ResourceRepository;
@@ -39,9 +40,23 @@ class ExchangeService {
 
   /**
    * Get all resources from Exchange.
+   *
+   * @return array
    */
   public function getResources() {
     return $this->resourceRepository->findAll();
+  }
+
+  /**
+   * Get resources from Exchange.
+   *
+   * @param $mail
+   *   Mail of the resource.
+   *
+   * @return Resource
+   */
+  public function getResourceByMail($mail) {
+    return $this->resourceRepository->findOneByMail($mail);
   }
 
   /**
@@ -50,6 +65,8 @@ class ExchangeService {
   public function refreshResources() {
     $resources = $this->exchangeADService->getResources();
     $em = $this->resourceRepository->getEntityManager();
+
+    // @TODO: Remove resources that are not in the list from AD.
 
     foreach ($resources as $key => $value) {
       $resource = $this->resourceRepository->findOneByMail($key);
@@ -64,6 +81,20 @@ class ExchangeService {
     }
 
     $em->flush();
+  }
+
+  /**
+   * Set the alias for a resource.
+   *
+   * @param $resourceMail
+   *   Mail of the resource
+   * @param $alias
+   *   Alias
+   */
+  public function setResourceAlias($resourceMail, $alias) {
+    $resource = $this->resourceRepository->findOneByMail($resourceMail);
+    $resource->setAlias($alias);
+    $this->resourceRepository->getEntityManager()->flush();
   }
 
   /**
