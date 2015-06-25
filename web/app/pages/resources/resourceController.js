@@ -23,9 +23,14 @@ angular.module('KobaAdminApp').controller('ResourceController', ['$scope', 'ngOv
 
     loadResources();
 
+    /**
+     * Refresh resources.
+     */
     $scope.refreshResources = function refreshResources() {
-      dataService.fetch('get', '/admin/resources/refresh').then(
+      dataService.send('post', '/admin/resources/refresh').then(
         function () {
+          $scope.message = 'Resources refreshed.';
+          $scope.messageClass = 'alert-success';
           loadResources();
         },
         function (reason) {
