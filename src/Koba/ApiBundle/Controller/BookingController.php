@@ -120,13 +120,13 @@ class BookingController extends FOSRestController {
     $sendJob = new Job('koba:booking:send', array('id' => $booking->getId()));
     $sendJob->addRelatedEntity($booking);
     $sendJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\FixedIntervalStrategy');
-    $sendJob->setRetryStrategyConfig(array('interval' => '+15 seconds'));
+    $sendJob->setRetryStrategyConfig(array('interval' => '+10 minutes'));
     $sendJob->setMaxRetries(5);
 
     $confirmJob = new Job('koba:booking:confirm', array('id' => $booking->getId()));
     $confirmJob->addRelatedEntity($booking);
     $confirmJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\FixedIntervalStrategy');
-    $confirmJob->setRetryStrategyConfig(array('interval' => '+15 seconds'));
+    $confirmJob->setRetryStrategyConfig(array('interval' => '+10 minutes'));
     // Max retries for the confirm jobs should be 2 or more, since the last
     // attempt always results in the confirm job concluding that the request
     // was not accepted.
@@ -136,7 +136,7 @@ class BookingController extends FOSRestController {
     $callbackJob = new Job('koba:booking:callback', array('id' => $booking->getId()));
     $callbackJob->addRelatedEntity($booking);
     $callbackJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\FixedIntervalStrategy');
-    $callbackJob->setRetryStrategyConfig(array('interval' => '+15 seconds'));
+    $callbackJob->setRetryStrategyConfig(array('interval' => '+10 minutes'));
     $callbackJob->setMaxRetries(5);
 
     $confirmJob->addDependency($sendJob);

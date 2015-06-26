@@ -35,7 +35,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
 
       scope.confirmed = function confirmed() {
         dataService.fetch('delete', '/admin/apikeys/' + key).then(
-          function (data) {
+          function () {
             $scope.message = 'API key removed.';
             $scope.messageClass = 'alert-success';
 
@@ -206,7 +206,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
            */
           scope.save = function save() {
             dataService.send('put', '/admin/apikeys/' + key, scope.api).then(
-              function (data) {
+              function () {
                 $scope.message = 'API key updated.';
                 $scope.messageClass = 'alert-success';
 
@@ -407,7 +407,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
         }
 
         dataService.send('post', '/admin/apikeys', scope.api).then(
-          function (data) {
+          function () {
             $scope.message = 'API key added.';
             $scope.messageClass = 'alert-success';
 

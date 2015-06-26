@@ -76,26 +76,14 @@ class CalendarService {
         $xmlBookings = json_decode($this->cache->get('dss:' . $resource->getName()));
 
         if ($xmlBookings) {
-          // Filter out bookings that are not from between $from and $to.
-          $bookings = $this->filterBookings($xmlBookings, $from, $to);
-
-          // Set resource alias.
-          foreach ($bookings as $booking) {
-            $booking->resource_alias = $resource->getAlias();
-          }
+          $bookings = $this->processXMLBookings($xmlBookings, $from, $to, $resource);
         }
       }
       else if ($resourceConfiguration['display'] === 'RC') {
         $xmlBookings = json_decode($this->cache->get('rc:' . $resource->getName()));
 
         if ($xmlBookings) {
-          // Filter out bookings that are not from between $from and $to.
-          $bookings = $this->filterBookings($xmlBookings, $from, $to);
-
-          // Set resource alias.
-          foreach ($bookings as $booking) {
-            $booking->resource_alias = $resource->getAlias();
-          }
+          $bookings = $this->processXMLBookings($xmlBookings, $from, $to, $resource);
         }
       }
       else if ($resourceConfiguration['display'] === 'FREE_BUSY') {
@@ -158,9 +146,9 @@ class CalendarService {
    * @param $bookings
    *   Array of bookings.
    * @param integer $from
-   *   From (unixtimestamp)
+   *   From (unix timestamp)
    * @param integer $to
-   *   To (unixtimestamp)
+   *   To (unix timestamp)
    * @return array
    *   The filtered array of bookings.
    */
@@ -174,6 +162,33 @@ class CalendarService {
     }
 
     return $results;
+  }
+
+  /**
+   * Process bookings from XML RC or DSS files.
+   *
+   * @param $bookings
+   *   Array of bookings
+   * @param $from
+   *   From (unix timestamp)
+   * @param $to
+   *   To (unix timestamp)
+   * @param Resource $resource
+   *   The resource.
+   *
+   * @return array
+   *   The processed array of bookings.
+   */
+  private function processXMLBookings($bookings, $from, $to, $resource) {
+    // Filter out bookings that are not from between $from and $to.
+    $bookings = $this->filterBookings($bookings, $from, $to);
+
+    // Set resource alias.
+    foreach ($bookings as $booking) {
+      $booking->resource_alias = $resource->getAlias();
+    }
+
+    return $bookings;
   }
 
   /**

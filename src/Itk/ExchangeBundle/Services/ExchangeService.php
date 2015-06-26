@@ -53,7 +53,7 @@ class ExchangeService {
    * @param $mail
    *   Mail of the resource.
    *
-   * @return Resource
+   * @return Resource|null
    */
   public function getResourceByMail($mail) {
     return $this->resourceRepository->findOneByMail($mail);

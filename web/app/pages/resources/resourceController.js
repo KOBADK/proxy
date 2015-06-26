@@ -75,7 +75,7 @@ angular.module('KobaAdminApp').controller('ResourceController', ['$scope', 'ngOv
 
           // Open the overlay.
           var overlay = ngOverlay.open({
-            template: "app/pages/resources/resourceEdit.html",
+            template: 'app/pages/resources/resourceEdit.html',
             scope: scope
           });
         },
@@ -84,7 +84,7 @@ angular.module('KobaAdminApp').controller('ResourceController', ['$scope', 'ngOv
           $scope.messageClass = 'alert-danger';
         }
       );
-    }
+    };
   }
 ]);
 

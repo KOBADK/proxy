@@ -152,7 +152,7 @@ class Resource {
   /**
    * Get alias
    *
-   * @return string
+   * @return string|null
    */
   public function getAlias() {
     return $this->alias;
