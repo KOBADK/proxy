@@ -32,7 +32,7 @@ class ExchangeBooking {
   }
 
   /**
-   * @return null
+   * @return mixed
    */
   public function getBody() {
     return $this->body;
