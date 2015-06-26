@@ -76,14 +76,14 @@ class CalendarService {
         $xmlBookings = json_decode($this->cache->get('dss:' . $resource->getName()));
 
         if ($xmlBookings) {
-          $bookings = $this->processXMLBookings($xmlBookings, $from, $to, $resource);
+          $bookings = $this->processXmlBookings($xmlBookings, $from, $to, $resource);
         }
       }
       else if ($resourceConfiguration['display'] === 'RC') {
         $xmlBookings = json_decode($this->cache->get('rc:' . $resource->getName()));
 
         if ($xmlBookings) {
-          $bookings = $this->processXMLBookings($xmlBookings, $from, $to, $resource);
+          $bookings = $this->processXmlBookings($xmlBookings, $from, $to, $resource);
         }
       }
       else if ($resourceConfiguration['display'] === 'FREE_BUSY') {
@@ -179,7 +179,7 @@ class CalendarService {
    * @return array
    *   The processed array of bookings.
    */
-  private function processXMLBookings($bookings, $from, $to, $resource) {
+  private function processXmlBookings($bookings, $from, $to, $resource) {
     // Filter out bookings that are not from between $from and $to.
     $bookings = $this->filterBookings($bookings, $from, $to);
 
@@ -196,7 +196,7 @@ class CalendarService {
    *
    * Used by cron process to cache data from the xml files.
    */
-  public function updateXMLData() {
+  public function updateXmlData() {
     // Get DSS XML data and add to cache.
     $xmlData = $this->exchangeService->getExchangeDssXmlData();
     foreach ($xmlData as $key => $value) {

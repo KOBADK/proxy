@@ -33,7 +33,7 @@ class UpdateCalendarCommand extends ContainerAwareCommand {
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
     $calendarService = $this->getContainer()->get('koba.calendar_service');
-    $calendarService->updateXMLData();
+    $calendarService->updateXmlData();
 
     $output->writeln('Calendar events updated.');
   }
