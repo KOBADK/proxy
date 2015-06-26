@@ -57,6 +57,8 @@ class SendBookingCommand extends ContainerAwareCommand {
     $booking->setStatusPending();
     $em->flush();
 
+    $output->writeln('Booking sent.');
+
     return true;
   }
 }

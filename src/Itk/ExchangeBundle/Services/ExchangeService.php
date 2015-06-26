@@ -212,7 +212,7 @@ class ExchangeService {
   }
 
   /**
-   * Get the bookings for a resource in an interval.
+   * Get the ExchangeBookings for a resource in an interval.
    *
    * @param Resource $resource
    *   The resource.
@@ -222,8 +222,9 @@ class ExchangeService {
    *   The end time.
    *
    * @return array
+   *   Array of ExchangeBookings.
    */
-  public function getBookingsForInterval(Resource $resource, $startTime, $endTime) {
+  public function getExchangeBookingsForInterval(Resource $resource, $startTime, $endTime) {
     // Start by getting the bookings from exchange.
     $exchangeCalendar = $this->getBookingsForResource($resource, $startTime, $endTime);
     return $exchangeCalendar->getBookings();
@@ -238,6 +239,7 @@ class ExchangeService {
    *   The booking.
    *
    * @return bool
+   *   Whether or not the $exchangeBooking matches the $booking
    */
   public function doBookingsMatch(ExchangeBooking $exchangeBooking, Booking $booking) {
     return $exchangeBooking->getType() == ExchangeBooking::$type_koba && $exchangeBooking->getBody()->getIcalUid() == $booking->getIcalUid();

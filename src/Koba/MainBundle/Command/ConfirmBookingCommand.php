@@ -73,7 +73,7 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
 
     // Check Exchange to see if the booking has been accepted.
     $exchangeService = $container->get('itk.exchange_service');
-    $exchangeBookings = $exchangeService->getBookingsForInterval($booking->getResource(), $booking->getStartTime(), $booking->getEndTime());
+    $exchangeBookings = $exchangeService->getExchangeBookingsForInterval($booking->getResource(), $booking->getStartTime(), $booking->getEndTime());
 
     // Only one booking in interval.
     if (count($exchangeBookings) === 1) {
