@@ -122,7 +122,7 @@ class BookingController extends FOSRestController {
     $sendJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\ExponentialIntervalStrategy');
     $sendJob->setRetryStrategyConfig(
       array(
-        'number' => 2,
+        'base' => 2,
         'unit' => 'minute',
       )
     );
@@ -133,7 +133,7 @@ class BookingController extends FOSRestController {
     $confirmJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\ExponentialIntervalStrategy');
     $confirmJob->setRetryStrategyConfig(
       array(
-        'number' => 2,
+        'base' => 2,
         'unit' => 'minute',
       )
     );
@@ -148,7 +148,7 @@ class BookingController extends FOSRestController {
     $callbackJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\ExponentialIntervalStrategy');
     $callbackJob->setRetryStrategyConfig(
       array(
-        'number' => 2,
+        'base' => 2,
         'unit' => 'minute',
       )
     );
