@@ -2,6 +2,7 @@
 
 namespace Itk\ExchangeBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
@@ -61,7 +62,7 @@ class Resource {
     $this->mail = $mail;
     $this->name = $name;
     $this->alias = $alias;
-    $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
+    $this->bookings = new ArrayCollection();
   }
 
   /**
@@ -80,7 +81,7 @@ class Resource {
   /**
    * Get name
    *
-   * @return string
+   * @return string|null
    */
   public function getName() {
     return $this->name;
@@ -102,7 +103,7 @@ class Resource {
   /**
    * Get mail
    *
-   * @return string
+   * @return string|null
    */
   public function getMail() {
     return $this->mail;
@@ -123,14 +124,17 @@ class Resource {
    * Remove bookings
    *
    * @param \Itk\ExchangeBundle\Entity\Booking $booking
+   *
+   * @return Resource
    */
   public function removeBooking(\Itk\ExchangeBundle\Entity\Booking $booking) {
     $this->bookings->removeElement($booking);
+    return $this;
   }
   /**
    * Get bookings
    *
-   * @return \Doctrine\Common\Collections\Collection
+   * @return \Doctrine\Common\Collections\ArrayCollection
    */
   public function getBookings() {
     return $this->bookings;
