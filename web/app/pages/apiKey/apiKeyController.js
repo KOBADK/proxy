@@ -54,7 +54,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
 
       // Open the overlay.
       var overlay = ngOverlay.open({
-        template: "app/shared/confirm/confirm.html",
+        template: 'app/shared/confirm/confirm.html',
         scope: scope
       });
     };
@@ -225,7 +225,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
 
           // Open the overlay.
           var overlay = ngOverlay.open({
-            template: "app/pages/apiKey/keyEdit.html",
+            template: 'app/pages/apiKey/keyEdit.html',
             scope: scope
           });
         },

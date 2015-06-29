@@ -39,6 +39,37 @@
             var $dialog;
             var $dialogParent = $body;
 
+            /**
+             * Load template file from URL.
+             *
+             * @param tmpl
+             * @param config
+             * @returns {*}
+             */
+            function loadTemplateUrl(tmpl, config) {
+              return $http.get(tmpl, angular.extend({cache: false}, config || {})).then(function(res) {
+                return res.data || '';
+              });
+            }
+
+            /**
+             * Load template from cache and fallback to URL.
+             *
+             * @param tmpl
+             * @returns {*}
+             */
+            function loadTemplate(tmpl) {
+              if (!tmpl) {
+                return 'Empty template';
+              }
+
+              if (typeof options.cache === 'boolean' && !options.cache) {
+                return loadTemplateUrl(tmpl, {cache: false});
+              }
+
+              return $templateCache.get(tmpl) || loadTemplateUrl(tmpl, {cache: false});
+            }
+
             $q.when(loadTemplate(options.template)).then(function (template) {
               // Store the template in cache.
               $templateCache.put(options.template, template);
@@ -75,37 +106,6 @@
                 });
               });
             });
-
-            /**
-             * Load template file from URL.
-             *
-             * @param tmpl
-             * @param config
-             * @returns {*}
-             */
-            function loadTemplateUrl(tmpl, config) {
-              return $http.get(tmpl, angular.extend({cache: false}, config || {})).then(function(res) {
-                return res.data || '';
-              });
-            }
-
-            /**
-             * Load template from cache and fallback to URL.
-             *
-             * @param tmpl
-             * @returns {*}
-             */
-            function loadTemplate(tmpl) {
-              if (!tmpl) {
-                return 'Empty template';
-              }
-
-              if (typeof options.cache === 'boolean' && !options.cache) {
-                return loadTemplateUrl(tmpl, {cache: false});
-              }
-
-              return $templateCache.get(tmpl) || loadTemplateUrl(tmpl, {cache: false});
-            }
 
             // Return overlay to enable chaining.
             return self;

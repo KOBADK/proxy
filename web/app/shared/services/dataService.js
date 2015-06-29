@@ -61,7 +61,7 @@ angular.module('KobaAdminApp').factory('dataService', ['$http', '$q', function($
   function send(method, uri, data) {
     var deferred = $q.defer();
 
-    $http({ "method": method, "url": uri, "data": data }).
+    $http({method: method, url: uri, data: data }).
       success(function(data) {
         if (data.code && (data.code < 200 || data.code >= 300)) {
           deferred.reject({
