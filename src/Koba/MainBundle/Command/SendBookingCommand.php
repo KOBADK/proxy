@@ -36,7 +36,10 @@ class SendBookingCommand extends ContainerAwareCommand {
    *
    * @param InputInterface $input
    * @param OutputInterface $output
-   * @return int|null|void
+   *
+   * @throw NotFoundHttpException
+   *
+   * @return void
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
     $container = $this->getContainer();
@@ -58,7 +61,5 @@ class SendBookingCommand extends ContainerAwareCommand {
     $em->flush();
 
     $output->writeln('Booking sent.');
-
-    return true;
   }
 }
