@@ -112,7 +112,7 @@ class IndexController extends Controller {
   /**
    * @Route("/test")
    */
-  public function testBooking(Request $request) {
+  public function testBooking() {
     // Build resource for our test resource.
     $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
 
