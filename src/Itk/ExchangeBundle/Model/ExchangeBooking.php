@@ -20,8 +20,9 @@ class ExchangeBooking {
   private $start;
   private $end;
   private $body;
+  private $type;
 
-  function __construct($id, $changeKey, $subject = '', $start = 0, $end = 0, $body = NULL) {
+  public function __construct($id, $changeKey, $subject = '', $start = 0, $end = 0, $body = NULL) {
     $this->id = $id;
     $this->changeKey = $changeKey;
     $this->subject = $subject;
