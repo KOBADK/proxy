@@ -6,7 +6,6 @@
 
 namespace Itk\ExchangeBundle\Model;
 
-
 use Itk\ExchangeBundle\Entity\Resource;
 
 /**
@@ -14,12 +13,10 @@ use Itk\ExchangeBundle\Entity\Resource;
  * @package Itk\ExchangeBundle\Model
  */
 class ExchangeCalendar {
-
   private $start;
   private $end;
   private $resource;
   private $bookings;
-
 
   /**
    * @param \Itk\ExchangeBundle\Entity\Resource $resource
@@ -37,7 +34,7 @@ class ExchangeCalendar {
   /**
    * @return mixed
    */
-  function getStart() {
+  public function getStart() {
     return $this->start;
   }
 
@@ -96,7 +93,4 @@ class ExchangeCalendar {
   public function addBooking(ExchangeBooking $booking) {
     $this->bookings[] = $booking;
   }
-
-
-
 }

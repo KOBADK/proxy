@@ -28,7 +28,7 @@ class ResourceRepository extends EntityRepository {
    *
    * @param $mail
    *   The mail.
-   * @return object|null
+   * @return Resource|null
    *   The Resource if found.
    */
   public function findOneByMail($mail) {
