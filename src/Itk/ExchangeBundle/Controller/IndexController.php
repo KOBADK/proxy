@@ -87,7 +87,7 @@ class IndexController extends Controller {
   public function getResources() {
     $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
     $exchange = $this->get('itk.exchange_service');
-    $calendar = $exchange->getBookingsForResource($resource, mktime(0, 0, 0), mktime(23, 59, 29), TRUE);
+    $calendar = $exchange->getResourceBookings($resource, mktime(0, 0, 0), mktime(23, 59, 29), TRUE);
 
     print_r($calendar);
 

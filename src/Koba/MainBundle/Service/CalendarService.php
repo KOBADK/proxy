@@ -87,7 +87,7 @@ class CalendarService {
         }
       }
       else if ($resourceConfiguration['display'] === 'FREE_BUSY') {
-        $exchangeCalendar = $this->exchangeService->getBookingsForResource($resource, $from, $to, FALSE);
+        $exchangeCalendar = $this->exchangeService->getResourceBookings($resource, $from, $to, FALSE);
 
         foreach ($exchangeCalendar->getBookings() as $booking) {
           $bookings[] = (object) array(
@@ -99,7 +99,7 @@ class CalendarService {
         }
       }
       else if ($resourceConfiguration['display'] === 'BOOKED_BY') {
-        $exchangeCalendar = $this->exchangeService->getBookingsForResource($resource, $from, $to, TRUE);
+        $exchangeCalendar = $this->exchangeService->getResourceBookings($resource, $from, $to, TRUE);
 
         foreach ($exchangeCalendar->getBookings() as $booking) {
           $bookings[] = (object) array(
@@ -112,7 +112,7 @@ class CalendarService {
         }
       }
       else if ($resourceConfiguration['display'] === 'KOBA') {
-        $exchangeCalendar = $this->exchangeService->getBookingsForResource($resource, $from, $to, TRUE);
+        $exchangeCalendar = $this->exchangeService->getResourceBookings($resource, $from, $to, TRUE);
 
         // @TODO: Merge with free/busy or other source.
 

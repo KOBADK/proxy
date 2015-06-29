@@ -119,7 +119,7 @@ class ResourceController extends FOSRestController {
 
     $exchangeService = $this->get('itk.exchange_service');
 
-    $content = $exchangeService->getBookingsForResource($resource, $from, $to, FALSE);
+    $content = $exchangeService->getResourceBookings($resource, $from, $to, FALSE);
 
     $bookings = array();
 
