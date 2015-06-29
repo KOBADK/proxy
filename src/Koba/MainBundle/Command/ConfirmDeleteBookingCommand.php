@@ -77,6 +77,6 @@ class ConfirmDeleteBookingCommand extends ContainerAwareCommand {
     }
 
     // Retry.
-    throw new NotFoundHttpException("Booking still exists / Retry");
+    throw new NotFoundHttpException('Booking still exists / Retry.');
   }
 }
