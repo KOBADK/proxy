@@ -10,9 +10,8 @@ namespace Itk\ExchangeBundle\Model;
 
 
 class ExchangeBooking {
-  public static $type_koba = 'KOBA';
-  public static $type_safe_title = 'SAFE_TITLE';
-  public static $type_free_busy = 'FREE_BUSY';
+  const TYPE_KOBA = 'KOBA';
+  const TYPE_FREE_BUSY = 'FREE_BUSY';
 
   private $id;
   private $changeKey;
@@ -28,7 +27,7 @@ class ExchangeBooking {
     $this->subject = $subject;
     $this->start = $start;
     $this->end = $end;
-    $this->type = self::$type_free_busy;
+    $this->type = self::TYPE_FREE_BUSY;
     $this->body = $body;
   }
 
@@ -151,16 +150,7 @@ class ExchangeBooking {
    * @return $this
    */
   public function setTypeKoba() {
-    $this->type = self::$type_koba;
-
-    return $this;
-  }
-
-  /**
-   * @return $this
-   */
-  public function setTypeSafeTitle() {
-    $this->type = self::$type_safe_title;
+    $this->type = self::TYPE_KOBA;
 
     return $this;
   }
@@ -169,7 +159,7 @@ class ExchangeBooking {
    * @return $this
    */
   public function setTypeFreeBusy() {
-    $this->type = self::$type_free_busy;
+    $this->type = self::TYPE_FREE_BUSY;
 
     return $this;
   }

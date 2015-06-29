@@ -203,7 +203,7 @@ class ExchangeService {
     if (!empty($exchangeBookings)) {
       // Check if it's the right booking.
       // @TODO: Why == and not ===
-      if ($exchangeBookings[0]->getType() == ExchangeBooking::$type_koba && $exchangeBookings[0]->getBody()->getIcalUid() == $booking->getIcalUid()) {
+      if ($exchangeBookings[0]->getType() == ExchangeBooking::TYPE_KOBA && $exchangeBookings[0]->getBody()->getIcalUid() == $booking->getIcalUid()) {
         return TRUE;
       }
     }
@@ -242,6 +242,6 @@ class ExchangeService {
    *   Whether or not the $exchangeBooking matches the $booking
    */
   public function doBookingsMatch(ExchangeBooking $exchangeBooking, Booking $booking) {
-    return $exchangeBooking->getType() == ExchangeBooking::$type_koba && $exchangeBooking->getBody()->getIcalUid() == $booking->getIcalUid();
+    return $exchangeBooking->getType() == ExchangeBooking::TYPE_KOBA && $exchangeBooking->getBody()->getIcalUid() == $booking->getIcalUid();
   }
 }
