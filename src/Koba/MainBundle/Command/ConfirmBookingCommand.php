@@ -58,14 +58,16 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
     $jobId = $input->getOption('jms-job-id');
     $job = $doctrine->getRepository('JMSJobQueueBundle:Job')->findOneBy(array('id' => $jobId));
     $originalJob = $job->getOriginalJob();
-    if ($originalJob) {
+
+    // Confirm that this is a retry job.
+    if ($originalJob && $job->isRetryJob()) {
       $numberOfRetries = count($originalJob->getRetryJobs());
       $maxRetries = $originalJob->getMaxRetries();
 
       // @TODO: Find better way to handle last retry. At the moment we only try maxRetries - 1 times before giving up.
       if ($numberOfRetries >= $maxRetries - 1) {
-        $output->writeln('Last attempt at finding booking in interval returned no elements. Rejected.');
-        $booking->setStatusDenied();
+        $output->writeln('Last attempt at finding booking in interval returned no elements. Unconfirmed.');
+        $booking->setStatusUnconfirmed();
         $em->flush();
         return;
       }
