@@ -75,8 +75,8 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
     $exchangeService = $container->get('itk.exchange_service');
     $exchangeBookings = $exchangeService->getExchangeBookingsForInterval($booking->getResource(), $booking->getStartTime(), $booking->getEndTime());
 
-    // Only one booking in interval.
-    if (count($exchangeBookings) === 1) {
+    // Only one booking in interval (the booking is false if loading failed).
+    if (count($exchangeBookings) === 1 && $exchangeBookings[0]) {
       // Is it the correct booking?
       if ($exchangeService->doBookingsMatch($exchangeBookings[0], $booking)) {
         $booking->setStatusAccepted();
@@ -88,6 +88,9 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
         $em->flush();
         $output->writeln('Booked by other. Rejected.');
       }
+    }
+    else if (count($exchangeBookings) === 1 && $exchangeBookings[0] === FALSE) {
+      throw new NotFoundHttpException('No booking found in interval. Retry!');
     }
     // No bookings. Force retry by throwing exception.
     else if (count($exchangeBookings) === 0) {
