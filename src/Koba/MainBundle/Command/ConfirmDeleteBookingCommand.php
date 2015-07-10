@@ -15,8 +15,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Class ConfirmDeleteBookingCommand command.
  *
  * @package Koba\MainBundle\Command
- *
- * @TODO: Implements what interface?
  */
 class ConfirmDeleteBookingCommand extends ContainerAwareCommand {
   /**
@@ -37,7 +35,10 @@ class ConfirmDeleteBookingCommand extends ContainerAwareCommand {
    *
    * @param InputInterface $input
    * @param OutputInterface $output
-   * @return int|null|void
+   *
+   * @throw NotFoundHttpException
+   *
+   * @return void
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
     $container = $this->getContainer();
@@ -61,7 +62,7 @@ class ConfirmDeleteBookingCommand extends ContainerAwareCommand {
       $maxRetries = $originalJob->getMaxRetries();
 
       if ($numberOfRetries >= $maxRetries - 1) {
-        return true;
+        return;
       }
     }
 
@@ -72,10 +73,10 @@ class ConfirmDeleteBookingCommand extends ContainerAwareCommand {
     if (!$accepted) {
       $booking->setStatusCancelled();
       $em->flush();
-      return true;
+      return;
     }
 
     // Retry.
-    throw new NotFoundHttpException("Booking still exists / Retry");
+    throw new NotFoundHttpException('Booking still exists / Retry.');
   }
 }

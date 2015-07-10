@@ -67,7 +67,7 @@ class ApiKeyService {
    * @param $resourceMail
    *   The mail of the resource.
    *
-   * @returns array
+   * @return array
    *   The configuration for the given <apiKey, groupid, resource> tuple.
    */
   public function getResourceConfiguration($apiKey, $groupId, $resourceMail) {

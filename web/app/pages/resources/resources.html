@@ -3,7 +3,7 @@
 
 <!-- Header -->
 <div class="page-header">
-  <h1>Resources <small>available from Exchange</small></h1>
+  <h1>Resources <small>configuration</small></h1>
 </div>
 
 <!-- messages -->
@@ -11,25 +11,41 @@
 
 <!-- Page content -->
 <div class="jumbotron">
+  <!-- Actions -->
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <button type="button" class="btn btn-primary" data-ng-click="refreshResources()">
+        <span class="fa fa-refresh" aria-hidden="true"></span> Refresh resources
+      </button>
+    </div>
+  </div>
+
+  <!-- Display resources -->
   <div class="panel panel-default">
     <table class="table table-hover">
       <thead>
-      <tr>
-        <th>#</th>
-        <th>Name</th>
-        <th>Email</th>
-      </tr>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Alias</th>
+          <th>Actions</th>
+        </tr>
       </thead>
-      <tr data-ng-repeat="resource in resources">
-        <td>{{ $index + 1 }}</td>
-        <td>{{ resource.name }}</td>
-        <td>{{ resource.mail }}</td>
-      </tr>
+      <tbody>
+        <tr data-ng-repeat="resource in resources">
+          <td>{{ $index + 1 }}</td>
+          <td>{{ resource.name }}</td>
+          <td>{{ resource.mail }}</td>
+          <td>{{ resource.alias }}</td>
+          <td>
+            <!-- Edit index -->
+            <button type="button" class="btn btn-success btn-xs" data-ng-click="edit(resource)">
+              <span class="fa fa-wrench" aria-hidden="true"></span> Edit
+            </button>
+          </td>
+        </tr>
+      </tbody>
     </table>
   </div>
-
-  <!-- Add new key -->
-  <button type="button" class="btn btn-info" data-ng-click="refreshResources()">
-    <span class="fa fa-plus" aria-hidden="true"></span> Refresh resources
-  </button>
 </div>

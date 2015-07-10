@@ -11,6 +11,15 @@
 
 <!-- Page content -->
 <div class="jumbotron">
+  <!-- Actions -->
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <button type="button" class="btn btn-primary" data-ng-click="add()">
+        <span class="fa fa-plus" aria-hidden="true"></span> Add key
+      </button>
+    </div>
+  </div>
+
 	<div class="panel panel-default">
   	<table class="table table-hover">
   	<thead>
@@ -39,9 +48,4 @@
     </tr>
   	</table>
 	</div>
-
-  <!-- Add new key -->
-  <button type="button" class="btn btn-info" data-ng-click="add()">
-    <span class="fa fa-plus" aria-hidden="true"></span> Add key
-  </button>
 </div>

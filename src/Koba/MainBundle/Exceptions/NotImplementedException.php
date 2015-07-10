@@ -16,11 +16,11 @@ class NotImplementedException extends HttpException {
   /**
    * Constructor.
    *
-   * @param string $message The internal exception message
-   * @param \Exception $previous The previous exception
+   * @param string|null $message The internal exception message
+   * @param null|\Exception $previous The previous exception
    * @param int $code The internal exception code
    */
   public function __construct($message = NULL, \Exception $previous = NULL, $code = 0) {
-    parent::__construct(501, "Not implemented.", $previous, array(), $code);
+    parent::__construct(501, 'Not implemented.', $previous, array(), $code);
   }
 }

@@ -36,7 +36,8 @@ class CallbackDeleteBookingCommand extends ContainerAwareCommand {
    *
    * @param InputInterface $input
    * @param OutputInterface $output
-   * @return int|null|void
+   *
+   * @return void
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
     $container = $this->getContainer();
@@ -74,8 +75,6 @@ class CallbackDeleteBookingCommand extends ContainerAwareCommand {
         'client_booking_id' => $booking->getClientBookingId(),
       )
     ));
-    $response = $request->send();
-
-    return true;
+    $request->send();
   }
 }

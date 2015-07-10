@@ -35,8 +35,8 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
 
       scope.confirmed = function confirmed() {
         dataService.fetch('delete', '/admin/apikeys/' + key).then(
-          function (data) {
-            $scope.message = data;
+          function () {
+            $scope.message = 'API key removed.';
             $scope.messageClass = 'alert-success';
 
             // Update api key list.
@@ -54,7 +54,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
 
       // Open the overlay.
       var overlay = ngOverlay.open({
-        template: "app/shared/confirm/confirm.html",
+        template: 'app/shared/confirm/confirm.html',
         scope: scope
       });
     };
@@ -107,8 +107,8 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
               }
             }
             scope.api.configuration.groups.push({
-              "id": groupId,
-              "resources": []
+              id: groupId,
+              resources: []
             });
           };
 
@@ -206,8 +206,8 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
            */
           scope.save = function save() {
             dataService.send('put', '/admin/apikeys/' + key, scope.api).then(
-              function (data) {
-                $scope.message = data;
+              function () {
+                $scope.message = 'API key updated.';
                 $scope.messageClass = 'alert-success';
 
                 // Reload API key list.
@@ -225,7 +225,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
 
           // Open the overlay.
           var overlay = ngOverlay.open({
-            template: "app/pages/apiKey/keyEdit.html",
+            template: 'app/pages/apiKey/keyEdit.html',
             scope: scope
           });
         },
@@ -245,16 +245,16 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
 
       // Add default API key information.
       scope.api = {
-        "api_key": '',
-        "name": '',
-        "configuration": {
-          "groups": [
+        api_key: '',
+        name: '',
+        configuration: {
+          groups: [
             {
-              "id": "default",
-              "resources": []
+              id: 'default',
+              resources: []
             }
           ],
-          "callback": ""
+          callback: ''
         }
       };
 
@@ -292,8 +292,8 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
           }
         }
         scope.api.configuration.groups.push({
-          "id": groupId,
-          "resources": []
+          id: groupId,
+          resources: []
         });
       };
 
@@ -387,7 +387,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
       };
 
       // Update api key.
-      scope.$watch("api.name", function(newValue) {
+      scope.$watch('api.name', function(newValue) {
         if (newValue.length > 0) {
           scope.api.api_key = CryptoJS.MD5(newValue + Math.random()).toString();
         }
@@ -407,8 +407,8 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
         }
 
         dataService.send('post', '/admin/apikeys', scope.api).then(
-          function (data) {
-            $scope.message = data;
+          function () {
+            $scope.message = 'API key added.';
             $scope.messageClass = 'alert-success';
 
             // Reload API keys.
@@ -426,7 +426,7 @@ angular.module('KobaAdminApp').controller('ApiKeyController', ['$scope', 'ngOver
 
       // Open the overlay.
       var overlay = ngOverlay.open({
-        template: "app/pages/apiKey/keyAdd.html",
+        template: 'app/pages/apiKey/keyAdd.html',
         scope: scope
       });
     };

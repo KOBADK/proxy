@@ -15,8 +15,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Class ConfirmBookingCommand command.
  *
  * @package Koba\MainBundle\Command
- *
- * @TODO: Implements what interface?
  */
 class ConfirmBookingCommand extends ContainerAwareCommand {
   /**
@@ -35,12 +33,14 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
   /**
    * Executes the command
    *
+   * Tries to find booking in interval:
+   * If 0 bookings are found in interval, force retry.
+   * If 1 booking is found, make sure it is the correct booking (then accept), else reject.
+   * If more than 1 booking is found, reject.
+   *
    * @param InputInterface $input
    * @param OutputInterface $output
    * @return int|null|void
-   *
-   * @TODO: Find better way to handle last retry. At the moment we only try
-   *   maxRetries - 1 times before given up.
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
     $container = $this->getContainer();
@@ -60,27 +60,44 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
     $originalJob = $job->getOriginalJob();
     if ($originalJob) {
       $numberOfRetries = count($originalJob->getRetryJobs());
-
       $maxRetries = $originalJob->getMaxRetries();
 
+      // @TODO: Find better way to handle last retry. At the moment we only try maxRetries - 1 times before giving up.
       if ($numberOfRetries >= $maxRetries - 1) {
+        $output->writeln('Last attempt at finding booking in interval returned no elements. Rejected.');
         $booking->setStatusDenied();
         $em->flush();
-        return true;
+        return;
       }
     }
 
     // Check Exchange to see if the booking has been accepted.
     $exchangeService = $container->get('itk.exchange_service');
-    $accepted = $exchangeService->isBookingAccepted($booking);
+    $exchangeBookings = $exchangeService->getExchangeBookingsForInterval($booking->getResource(), $booking->getStartTime(), $booking->getEndTime());
 
-    if ($accepted) {
-      $booking->setStatusAccepted();
-      $em->flush();
-      return true;
+    // Only one booking in interval.
+    if (count($exchangeBookings) === 1) {
+      // Is it the correct booking?
+      if ($exchangeService->doBookingsMatch($exchangeBookings[0], $booking)) {
+        $booking->setStatusAccepted();
+        $em->flush();
+        $output->writeln('Booking accepted.');
+      }
+      else {
+        $booking->setStatusDenied();
+        $em->flush();
+        $output->writeln('Booked by other. Rejected.');
+      }
     }
-
-    // Retry.
-    throw new NotFoundHttpException("Not found / accepted. Retry");
+    // No bookings. Force retry by throwing exception.
+    else if (count($exchangeBookings) === 0) {
+      throw new NotFoundHttpException('No booking found in interval. Retry!');
+    }
+    // More than one booking exists in interval. Therefore it is not $booking = Rejected.
+    else {
+      $booking->setStatusDenied();
+      $em->flush();
+      $output->writeln('More than one booking in interval. Rejected.');
+    }
   }
 }

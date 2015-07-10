@@ -9,12 +9,14 @@
  */
 
 namespace Itk\ExchangeBundle\Services;
+
 use Doctrine\ORM\EntityManager;
 use Itk\ExchangeBundle\Entity\Resource;
 use Itk\ExchangeBundle\Entity\ResourceRepository;
 use Itk\ExchangeBundle\Entity\Booking;
 use Itk\ExchangeBundle\Exceptions\ExchangeNotSupportedException;
 use Itk\ExchangeBundle\Model\ExchangeBooking;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class ExchangeService
@@ -39,9 +41,23 @@ class ExchangeService {
 
   /**
    * Get all resources from Exchange.
+   *
+   * @return array
    */
   public function getResources() {
     return $this->resourceRepository->findAll();
+  }
+
+  /**
+   * Get resources from Exchange.
+   *
+   * @param $mail
+   *   Mail of the resource.
+   *
+   * @return object|null
+   */
+  public function getResourceByMail($mail) {
+    return $this->resourceRepository->findOneByMail($mail);
   }
 
   /**
@@ -50,6 +66,8 @@ class ExchangeService {
   public function refreshResources() {
     $resources = $this->exchangeADService->getResources();
     $em = $this->resourceRepository->getEntityManager();
+
+    // @TODO: Remove resources that are not in the list from AD.
 
     foreach ($resources as $key => $value) {
       $resource = $this->resourceRepository->findOneByMail($key);
@@ -67,6 +85,20 @@ class ExchangeService {
   }
 
   /**
+   * Set the alias for a resource.
+   *
+   * @param $resourceMail
+   *   Mail of the resource
+   * @param $alias
+   *   Alias
+   */
+  public function setResourceAlias($resourceMail, $alias) {
+    $resource = $this->resourceRepository->findOneByMail($resourceMail);
+    $resource->setAlias($alias);
+    $this->resourceRepository->getEntityManager()->flush();
+  }
+
+  /**
    * Get bookings for a given resource.
    *
    * @param \Itk\ExchangeBundle\Entity\Resource $resource
@@ -80,16 +112,12 @@ class ExchangeService {
    *
    * @return \Itk\ExchangeBundle\Model\ExchangeCalendar
    *   Exchange calendar object with bookings for the interval.
-   *
-   * @TODO: Rename function to match exchangeWebService->getRessourceBookings
    */
-  public function getBookingsForResource(Resource $resource, $from, $to, $enrich = TRUE) {
+  public function getResourceBookings(Resource $resource, $from, $to, $enrich = TRUE) {
     // Get basic calendar information.
     $calendar = $this->exchangeWebService->getRessourceBookings($resource, $from, $to);
 
-    /**
-     * @TODO: Rename the bookings -> ExchangeBookings to remove mis-use to booking entity.
-     */
+    // @TODO: Rename the bookings -> ExchangeBookings to remove mis-use to booking entity.
     // Check if body information should be included.
     if ($enrich) {
       $bookings = $calendar->getBookings();
@@ -160,23 +188,62 @@ class ExchangeService {
    *
    * @param \Itk\ExchangeBundle\Entity\Booking $booking
    *
+   * @throw NotFoundHttpException
+   *
    * @return bool
    *   TRUE if it's created else FALSE.
    */
   public function isBookingAccepted(Booking $booking) {
+    if (!$booking->getResource()) {
+      throw new NotFoundHttpException('Resource is null');
+    }
+
     // Start by getting the booking from exchange.
-    $exchangeCalendar = $this->getBookingsForResource($booking->getResource(), $booking->getStartTime(), $booking->getEndTime());
+    $exchangeCalendar = $this->getResourceBookings($booking->getResource(), $booking->getStartTime(), $booking->getEndTime());
 
     // Check that booking exists.
     $exchangeBookings = $exchangeCalendar->getBookings();
     if (!empty($exchangeBookings)) {
       // Check if it's the right booking.
-      // @TODO: Why == and not ===
-      if ($exchangeBookings[0]->getType() == ExchangeBooking::$type_koba && $exchangeBookings[0]->getBody()->getIcalUid() == $booking->getIcalUid()) {
+      if ($exchangeBookings[0]->getType() === ExchangeBooking::TYPE_KOBA && $exchangeBookings[0]->getBody()->getIcalUid() === $booking->getIcalUid()) {
         return TRUE;
       }
     }
 
     return FALSE;
+  }
+
+  /**
+   * Get the ExchangeBookings for a resource in an interval.
+   *
+   * @param Resource $resource
+   *   The resource.
+   * @param $startTime
+   *   The start time.
+   * @param $endTime
+   *   The end time.
+   *
+   * @return array
+   *   Array of ExchangeBookings.
+   */
+  public function getExchangeBookingsForInterval(Resource $resource, $startTime, $endTime) {
+    // Start by getting the bookings from exchange.
+    $exchangeCalendar = $this->getResourceBookings($resource, $startTime, $endTime);
+    return $exchangeCalendar->getBookings();
+  }
+
+  /**
+   * Does an ExchangeBooking match a Booking?
+   *
+   * @param ExchangeBooking $exchangeBooking
+   *   The exchange booking.
+   * @param Booking $booking
+   *   The booking.
+   *
+   * @return bool
+   *   Whether or not the $exchangeBooking matches the $booking
+   */
+  public function doBookingsMatch(ExchangeBooking $exchangeBooking, Booking $booking) {
+    return $exchangeBooking->getType() === ExchangeBooking::TYPE_KOBA && $exchangeBooking->getBody()->getIcalUid() === $booking->getIcalUid();
   }
 }

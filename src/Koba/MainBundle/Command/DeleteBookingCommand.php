@@ -35,12 +35,14 @@ class DeleteBookingCommand extends ContainerAwareCommand {
    *
    * @param InputInterface $input
    * @param OutputInterface $output
-   * @return int|null|void
+   *
+   * @throw NotFoundHttpException
+   *
+   * @return void
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
     $container = $this->getContainer();
     $doctrine = $container->get('doctrine');
-    $em = $doctrine->getManager();
 
     // Get booking.
     $id = $input->getArgument('id');

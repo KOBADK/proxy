@@ -72,37 +72,34 @@ class CalendarService {
       //   FREE_BUSY - from exchange, only free/busy times
       //   BOOKED_BY - shows "Booked by [first_name]" as title
       //   KOBA_BOOKING - all data from a booking made in KOBA
-      //   SAFE_TITLE - the title is from a special tag added to the body of a
-      //     booking made from exchange.
       if ($resourceConfiguration['display'] === 'DSS') {
         $xmlBookings = json_decode($this->cache->get('dss:' . $resource->getName()));
 
         if ($xmlBookings) {
-          // Filter out bookings that are not from between $from and $to.
-          $bookings = $this->filterBookings($xmlBookings, $from, $to);
+          $bookings = $this->processXmlBookings($xmlBookings, $from, $to, $resource);
         }
       }
       else if ($resourceConfiguration['display'] === 'RC') {
         $xmlBookings = json_decode($this->cache->get('rc:' . $resource->getName()));
 
         if ($xmlBookings) {
-          // Filter out bookings that are not from between $from and $to.
-          $bookings = $this->filterBookings($xmlBookings, $from, $to);
+          $bookings = $this->processXmlBookings($xmlBookings, $from, $to, $resource);
         }
       }
       else if ($resourceConfiguration['display'] === 'FREE_BUSY') {
-        $exchangeCalendar = $this->exchangeService->getBookingsForResource($resource, $from, $to, FALSE);
+        $exchangeCalendar = $this->exchangeService->getResourceBookings($resource, $from, $to, FALSE);
 
         foreach ($exchangeCalendar->getBookings() as $booking) {
           $bookings[] = (object) array(
             'start_time' => $booking->getStart(),
             'end_time' => $booking->getEnd(),
             'resource_id' => $resource->getName(),
+            'resource_alias' => $resource->getAlias(),
           );
         }
       }
       else if ($resourceConfiguration['display'] === 'BOOKED_BY') {
-        $exchangeCalendar = $this->exchangeService->getBookingsForResource($resource, $from, $to, TRUE);
+        $exchangeCalendar = $this->exchangeService->getResourceBookings($resource, $from, $to, TRUE);
 
         foreach ($exchangeCalendar->getBookings() as $booking) {
           $bookings[] = (object) array(
@@ -110,11 +107,12 @@ class CalendarService {
             'end_time' => $booking->getEnd(),
             'name' => $booking->getBody()->getName(),
             'resource_id' => $resource->getName(),
+            'resource_alias' => $resource->getAlias(),
           );
         }
       }
       else if ($resourceConfiguration['display'] === 'KOBA') {
-        $exchangeCalendar = $this->exchangeService->getBookingsForResource($resource, $from, $to, TRUE);
+        $exchangeCalendar = $this->exchangeService->getResourceBookings($resource, $from, $to, TRUE);
 
         // @TODO: Merge with free/busy or other source.
 
@@ -126,10 +124,11 @@ class CalendarService {
             'event_description' => $booking->getBody()->getDescription(),
             'name' => $booking->getBody()->getName(),
             'resource_id' => $resource->getName(),
+            'resource_alias' => $resource->getAlias(),
           );
         }
       }
-      else if ($resourceConfiguration['display'] === 'SAFE_TITLE') {
+      else {
         throw new NotSupportedException();
       }
 
@@ -147,9 +146,9 @@ class CalendarService {
    * @param $bookings
    *   Array of bookings.
    * @param integer $from
-   *   From (unixtimestamp)
+   *   From (unix timestamp)
    * @param integer $to
-   *   To (unixtimestamp)
+   *   To (unix timestamp)
    * @return array
    *   The filtered array of bookings.
    */
@@ -166,11 +165,38 @@ class CalendarService {
   }
 
   /**
+   * Process bookings from XML RC or DSS files.
+   *
+   * @param $bookings
+   *   Array of bookings
+   * @param $from
+   *   From (unix timestamp)
+   * @param $to
+   *   To (unix timestamp)
+   * @param Resource $resource
+   *   The resource.
+   *
+   * @return array
+   *   The processed array of bookings.
+   */
+  private function processXmlBookings($bookings, $from, $to, $resource) {
+    // Filter out bookings that are not from between $from and $to.
+    $bookings = $this->filterBookings($bookings, $from, $to);
+
+    // Set resource alias.
+    foreach ($bookings as $booking) {
+      $booking->resource_alias = $resource->getAlias();
+    }
+
+    return $bookings;
+  }
+
+  /**
    * Update the xml data.
    *
    * Used by cron process to cache data from the xml files.
    */
-  public function updateXMLData() {
+  public function updateXmlData() {
     // Get DSS XML data and add to cache.
     $xmlData = $this->exchangeService->getExchangeDssXmlData();
     foreach ($xmlData as $key => $value) {

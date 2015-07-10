@@ -36,7 +36,10 @@ class CallbackBookingCommand extends ContainerAwareCommand {
    *
    * @param InputInterface $input
    * @param OutputInterface $output
-   * @return int|null|void
+   *
+   * @throw NotFoundHttpException
+   *
+   * @return void
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
     $container = $this->getContainer();
@@ -69,12 +72,6 @@ class CallbackBookingCommand extends ContainerAwareCommand {
         'client_booking_id' => $booking->getClientBookingId(),
       )
     ));
-    $response = $request->send();
-
-    /**
-     * @TODO: Handle response and fail if status code is not 200.
-     */
-
-    return true;
+    $request->send();
   }
 }
