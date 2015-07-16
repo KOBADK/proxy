@@ -168,7 +168,7 @@ class ExchangeWebService {
    * @param $body
    */
   private function parseBodyField(ExchangeBooking $exchangeBooking, $body) {
-    if (preg_match('/<!--\sKOBA\s(.+)\sKOBA\s-->/', $body, $matches)) {
+    if (preg_match('/<!--\sKOBA\s(.+)\sKOBA\s-->/s', $body, $matches)) {
       if (isset($matches[1])) {
         // Decode booking information.
         $encoders = array(new XmlEncoder(), new JsonEncoder());
