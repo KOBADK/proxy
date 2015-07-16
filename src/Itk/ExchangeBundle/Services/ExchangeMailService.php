@@ -88,7 +88,7 @@ class ExchangeMailService {
         'status'
       ));
     $serializer = new Serializer($normalizers, $encoders);
-    $description = '<!-- KOBA ' . $serializer->serialize($booking, 'json') . ' KOBA -->';
+    $description = '<!-- KOBA ' . base64_encode($serializer->serialize($booking, 'json')) . ' KOBA -->';
 
     // Set start date with correct timezone.
     $startDate = \DateTime::createFromFormat('U', $booking->getStartTime());
