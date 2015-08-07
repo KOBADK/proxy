@@ -168,7 +168,7 @@ class ExchangeWebService {
    * @param $body
    */
   private function parseBodyField(ExchangeBooking $exchangeBooking, $body) {
-    if (preg_match('/<!--\sKOBA\s(.+)\sKOBA\s-->/', $body, $matches)) {
+    if (preg_match('/<!-- KOBA (.+) KOBA -->/s', $body, $matches)) {
       if (isset($matches[1])) {
         // Decode booking information.
         $encoders = array(new XmlEncoder(), new JsonEncoder());
@@ -176,8 +176,8 @@ class ExchangeWebService {
         $normalizers[0]->setIgnoredAttributes(array('resource', 'exchangeId'));
         $serializer = new Serializer($normalizers, $encoders);
 
-        // Set type and set data.
-        $json = str_replace("'", '"', $matches[1]);
+        $json = base64_decode($matches[1]);
+
         $exchangeBooking->setTypeKoba();
         $exchangeBooking->setBody($serializer->deserialize($json, 'Itk\ExchangeBundle\Entity\Booking', 'json'));
       }
