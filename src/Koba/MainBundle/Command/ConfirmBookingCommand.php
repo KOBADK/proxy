@@ -68,7 +68,7 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
 
       // @TODO: Find better way to handle last retry. At the moment we only try maxRetries - 1 times before giving up.
       if ($numberOfRetries >= $maxRetries - 1) {
-        $output->writeln('Last attempt at finding booking in interval returned no elements. Unconfirmed.');
+        $output->writeln('UNCONFIRMED. Last attempt at finding booking in interval returned no elements.');
         $booking->setStatusUnconfirmed();
         $em->flush();
         return;
@@ -92,7 +92,7 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
         if ($exchangeService->doBookingsMatch($exchangeBooking, $booking)) {
           $booking->setStatusAccepted();
           $em->flush();
-          $output->writeln('Booking accepted.');
+          $output->writeln('ACCEPTED.');
           return;
         }
         // If this is not the correct booking, look for overlap with booking
@@ -110,7 +110,7 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
             // Overlap, booking denied.
             $booking->setStatusDenied();
             $em->flush();
-            $output->writeln('Interval booked by other. Rejected.');
+            $output->writeln('REJECTED. Interval booked by other.');
             $this->outputBookings($output, $exchangeBookings, $booking);
             return;
           }
@@ -121,7 +121,7 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
     $this->outputBookings($output, $exchangeBookings, $booking);
 
     // No bookings. Force retry by throwing exception.
-    throw new NotFoundHttpException('No bookings found in interval. Retry!');
+    throw new NotFoundHttpException('RETRY. No bookings found in interval.');
   }
 
   /**
@@ -135,8 +135,9 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
    *   The current booking we are trying to confirm.
    */
   private function outputBookings($output, $exchangeBookings, $booking) {
+    $output->writeln("----------------");
     $output->writeln("Concerning booking: " . $booking->getSubject() . ": " . $booking->getStartTime() . ' to ' . $booking->getEndTime());
-    $output->writeln("----");
+    $output->writeln("----------------");
     $output->writeln("Found bookings in interval:");
     foreach ($exchangeBookings as $exchangeBooking) {
       if (!$exchangeBooking) {
