@@ -139,6 +139,9 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
     $output->writeln("----");
     $output->writeln("Found bookings in interval:");
     foreach ($exchangeBookings as $exchangeBooking) {
+      if (!$exchangeBooking) {
+        continue;
+      }
       $output->writeln($exchangeBooking->getSubject() . ": " . $exchangeBooking->getStart() . ' to ' . $exchangeBooking->getEnd());
     }
   }
