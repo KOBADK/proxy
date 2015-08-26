@@ -77,32 +77,63 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
     $exchangeService = $container->get('itk.exchange_service');
     $exchangeBookings = $exchangeService->getExchangeBookingsForInterval($booking->getResource(), $booking->getStartTime(), $booking->getEndTime());
 
-    // Only one booking in interval (the booking is false if loading failed).
-    if (count($exchangeBookings) === 1 && $exchangeBookings[0]) {
-      // Is it the correct booking?
-      if ($exchangeService->doBookingsMatch($exchangeBookings[0], $booking)) {
-        $booking->setStatusAccepted();
-        $em->flush();
-        $output->writeln('Booking accepted.');
+    // No bookings. Force retry by throwing exception.
+    if (count($exchangeBookings) === 0) {
+      throw new NotFoundHttpException('No booking found in interval. Retry!');
+    }
+    else {
+      $bookedByOther = FALSE;
+
+      // Run through all bookings in interval
+      foreach ($exchangeBookings as $exchangeBooking) {
+        // Ignore false bookings.
+        if (!$exchangeBooking) {
+          continue;
+        }
+
+        if ($exchangeService->doBookingsMatch($exchangeBooking, $booking)) {
+          $booking->setStatusAccepted();
+          $em->flush();
+          $output->writeln('Booking accepted.');
+          return;
+        }
+        else {
+          if ($exchangeBooking->getEnd() > $booking->getStartTime() ||
+            $exchangeBooking->getStart() < $booking->getEndTime()) {
+            $bookedByOther = TRUE;
+          }
+        }
       }
-      else {
+
+      // The interval has one or more bookings that are not the right booking.
+      if ($bookedByOther) {
         $booking->setStatusDenied();
         $em->flush();
-        $output->writeln('Booked by other. Rejected.');
+        $output->writeln('Interval booked by other. Rejected.');
+        $this->outputBookings($output, $exchangeBookings, $booking);
+        return;
       }
+
+      throw new NotFoundHttpException('No bookings found in interval. Retry!');
     }
-    else if (count($exchangeBookings) === 1 && $exchangeBookings[0] === FALSE) {
-      throw new NotFoundHttpException('No booking found in interval. Retry!');
-    }
-    // No bookings. Force retry by throwing exception.
-    else if (count($exchangeBookings) === 0) {
-      throw new NotFoundHttpException('No booking found in interval. Retry!');
-    }
-    // More than one booking exists in interval. Therefore it is not $booking = Rejected.
-    else {
-      $booking->setStatusDenied();
-      $em->flush();
-      $output->writeln('More than one booking in interval. Rejected.');
+  }
+
+  /**
+   * Outputs the current booking, and the exchange bookings found in the booking interval to $output
+   *
+   * @param OutputInterface $output
+   *   The output interface.
+   * @param $exchangeBookings
+   *   The ExchangeBooking(s) found in the interval.
+   * @param $booking
+   *   The current booking we are trying to confirm.
+   */
+  private function outputBookings($output, $exchangeBookings, $booking) {
+    $output->writeln("Concerning booking: " . $booking->getSubject() . ": " . $booking->getStartTime() . ' to ' . $booking->getEndTime());
+    $output->writeln("----");
+    $output->writeln("Found bookings in interval:");
+    foreach ($exchangeBookings as $booking) {
+      $output->writeln($booking->getSubject() . ": " . $booking->getStart() . ' to ' . $booking->getEnd());
     }
   }
 }
