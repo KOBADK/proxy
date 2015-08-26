@@ -49,14 +49,16 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
 
     // Get booking.
     $id = $input->getArgument('id');
-    $booking = $doctrine->getRepository('ItkExchangeBundle:Booking')->findOneBy(array('id' => $id));
+    $booking = $doctrine->getRepository('ItkExchangeBundle:Booking')
+      ->findOneBy(array('id' => $id));
     if (!$booking) {
       throw new NotFoundHttpException('booking with id:' . $id . ' not found');
     }
 
     // Check whether this is last retry attempt. Then deny.
     $jobId = $input->getOption('jms-job-id');
-    $job = $doctrine->getRepository('JMSJobQueueBundle:Job')->findOneBy(array('id' => $jobId));
+    $job = $doctrine->getRepository('JMSJobQueueBundle:Job')
+      ->findOneBy(array('id' => $jobId));
     $originalJob = $job->getOriginalJob();
 
     // Confirm that this is a retry job.
@@ -77,13 +79,8 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
     $exchangeService = $container->get('itk.exchange_service');
     $exchangeBookings = $exchangeService->getExchangeBookingsForInterval($booking->getResource(), $booking->getStartTime(), $booking->getEndTime());
 
-    // No bookings. Force retry by throwing exception.
-    if (count($exchangeBookings) === 0) {
-      throw new NotFoundHttpException('No booking found in interval. Retry!');
-    }
-    else {
-      $bookedByOther = FALSE;
-
+    // Have we found bookings in interval?
+    if (count($exchangeBookings) > 0) {
       // Run through all bookings in interval
       foreach ($exchangeBookings as $exchangeBooking) {
         // Ignore false bookings.
@@ -91,31 +88,40 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
           continue;
         }
 
+        // Is this the booking we are trying to confirm, accept!
         if ($exchangeService->doBookingsMatch($exchangeBooking, $booking)) {
           $booking->setStatusAccepted();
           $em->flush();
           $output->writeln('Booking accepted.');
           return;
         }
+        // If this is not the correct booking, look for overlap with booking
+        // we are trying confirm.
         else {
-          if ($exchangeBooking->getEnd() > $booking->getStartTime() ||
-            $exchangeBooking->getStart() < $booking->getEndTime()) {
-            $bookedByOther = TRUE;
+          // Because start and end times between bookings can overlap,
+          // we ignore cases where the end of an exchange booking overlaps the
+          // start of the current booking, and cases where the start of an
+          // exchange booking overlaps the end of the current booking.
+          if (($exchangeBooking->getEnd() <= $booking->getStartTime() || $exchangeBooking->getStart() >= $booking->getEndTime())) {
+            // If no overlap, ignore.
+            continue;
+          }
+          else {
+            // Overlap, booking denied.
+            $booking->setStatusDenied();
+            $em->flush();
+            $output->writeln('Interval booked by other. Rejected.');
+            $this->outputBookings($output, $exchangeBookings, $booking);
+            return;
           }
         }
       }
-
-      // The interval has one or more bookings that are not the right booking.
-      if ($bookedByOther) {
-        $booking->setStatusDenied();
-        $em->flush();
-        $output->writeln('Interval booked by other. Rejected.');
-        $this->outputBookings($output, $exchangeBookings, $booking);
-        return;
-      }
-
-      throw new NotFoundHttpException('No bookings found in interval. Retry!');
     }
+    
+    $this->outputBookings($output, $exchangeBookings, $booking);
+
+    // No bookings. Force retry by throwing exception.
+    throw new NotFoundHttpException('No bookings found in interval. Retry!');
   }
 
   /**
