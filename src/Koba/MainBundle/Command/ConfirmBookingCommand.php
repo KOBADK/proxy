@@ -117,7 +117,7 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
         }
       }
     }
-    
+
     $this->outputBookings($output, $exchangeBookings, $booking);
 
     // No bookings. Force retry by throwing exception.
@@ -138,8 +138,8 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
     $output->writeln("Concerning booking: " . $booking->getSubject() . ": " . $booking->getStartTime() . ' to ' . $booking->getEndTime());
     $output->writeln("----");
     $output->writeln("Found bookings in interval:");
-    foreach ($exchangeBookings as $booking) {
-      $output->writeln($booking->getSubject() . ": " . $booking->getStart() . ' to ' . $booking->getEnd());
+    foreach ($exchangeBookings as $exchangeBooking) {
+      $output->writeln($exchangeBooking->getSubject() . ": " . $exchangeBooking->getStart() . ' to ' . $exchangeBooking->getEnd());
     }
   }
 }
