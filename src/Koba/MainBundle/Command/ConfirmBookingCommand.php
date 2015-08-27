@@ -124,6 +124,12 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
     throw new NotFoundHttpException('RETRY. No bookings found in interval.');
   }
 
+  private function getDateAsString($unixTimestamp) {
+    $currentTime = \DateTime::createFromFormat('U', $unixTimestamp);
+
+    return $currentTime->format('c');
+  }
+
   /**
    * Outputs the current booking, and the exchange bookings found in the booking interval to $output
    *
@@ -136,7 +142,7 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
    */
   private function outputBookings($output, $exchangeBookings, $booking) {
     $output->writeln("----------------");
-    $output->writeln("Concerning booking: " . $booking->getSubject() . ": " . $booking->getStartTime() . ' to ' . $booking->getEndTime());
+    $output->writeln("Concerning booking: " . $booking->getSubject() . ": " . $booking->getStartTime() . '(' . $this->getDateAsString($booking->getStartTime()) . ')' . ' to ' . $booking->getEndTime()  . '(' . $this->getDateAsString($booking->getEndTime()) . ')');
     $output->writeln("----------------");
     $output->writeln("Found bookings in interval:");
     foreach ($exchangeBookings as $exchangeBooking) {
@@ -144,7 +150,7 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
         continue;
       }
 
-      $output->write($exchangeBooking->getSubject() . ': ' . $exchangeBooking->getStart() . ' to ' . $exchangeBooking->getEnd());
+      $output->write($exchangeBooking->getSubject() . ': ' . $exchangeBooking->getStart() . '(' . $this->getDateAsString($exchangeBooking->getStart()) . ')' . ' to ' . $exchangeBooking->getEnd(). '(' . $this->getDateAsString($exchangeBooking->getEnd()) . ')');
 
       // Add text to non blocking bookings
       if (($exchangeBooking->getEnd() <= $booking->getStartTime() || $exchangeBooking->getStart() >= $booking->getEndTime())) {
