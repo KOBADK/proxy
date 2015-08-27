@@ -143,7 +143,16 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
       if (!$exchangeBooking) {
         continue;
       }
-      $output->writeln($exchangeBooking->getSubject() . ": " . $exchangeBooking->getStart() . ' to ' . $exchangeBooking->getEnd());
+
+      $output->write($exchangeBooking->getSubject() . ': ' . $exchangeBooking->getStart() . ' to ' . $exchangeBooking->getEnd());
+
+      // Add text to non blocking bookings
+      if (($exchangeBooking->getEnd() <= $booking->getStartTime() || $exchangeBooking->getStart() >= $booking->getEndTime())) {
+        $output->writeln(' (Not blocking)');
+      }
+      else {
+        $output->writeln('');
+      }
     }
   }
 }
