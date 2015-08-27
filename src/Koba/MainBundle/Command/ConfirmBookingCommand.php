@@ -142,7 +142,7 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
    */
   private function outputBookings($output, $exchangeBookings, $booking) {
     $output->writeln("----------------");
-    $output->writeln("Concerning booking: " . $booking->getSubject() . ": " . $booking->getStartTime() . '(' . $this->getDateAsString($booking->getStartTime()) . ')' . ' to ' . $booking->getEndTime()  . '(' . $this->getDateAsString($booking->getEndTime()) . ')');
+    $output->writeln("Concerning booking: " . $booking->getSubject() . ": " . $booking->getStartTime() . ' (' . $this->getDateAsString($booking->getStartTime()) . ') to ' . $booking->getEndTime()  . ' (' . $this->getDateAsString($booking->getEndTime()) . ')');
     $output->writeln("----------------");
     $output->writeln("Found bookings in interval:");
     foreach ($exchangeBookings as $exchangeBooking) {
@@ -150,7 +150,7 @@ class ConfirmBookingCommand extends ContainerAwareCommand {
         continue;
       }
 
-      $output->write($exchangeBooking->getSubject() . ': ' . $exchangeBooking->getStart() . '(' . $this->getDateAsString($exchangeBooking->getStart()) . ')' . ' to ' . $exchangeBooking->getEnd(). '(' . $this->getDateAsString($exchangeBooking->getEnd()) . ')');
+      $output->write($exchangeBooking->getSubject() . ': ' . $exchangeBooking->getStart() . ' (' . $this->getDateAsString($exchangeBooking->getStart()) . ') to ' . $exchangeBooking->getEnd() . ' (' . $this->getDateAsString($exchangeBooking->getEnd()) . ')');
 
       // Add text to non blocking bookings
       if (($exchangeBooking->getEnd() <= $booking->getStartTime() || $exchangeBooking->getStart() >= $booking->getEndTime())) {
