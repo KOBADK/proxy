@@ -33,7 +33,7 @@
     "friendsofsymfony/user-bundle": "~2.0@dev",
     "snc/redis-bundle": "1.1.x-dev",
     "predis/predis": "0.8.x-dev",
-    "jms/job-queue-bundle": "dev-feature/retry",
+    "jms/job-queue-bundle": "v1.2.1",
     "pagerfanta/pagerfanta": "1.0.x"
   },
   "conflict": {

@@ -417,6 +417,17 @@ class Booking {
   }
 
   /**
+   * Set status to unconfirmed
+   *
+   * @return $this
+   */
+  public function setStatusUnconfirmed() {
+    $this->status = 'UNCONFIRMED';
+
+    return $this;
+  }
+
+  /**
    * Get status
    *
    * @return string

@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7bfb30dc8ac04ae4a426d329b1dff3a1",
+    "hash": "a7a6a80672fd27cfb20665ed0e39f426",
     "packages": [
         {
             "name": "bomo/ical-bundle",
@@ -897,7 +897,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/92d5624f2a29e74d8fd9d2a94d7ed7998a8c2809",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/336d9cd8ba0c5a462b3e70be144a7bef5377b219",
                 "reference": "92d5624f2a29e74d8fd9d2a94d7ed7998a8c2809",
                 "shasum": ""
             },
@@ -1415,17 +1415,17 @@
         },
         {
             "name": "jms/job-queue-bundle",
-            "version": "dev-feature/retry",
+            "version": "v1.2.1",
             "target-dir": "JMS/JobQueueBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KOBADK/JMSJobQueueBundle.git",
-                "reference": "ec040ae78031d5da3cce6c3cbc9384d95b51ac85"
+                "reference": "55e7c0ced1513bb4fb39ced03843826b8c3952d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KOBADK/JMSJobQueueBundle/zipball/ec040ae78031d5da3cce6c3cbc9384d95b51ac85",
-                "reference": "ec040ae78031d5da3cce6c3cbc9384d95b51ac85",
+                "url": "https://api.github.com/repos/KOBADK/JMSJobQueueBundle/zipball/55e7c0ced1513bb4fb39ced03843826b8c3952d5",
+                "reference": "55e7c0ced1513bb4fb39ced03843826b8c3952d5",
                 "shasum": ""
             },
             "require": {
@@ -1481,9 +1481,9 @@
                 "queue"
             ],
             "support": {
-                "source": "https://github.com/KOBADK/JMSJobQueueBundle/tree/feature/retry"
+                "source": "https://github.com/KOBADK/JMSJobQueueBundle/tree/v1.2.1"
             },
-            "time": "2015-05-18 13:46:44"
+            "time": "2015-08-17 11:38:00"
         },
         {
             "name": "jms/metadata",
@@ -1653,7 +1653,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/JMSSerializerBundle/zipball/c49628cfc8b8ce7404665b4e6528487d780e7d68",
+                "url": "https://api.github.com/repos/schmittjoh/JMSSerializerBundle/zipball/46bb11dd95e3546e048d2d5a083cb427cb289b87",
                 "reference": "c49628cfc8b8ce7404665b4e6528487d780e7d68",
                 "shasum": ""
             },
@@ -2031,7 +2031,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nrk/predis/zipball/4123fcd85d61354c6c9900db76c9597dbd129bf6",
+                "url": "https://api.github.com/repos/nrk/predis/zipball/192dfd61e54c3d32c9526bba03365fff818e17e4",
                 "reference": "4123fcd85d61354c6c9900db76c9597dbd129bf6",
                 "shasum": ""
             },
@@ -2263,7 +2263,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/732bfa62ea1e30dbbda12486f971573274d3b48f",
+                "url": "https://api.github.com/repos/snc/SncRedisBundle/zipball/77f65e3d86a5e21b9bf3710d7e021595df2b6417",
                 "reference": "732bfa62ea1e30dbbda12486f971573274d3b48f",
                 "shasum": ""
             },
@@ -3873,8 +3873,7 @@
         "willdurand/hateoas-bundle": 20,
         "friendsofsymfony/user-bundle": 20,
         "snc/redis-bundle": 20,
-        "predis/predis": 20,
-        "jms/job-queue-bundle": 20
+        "predis/predis": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

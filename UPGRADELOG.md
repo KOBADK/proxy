@@ -1,8 +1,7 @@
-#KOBA changelog
+#KOBA upgradelog
 
-#In development
+#v1.1.2 => v1.1.3
 
-* Remember to upgrade "jms/job-queue-bundle" bundle.
-
-#v1.0.0
+* Upgrade "jms/job-queue-bundle" bundle (composer install)
+* Clear cache.
 
