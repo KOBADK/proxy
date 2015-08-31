@@ -220,4 +220,55 @@ class BookingController extends FOSRestController {
     // Return response to the request (accepted).
     return new Response('Request received.', 202);
   }
+
+  /**
+   * Confirm a booking.
+   *
+   * @FOSRest\Get("/confirm/group/{group}/apikey/{apiKey}/booking/{clientBookingId}")
+   *
+   * @param $group
+   *   Group.
+   * @param $apiKey
+   *   ApiKey.
+   * @param $clientBookingId
+   *   The client booking id. Used for reference between client and exchange booking.
+   *
+   * @return Response
+   */
+  public function confirmBooking($group, $apiKey, $clientBookingId) {
+    $em = $this->container->get('doctrine')->getManager();
+    $apiKeyService = $this->get('koba.apikey_service');
+
+    // Confirm the apikey is accepted.
+    $apiKey = $apiKeyService->getApiKey($apiKey);
+
+    // Get the resource. We get it here to avoid more injections in the service.
+    $booking = $this->get('doctrine')->getRepository('ItkExchangeBundle:Booking')->findOneByClientBookingId($clientBookingId);
+
+    if (!isset($booking)) {
+      throw new NotFoundHttpException('booking not found');
+    }
+
+    // Check Access.
+    // @TODO: Split into two functions. checkAccess() & getConfiguration()
+    $apiKeyService->getResourceConfiguration($apiKey, $group, $booking->getResource()->getMail());
+
+    // Try to confirm booking.
+    $confirmJob = new Job('koba:booking:confirm', array('id' => $booking->getId()));
+    $confirmJob->addRelatedEntity($booking);
+
+    // Perform callback with result.
+    $callbackJob = new Job('koba:booking:callback', array('id' => $booking->getId()));
+    $callbackJob->addRelatedEntity($booking);
+
+    $callbackJob->addDependency($confirmJob);
+
+    $em->persist($confirmJob);
+    $em->persist($callbackJob);
+
+    $em->flush();
+
+    // Return response to the request (accepted).
+    return new Response('Request received.', 202);
+  }
 }

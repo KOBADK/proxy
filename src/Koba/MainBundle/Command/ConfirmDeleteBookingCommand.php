@@ -56,7 +56,7 @@ class ConfirmDeleteBookingCommand extends ContainerAwareCommand {
     $jobId = $input->getOption('jms-job-id');
     $job = $doctrine->getRepository('JMSJobQueueBundle:Job')->findOneBy(array('id' => $jobId));
     $originalJob = $job->getOriginalJob();
-    if ($originalJob) {
+    if ($originalJob && $job->isRetryJob()) {
       $numberOfRetries = count($originalJob->getRetryJobs());
 
       $maxRetries = $originalJob->getMaxRetries();
