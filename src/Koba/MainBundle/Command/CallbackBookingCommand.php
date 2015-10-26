@@ -61,7 +61,7 @@ class CallbackBookingCommand extends ContainerAwareCommand {
 
     $client = new Client();
 
-    $request = $client->post($callback, array(
+    $request = $client->post($callback . '?_format=json', array(
       'Content-Type' => 'application/json',
       'Accept' => 'application/json',
     ), array());

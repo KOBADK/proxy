@@ -64,7 +64,7 @@ class CallbackDeleteBookingCommand extends ContainerAwareCommand {
       $status = 'NOT CANCELLED';
     }
 
-    $request = $client->post($callback, array(
+    $request = $client->post($callback . '?_format=json', array(
       'Content-Type' => 'application/json',
       'Accept' => 'application/json',
     ), array());
