@@ -1,4 +1,8 @@
-#KOBA changelog
+#KOBA CHANGELOG
+
+#v1.1.4
+
+* Added "?_format=json" to callback calls, to fix issue with calls not being handled correctly with Drupal 8 sites.
 
 #v1.1.3
 
