@@ -200,13 +200,15 @@ class CalendarService {
     // Get DSS XML data and add to cache.
     $xmlData = $this->exchangeService->getExchangeDssXmlData();
     foreach ($xmlData as $key => $value) {
-      $this->cache->set('dss:' . $key, json_encode($value));
+      // Cache and expire after 1 day
+      $this->cache->set('dss:' . $key, json_encode($value), 86400);
     }
 
     // Get RC XML data and add to cache.
     $xmlData = $this->exchangeService->getExchangeRcXmlData();
     foreach ($xmlData as $key => $value) {
-      $this->cache->set('rc:' . $key, json_encode($value));
+      // Cache and expire after 1 day
+      $this->cache->set('rc:' . $key, json_encode($value), 86400);
     }
   }
 }
