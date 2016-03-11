@@ -96,6 +96,8 @@ class ExchangeXMLService {
         'resource_id' => trim($node->Templatename),
         'start_time' => $this->dateStringToUnixTimestamp(trim($node->Starttime)),
         'end_time' => $this->dateStringToUnixTimestamp(trim($node->Endtime)),
+        'start_time_readable' => $node->Starttime,
+        'end_time_readable' => $node->Endtime,
       );
 
       // Initialize array index for room-id if it does not exist.
@@ -174,6 +176,8 @@ class ExchangeXMLService {
         'resource_id' => trim($node->Roomname->__toString()),
         'start_time' => $startTime,
         'end_time' => $endTime,
+        'start_time_readable' => "" . $node->Starttime,
+        'end_time_readble' => "" . $node->Endtime,
       );
 
       // Initialize array index for room-id if it does not exist.

@@ -1,5 +1,10 @@
 #KOBA CHANGELOG
 
+#v1.1.5
+
+* Added readable times fields for dss and rc, to enable easier debugging.
+* Added cache expire to dss and rc entries.
+
 #v1.1.4
 
 * Added "?_format=json" to callback calls, to fix issue with calls not being handled correctly with Drupal 8 sites.
