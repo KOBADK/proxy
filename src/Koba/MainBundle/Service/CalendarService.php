@@ -156,7 +156,7 @@ class CalendarService {
     $results = array();
 
     foreach ($bookings as $booking) {
-      if ($booking->start_time > $from && $booking->end_time < $to) {
+      if ($booking->start_time < $from && $booking->end_time > $to) {
         $results[] = $booking;
       }
     }
