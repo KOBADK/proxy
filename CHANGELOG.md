@@ -1,5 +1,9 @@
 #KOBA CHANGELOG
 
+#v1.1.6
+
+* Changed how results are filtered when getting booking events.
+
 #v1.1.5
 
 * Added readable times fields for dss and rc, to enable easier debugging.
