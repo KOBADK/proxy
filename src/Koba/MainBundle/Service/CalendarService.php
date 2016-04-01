@@ -73,26 +73,36 @@ class CalendarService {
       //   BOOKED_BY - shows "Booked by [first_name]" as title
       //   KOBA_BOOKING - all data from a booking made in KOBA
       if ($resourceConfiguration['display'] === 'DSS') {
-        $xmlBookings = json_decode($this->cache->get('dss:' . $resource->getName()));
+        $redisEntry = $this->cache->get('dss:' . $resource->getName());
 
-        if ($xmlBookings) {
+        if ($redisEntry) {
+          $xmlBookings = json_decode($redisEntry);
+
           $bookings = $this->processXmlBookings($xmlBookings, $from, $to, $resource);
         }
       }
       else if ($resourceConfiguration['display'] === 'RC') {
-        $xmlBookings = json_decode($this->cache->get('rc:' . $resource->getName()));
+        $redisEntry = $this->cache->get('rc:' . $resource->getName());
 
-        if ($xmlBookings) {
+        if ($redisEntry) {
+          $xmlBookings = json_decode($redisEntry);
+
           $bookings = $this->processXmlBookings($xmlBookings, $from, $to, $resource);
         }
       }
       else if ($resourceConfiguration['display'] === 'RC_FREE_BUSY') {
-        $rcBookings = json_decode($this->cache->get('rc:' . $resource->getName()));
-
-        // Make associative array from start/end time to event name, for quick lookups.
         $eventNames = array();
-        foreach ($rcBookings as $rcBooking) {
-          $eventNames[$rcBooking->start_time . "-" . $rcBooking->end_time] = $rcBooking->event_name;
+
+        $redisEntry = $this->cache->get('rc:' . $resource->getName());
+        if ($redisEntry) {
+          $rcBookings = json_decode($redisEntry);
+
+          // Make associative array from start/end time to event name, for quick lookups.
+          if ($rcBookings) {
+            foreach ($rcBookings as $rcBooking) {
+              $eventNames[$rcBooking->start_time . "-" . $rcBooking->end_time] = $rcBooking->event_name;
+            }
+          }
         }
 
         // Get free/busy.
