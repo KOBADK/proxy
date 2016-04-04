@@ -1,5 +1,9 @@
 #KOBA CHANGELOG
 
+#v1.1.7
+
+* New mode to mix RC and free/busy bookings.
+
 #v1.1.6
 
 * Changed how results are filtered when getting booking events.
