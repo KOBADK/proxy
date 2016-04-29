@@ -1,5 +1,9 @@
 #KOBA CHANGELOG
 
+#v1.1.8
+
+* Changed the booking mails start/end time to be in UTC (see https://itkdev.atlassian.net/browse/SUPPORT-583)
+
 #v1.1.7
 
 * New mode to mix RC and free/busy bookings.
