@@ -92,11 +92,11 @@ class ExchangeMailService {
 
     // Set start date with correct timezone.
     $startDate = \DateTime::createFromFormat('U', $booking->getStartTime());
-    $startDate->setTimeZone(new \DateTimeZone('Europe/Copenhagen'));
+    $startDate->setTimeZone(new \DateTimeZone('UTC'));
 
     // Set end date with correct timezone.
     $endDate = \DateTime::createFromFormat('U', $booking->getEndTime());
-    $endDate->setTimeZone(new \DateTimeZone('Europe/Copenhagen'));
+    $endDate->setTimeZone(new \DateTimeZone('UTC'));
 
     // Set event information.
     $event->setStartDate($startDate)
@@ -134,11 +134,11 @@ class ExchangeMailService {
 
     // Set start date with correct timezone.
     $startDate = \DateTime::createFromFormat('U', $booking->getStartTime());
-    $startDate->setTimeZone(new \DateTimeZone('Europe/Copenhagen'));
+    $startDate->setTimeZone(new \DateTimeZone('UTC'));
 
     // Set end date with correct timezone.
     $endDate = \DateTime::createFromFormat('U', $booking->getEndTime());
-    $endDate->setTimeZone(new \DateTimeZone('Europe/Copenhagen'));
+    $endDate->setTimeZone(new \DateTimeZone('UTC'));
 
     // Create new event in the calender.
     $event = $calendar->newEvent();
@@ -176,7 +176,7 @@ class ExchangeMailService {
   private function createCalendar($method) {
     // Create timezone.
     $tz = $this->ics->createTimezone();
-    $tz->setTzid('Europe/Copenhagen')
+    $tz->setTzid('UTC')
       ->setProperty('X-LIC-LOCATION', $tz->getTzid());
 
     // Create calender.
