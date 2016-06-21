@@ -71,10 +71,13 @@ class CallbackDeleteBookingCommand extends ContainerAwareCommand {
     $request->setBody(json_encode(
       array(
         'action' => 'DELETE',
+        'koba_job_id' => $input->getOption('jms-job-id'),
         'status' => $status,
         'client_booking_id' => $booking->getClientBookingId(),
       )
     ));
     $request->send();
+    
+    $output->writeln("Callback success");
   }
 }

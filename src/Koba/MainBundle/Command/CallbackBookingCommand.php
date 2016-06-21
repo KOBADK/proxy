@@ -10,7 +10,9 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Guzzle\Http\Exception\RequestException;
 
 /**
  * Class CallbackBookingCommand command.
@@ -68,10 +70,19 @@ class CallbackBookingCommand extends ContainerAwareCommand {
     $request->setBody(json_encode(
       array(
         'action' => 'REQUEST',
+        'koba_job_id' => $input->getOption('jms-job-id'),
         'status' => $booking->getStatus(),
         'client_booking_id' => $booking->getClientBookingId(),
       )
     ));
-    $request->send();
+    try {
+      $request->send();
+    }
+    catch (RequestException $e) {
+      $output->writeln($e->getMessage() . '(' . $e->getCode() . ')');
+      throw $e;
+    }
+
+    $output->writeln('Callback success');
   }
 }
