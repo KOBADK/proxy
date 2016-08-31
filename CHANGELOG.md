@@ -1,5 +1,9 @@
 #KOBA CHANGELOG
 
+#v1.1.9
+
+* Added koba_job_id to callback requests.
+
 #v1.1.8
 
 * Changed the booking mails start/end time to be in UTC (see https://itkdev.atlassian.net/browse/SUPPORT-583)
