@@ -57,6 +57,7 @@ class ExchangeSoapClientService {
       CURLOPT_HTTPAUTH => CURLAUTH_BASIC | CURLAUTH_NTLM,
       CURLOPT_USERPWD => $this->exchange['username'] . ':' . $this->exchange['password'],
       CURLOPT_CONNECTTIMEOUT => 10,
+      CURLOPT_FOLLOWLOCATION => 1,
     );
 
     // Set EWS namespaces.
