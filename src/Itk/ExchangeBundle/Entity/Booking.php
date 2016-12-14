@@ -40,7 +40,7 @@ class Booking {
    * Resource that is booked
    *
    * @ORM\ManyToOne(targetEntity="Resource", inversedBy="bookings")
-   * @ORM\JoinColumn(name="resource", referencedColumnName="mail")
+   * @ORM\JoinColumn(name="resource", referencedColumnName="mail", nullable=true)
    */
   protected $resource;
 
