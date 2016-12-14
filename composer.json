@@ -34,7 +34,9 @@
     "snc/redis-bundle": "1.1.x-dev",
     "predis/predis": "0.8.x-dev",
     "jms/job-queue-bundle": "v1.2.1",
-    "pagerfanta/pagerfanta": "1.0.x"
+    "pagerfanta/pagerfanta": "1.0.x",
+    "ocramius/proxy-manager": "^1.0.2",
+    "doctrine/doctrine-migrations-bundle": "^1.2"
   },
   "conflict": {
     "symfony/routing": "2.4.1"
