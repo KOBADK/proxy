@@ -64,12 +64,29 @@ class ExchangeService {
    * Refresh the available resource entities.
    */
   public function refreshResources() {
-    $resources = $this->exchangeADService->getResources();
     $em = $this->resourceRepository->getEntityManager();
 
-    // @TODO: Remove resources that are not in the list from AD.
+    // Get new list of resources from AD.
+    $newResources = $this->exchangeADService->getResources();
+    $newResourcesKeys = array_keys($newResources);
 
-    foreach ($resources as $key => $value) {
+    // If no resources where found from ad, ignore.
+    if (count($newResources) <= 0) {
+      return;
+    }
+
+    // Get all existing resources.
+    $resources = $this->resourceRepository->findAll();
+
+    // Remove resources not in the the new resources array.
+    foreach ($resources as $resource) {
+      if (!in_array($resource->getMail(), $newResourcesKeys)) {
+        $em->remove($resource);
+      }
+    }
+
+    // Add resources not already added.
+    foreach ($newResources as $key => $value) {
       $resource = $this->resourceRepository->findOneByMail($key);
 
       if (!$resource) {
@@ -77,6 +94,7 @@ class ExchangeService {
         $em->persist($resource);
       }
       else {
+        // Update name.
         $resource->setName($value);
       }
     }

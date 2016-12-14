@@ -53,7 +53,6 @@ class IndexController extends Controller {
    * @Route("/cancel")
    */
   public function cancelBooking(Request $request) {
-
     $uid = $request->query->get('uid');
 
     $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
@@ -73,12 +72,9 @@ class IndexController extends Controller {
    * @Route("/rooms")
    */
   public function listResources() {
-
     $ad = $this->get('itk.exchange_ad');
 
-    print_r($ad->getResources());
-
-    return new JsonResponse(array('stest' => 'rewt'));
+    return new JsonResponse($ad->getResources());
   }
 
   /**
