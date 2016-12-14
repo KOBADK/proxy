@@ -41,8 +41,6 @@ class Booking {
    *
    * @ORM\ManyToOne(targetEntity="Resource", inversedBy="bookings")
    * @ORM\JoinColumn(name="resource", referencedColumnName="mail")
-   *
-   * @Assert\NotNull
    */
   protected $resource;
 
