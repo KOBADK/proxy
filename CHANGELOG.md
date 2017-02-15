@@ -2,6 +2,14 @@
 
 #In development
 
+
+#1.1.10
+
+* Added follow redirect to curl.
+* Added impersonation to getItem calls.
+
+#1.1.9
+
 * Added koba_job_id to callback requests.
 
 #v1.1.8
