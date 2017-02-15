@@ -122,7 +122,7 @@ class ExchangeService {
     if ($enrich) {
       $bookings = $calendar->getBookings();
       foreach($bookings as &$booking) {
-        $booking = $this->exchangeWebService->getBooking($booking->getId(), $booking->getChangeKey());
+        $booking = $this->exchangeWebService->getBooking($resource, $booking->getId(), $booking->getChangeKey());
       }
       $calendar->setBookings($bookings);
     }
@@ -133,6 +133,8 @@ class ExchangeService {
   /**
    * Get single booking.
    *
+   * @param $resource
+   *   The resource to impersonate.
    * @param $id
    *   The Exchange ID.
    * @param $changeKey
@@ -141,8 +143,8 @@ class ExchangeService {
    * @return bool|\Itk\ExchangeBundle\Model\ExchangeBooking
    *   Booking information from Exchange.
    */
-  public function getBooking($id, $changeKey) {
-    return $this->exchangeWebService->getBooking($id, $changeKey);
+  public function getBooking($resource, $id, $changeKey) {
+    return $this->exchangeWebService->getBooking($resource, $id, $changeKey);
   }
 
   /**
