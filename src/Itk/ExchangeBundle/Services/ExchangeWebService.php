@@ -31,6 +31,8 @@ class ExchangeWebService {
   /**
    * Get detailed information about a booking.
    *
+   * @param $resource
+   *   The resource to impersonate.
    * @param $id
    *   The Exchange ID for the booking.
    * @param $changeKey
@@ -39,7 +41,7 @@ class ExchangeWebService {
    * @return bool|\Itk\ExchangeBundle\Model\ExchangeBooking
    *   If the booking exists return it else FALSE.
    */
-  public function getBooking($id, $changeKey) {
+  public function getBooking($resource, $id, $changeKey) {
     // Build XML body.
     $body = '<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
       <ItemShape>
@@ -54,7 +56,7 @@ class ExchangeWebService {
     </GetItem>';
 
     // Send request to EWS.
-    $xml = $this->client->request('GetItem', $body);
+    $xml = $this->client->request('GetItem', $body, $resource->getMail());
 
     $doc = new \DOMDocument();
     $doc->loadXML($xml);
