@@ -60,9 +60,12 @@ class ExchangeADService {
   private function connect() {
     if (!$this->connected) {
       // Connect to the ldap server.
-      $this->ldap = ldap_connect($this->host);
+      $this->ldap = ldap_connect($this->host) or die("Could not connect to LDAP server.\n");
       $this->binding = @ldap_bind($this->ldap, 'ADM' . "\\" . $this->username, $this->password);
-      $this->connected = true;
+
+      if ($this->binding) {
+        $this->connected = true;
+      }
     }
   }
 
@@ -78,17 +81,21 @@ class ExchangeADService {
     // Connect to LDAP.
     $this->connect();
 
-    // Search the LDAP for resource with the type room.
-    $result = ldap_search($this->ldap, 'OU=ResursePostkasser,OU=Brugere,OU=Postkalender,OU=Operatoerer,DC=adm,DC=aarhuskommune,DC=dk', 'msExchResourceMetaData=ResourceType:room');
+    $baseDn = 'OU=ResursePostkasser,OU=Brugere,OU=Postkalender,OU=Operatoerer,DC=adm,DC=aarhuskommune,DC=dk';
+    $filter = '(!(accountname=*))';
 
-    // Get the information from the search.
+    $result = ldap_search($this->ldap, $baseDn, $filter);
+
+    // Get the entries.
     $info = ldap_get_entries($this->ldap, $result);
 
     // Loop over the results getting the information needed.
     $resources = array();
     for ($i=0; $i < $info['count']; $i++) {
-      // Set the resources mail address as key and the friendly name as value.
-      $resources[$info[$i]['mail'][0]] = $info[$i]['cn'][0];
+      if (isset($info[$i]['mail'][0]) &&  isset($info[$i]['cn'][0])) {
+        // Set the resources mail address as key and the friendly name as value.
+        $resources[$info[$i]['mail'][0]] = $info[$i]['cn'][0];
+      }
     }
 
     return $resources;
