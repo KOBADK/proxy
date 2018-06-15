@@ -2,6 +2,8 @@
 
 # In development
 
+* Changed how bookings are matched. Allow non-matching IcalUid, if both subject and clientBookingId match.
+
 # v1.1.11
 
 * Fixed ldap search.

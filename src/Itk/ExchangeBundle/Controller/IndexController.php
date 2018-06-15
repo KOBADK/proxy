@@ -42,6 +42,7 @@ class IndexController extends Controller {
     $booking->setEndTime(time() + 1800 + ($offset  * 1800));
     $booking->setResource($resource);
     $booking->setStatusPending();
+    $booking->setClientBookingId('test-client-booking-id');
 
     $provider = $this->get('itk.exchange_mail_service');
     $provider->createBooking($booking);
@@ -66,36 +67,31 @@ class IndexController extends Controller {
     $provider = $this->get('itk.exchange_mail_service');
     $provider->cancelBooking($booking);
 
-    return new JsonResponse(array('stest' => 'rewt'));
+    return new JsonResponse(array('msg' => 'booking cancel mail sent'));
   }
 
   /**
-   * @Route("/rooms")
+   * @Route("/list_resources")
    */
   public function listResources() {
-
     $ad = $this->get('itk.exchange_ad');
 
-    print_r($ad->getResources());
-
-    return new JsonResponse(array('stest' => 'rewt'));
+    return new JsonResponse(array('resources' => $ad->getResources()));
   }
 
   /**
-   * @Route("/list")
+   * @Route("/list_bookings")
    */
   public function getResources() {
     $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
     $exchange = $this->get('itk.exchange_service');
     $calendar = $exchange->getResourceBookings($resource, mktime(0, 0, 0), mktime(23, 59, 29), TRUE);
 
-    print_r($calendar);
-
-    return new JsonResponse(array('stest' => 'rewt'));
+    return new JsonResponse(array('bookings' => $calendar->getBookings()));
   }
 
   /**
-   * @Route("/get")
+   * @Route("/get_booking")
    */
   public function getResource(Request $request) {
     $exchange = $this->get('itk.exchange_service');
@@ -104,13 +100,12 @@ class IndexController extends Controller {
     $key = $request->query->get('key');
 
     $booking = $exchange->getBooking($id, $key);
-    print_r($booking);
 
-    return new JsonResponse(array('stest' => 'rewt'));
+    return new JsonResponse(array('booking' => $booking));
   }
 
   /**
-   * @Route("/test")
+   * @Route("/test_booking_accepted")
    */
   public function testBooking() {
     // Build resource for our test resource.
@@ -132,13 +127,6 @@ class IndexController extends Controller {
 
     $exchange = $this->get('itk.exchange_service');
 
-    if ($exchange->isBookingAccepted($booking)) {
-      echo 'Booked';
-    }
-    else {
-      echo 'Not booked';
-    }
-
-    return new JsonResponse(array('stest' => 'rewt'));
+    return new JsonResponse(array('booking accepted' => $exchange->isBookingAccepted($booking)));
   }
 }
