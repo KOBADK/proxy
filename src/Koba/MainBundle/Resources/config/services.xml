@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
   <services>
+    <!-- Override JMS job queue retry scheduler -->
+    <service id="jms_job_queue.retry_scheduler" class="Koba\MainBundle\Retry\FixedIntervalRetryScheduler">
+      <argument type="string" id="interval">'+10 minutes'</argument>
+    </service>
+
     <service id="koba.apikey_repository" class="Koba\MainBundle\Repository\ApiKeyRepository" public="true">
       <argument type="service" id="Symfony\Bridge\Doctrine\RegistryInterface"></argument>
     </service>
