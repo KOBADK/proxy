@@ -40,8 +40,8 @@
       <argument>%itk_exchange_xml_file_dss%</argument>
     </service>
 
-    <service id="itk.exchange_resource_repository" class="Itk\ExchangeBundle\Entity\ResourceRepository" factory-service="doctrine.orm.default_entity_manager" factory-method="getRepository">
-      <argument>Itk\ExchangeBundle\Entity\Resource</argument>
+    <service id="itk.exchange_resource_repository" class="Itk\ExchangeBundle\Repository\ResourceRepository">
+      <argument type="service" id="Symfony\Bridge\Doctrine\RegistryInterface"></argument>
     </service>
   </services>
 </container>

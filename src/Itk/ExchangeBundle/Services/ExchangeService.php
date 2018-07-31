@@ -12,7 +12,7 @@ namespace Itk\ExchangeBundle\Services;
 
 use Doctrine\ORM\EntityManager;
 use Itk\ExchangeBundle\Entity\Resource;
-use Itk\ExchangeBundle\Entity\ResourceRepository;
+use Itk\ExchangeBundle\Repository\ResourceRepository;
 use Itk\ExchangeBundle\Entity\Booking;
 use Itk\ExchangeBundle\Exceptions\ExchangeNotSupportedException;
 use Itk\ExchangeBundle\Model\ExchangeBooking;

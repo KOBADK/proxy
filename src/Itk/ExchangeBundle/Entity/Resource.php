@@ -10,7 +10,7 @@ use JMS\Serializer\Annotation as JMS;
  * A resource. Is hooked up with a mail in Exchange.
  *
  * @ORM\Table(name="exchange_resource")
- * @ORM\Entity(repositoryClass="Itk\ExchangeBundle\Entity\ResourceRepository")
+ * @ORM\Entity(repositoryClass="Itk\ExchangeBundle\Repository\ResourceRepository")
  */
 class Resource {
   /**
