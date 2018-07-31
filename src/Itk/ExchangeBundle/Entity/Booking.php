@@ -12,449 +12,483 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="exchange_booking")
  * @ORM\Entity()
  */
-class Booking {
-  /**
-   * Internal booking ID
-   *
-   * @ORM\Column(type="integer")
-   * @ORM\Id
-   * @ORM\GeneratedValue(strategy="AUTO")
-   */
-  protected $id;
+class Booking
+{
+    /**
+     * Internal booking ID
+     *
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
 
-  /**
-   * Exchange event ID
-   *
-   * @ORM\Column(type="string", nullable=true)
-   */
-  protected $exchangeId;
+    /**
+     * Exchange event ID
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $exchangeId;
 
-  /**
-   * ICal event UID
-   *
-   * @ORM\Column(type="string", nullable=true)
-   */
-  protected $icalUid;
+    /**
+     * ICal event UID
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $icalUid;
 
-  /**
-   * Resource that is booked
-   *
-   * @ORM\ManyToOne(targetEntity="Resource", inversedBy="bookings")
-   * @ORM\JoinColumn(name="resource", referencedColumnName="mail")
-   *
-   * @Assert\NotNull
-   */
-  protected $resource;
+    /**
+     * Resource that is booked
+     *
+     * @ORM\ManyToOne(targetEntity="Resource", inversedBy="bookings")
+     * @ORM\JoinColumn(name="resource", referencedColumnName="mail")
+     *
+     * @Assert\NotNull
+     */
+    protected $resource;
 
-  /**
-   * Phone number.
-   *
-   * @ORM\Column(name="phone", type="string", nullable=true)
-   */
-  protected $phone;
+    /**
+     * Phone number.
+     *
+     * @ORM\Column(name="phone", type="string", nullable=true)
+     */
+    protected $phone;
 
-  /**
-   * Api key.
-   *
-   * @ORM\Column(name="api_key", type="string", nullable=true)
-   */
-  protected $apiKey;
+    /**
+     * Api key.
+     *
+     * @ORM\Column(name="api_key", type="string", nullable=true)
+     */
+    protected $apiKey;
 
-  /**
-   * Start time
-   *
-   * @ORM\Column(name="start_time", type="integer")
-   *
-   * @Assert\NotBlank
-   */
-  protected $startTime;
+    /**
+     * Start time
+     *
+     * @ORM\Column(name="start_time", type="integer")
+     *
+     * @Assert\NotBlank
+     */
+    protected $startTime;
 
-  /**
-   * End time
-   *
-   * @ORM\Column(name="end_time", type="integer")
-   *
-   * @Assert\NotBlank
-   */
-  protected $endTime;
+    /**
+     * End time
+     *
+     * @ORM\Column(name="end_time", type="integer")
+     *
+     * @Assert\NotBlank
+     */
+    protected $endTime;
 
-  /**
-   * Subject
-   *
-   * @ORM\Column(name="subject", type="string")
-   *
-   * @Assert\NotBlank
-   */
-  protected $subject;
+    /**
+     * Subject
+     *
+     * @ORM\Column(name="subject", type="string")
+     *
+     * @Assert\NotBlank
+     */
+    protected $subject;
 
-  /**
-   * Description
-   *
-   * @ORM\Column(name="description", type="text")
-   *
-   * @Assert\NotBlank
-   */
-  protected $description;
+    /**
+     * Description
+     *
+     * @ORM\Column(name="description", type="text")
+     *
+     * @Assert\NotBlank
+     */
+    protected $description;
 
-  /**
-   * @ORM\Column(name="name", type="text")
-   *
-   * @Assert\NotBlank
-   */
-  protected $name;
+    /**
+     * @ORM\Column(name="name", type="text")
+     *
+     * @Assert\NotBlank
+     */
+    protected $name;
 
-  /**
-   * @ORM\Column(name="mail", type="text")
-   *
-   * @Assert\NotBlank
-   */
-  protected $mail;
+    /**
+     * @ORM\Column(name="mail", type="text")
+     *
+     * @Assert\NotBlank
+     */
+    protected $mail;
 
-  /**
-   * @ORM\Column(name="status", type="text")
-   *
-   * @TODO: Find a better way to set status, using bit-string or enmu in the
-   *        database.
-   *
-   * @Assert\NotBlank
-   */
-  protected $status;
+    /**
+     * @ORM\Column(name="status", type="text")
+     *
+     * @TODO: Find a better way to set status, using bit-string or enmu in the
+     *        database.
+     *
+     * @Assert\NotBlank
+     */
+    protected $status;
 
-  /**
-   * @ORM\Column(name="client_booking_id", type="text", nullable=true)
-   */
-  protected $clientBookingId;
+    /**
+     * @ORM\Column(name="client_booking_id", type="text", nullable=true)
+     */
+    protected $clientBookingId;
 
-  /**
-   * @return mixed
-   */
-  public function getClientBookingId() {
-    return $this->clientBookingId;
-  }
+    /**
+     * @return mixed
+     */
+    public function getClientBookingId()
+    {
+        return $this->clientBookingId;
+    }
 
-  /**
-   * @param mixed $clientBookingId
-   */
-  public function setClientBookingId($clientBookingId) {
-    $this->clientBookingId = $clientBookingId;
-  }
+    /**
+     * @param mixed $clientBookingId
+     */
+    public function setClientBookingId($clientBookingId)
+    {
+        $this->clientBookingId = $clientBookingId;
+    }
 
-  /**
-   * Get the apiKey
-   *
-   * @return string
-   */
-  public function getApiKey() {
-    return $this->apiKey;
-  }
+    /**
+     * Get the apiKey
+     *
+     * @return string
+     */
+    public function getApiKey()
+    {
+        return $this->apiKey;
+    }
 
-  /**
-   * Set the apiKey.
-   *
-   * @param string $apiKey
-   */
-  public function setApiKey($apiKey) {
-    $this->apiKey = $apiKey;
-  }
+    /**
+     * Set the apiKey.
+     *
+     * @param string $apiKey
+     */
+    public function setApiKey($apiKey)
+    {
+        $this->apiKey = $apiKey;
+    }
 
-  /**
-   * Get phone.
-   *
-   * @return string
-   */
-  public function getPhone() {
-    return $this->phone;
-  }
+    /**
+     * Get phone.
+     *
+     * @return string
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
 
-  /**
-   * Set the phone.
-   *
-   * @param string $phone
-   */
-  public function setPhone($phone) {
-    $this->phone = $phone;
-  }
+    /**
+     * Set the phone.
+     *
+     * @param string $phone
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+    }
 
-  /**
-   * Get id
-   *
-   * @return integer
-   */
-  public function getId() {
-    return $this->id;
-  }
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-  /**
-   * Set exchangeId
-   *
-   * @param string $exchangeId
-   *
-   * @return Booking
-   */
-  public function setExchangeId($exchangeId) {
-    $this->exchangeId = $exchangeId;
+    /**
+     * Set exchangeId
+     *
+     * @param string $exchangeId
+     *
+     * @return Booking
+     */
+    public function setExchangeId($exchangeId)
+    {
+        $this->exchangeId = $exchangeId;
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * Get exchangeId
-   *
-   * @return string
-   */
-  public function getExchangeId() {
-    return $this->exchangeId;
-  }
+    /**
+     * Get exchangeId
+     *
+     * @return string
+     */
+    public function getExchangeId()
+    {
+        return $this->exchangeId;
+    }
 
-  /**
-   * Set icalUid
-   *
-   * @param string $icalUid
-   *
-   * @return Booking
-   */
-  public function setIcalUid($icalUid) {
-    $this->icalUid = $icalUid;
+    /**
+     * Set icalUid
+     *
+     * @param string $icalUid
+     *
+     * @return Booking
+     */
+    public function setIcalUid($icalUid)
+    {
+        $this->icalUid = $icalUid;
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * Get icalUid
-   *
-   * @return string
-   */
-  public function getIcalUid() {
-    return $this->icalUid;
-  }
+    /**
+     * Get icalUid
+     *
+     * @return string
+     */
+    public function getIcalUid()
+    {
+        return $this->icalUid;
+    }
 
 
-  /**
-   * Set startTime
-   *
-   * @param integer $startTime
-   *
-   * @return Booking
-   */
-  public function setStartTime($startTime) {
-    $this->startTime = $startTime;
+    /**
+     * Set startTime
+     *
+     * @param integer $startTime
+     *
+     * @return Booking
+     */
+    public function setStartTime($startTime)
+    {
+        $this->startTime = $startTime;
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * Get startTime
-   *
-   * @return integer
-   */
-  public function getStartTime() {
-    return $this->startTime;
-  }
+    /**
+     * Get startTime
+     *
+     * @return integer
+     */
+    public function getStartTime()
+    {
+        return $this->startTime;
+    }
 
-  /**
-   * Set endTime
-   *
-   * @param integer $endTime
-   *
-   * @return Booking
-   */
-  public function setEndTime($endTime) {
-    $this->endTime = $endTime;
+    /**
+     * Set endTime
+     *
+     * @param integer $endTime
+     *
+     * @return Booking
+     */
+    public function setEndTime($endTime)
+    {
+        $this->endTime = $endTime;
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * Get endTime
-   *
-   * @return integer
-   */
-  public function getEndTime() {
-    return $this->endTime;
-  }
+    /**
+     * Get endTime
+     *
+     * @return integer
+     */
+    public function getEndTime()
+    {
+        return $this->endTime;
+    }
 
-  /**
-   * Set subject
-   *
-   * @param string $subject
-   *
-   * @return Booking
-   */
-  public function setSubject($subject) {
-    $this->subject = $subject;
+    /**
+     * Set subject
+     *
+     * @param string $subject
+     *
+     * @return Booking
+     */
+    public function setSubject($subject)
+    {
+        $this->subject = $subject;
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * Get subject
-   *
-   * @return string
-   */
-  public function getSubject() {
-    return $this->subject;
-  }
+    /**
+     * Get subject
+     *
+     * @return string
+     */
+    public function getSubject()
+    {
+        return $this->subject;
+    }
 
-  /**
-   * Set description
-   *
-   * @param string $description
-   *
-   * @return Booking
-   */
-  public function setDescription($description) {
-    $this->description = $description;
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Booking
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * Get description
-   *
-   * @return string
-   */
-  public function getDescription() {
-    return $this->description;
-  }
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
 
-  /**
-   * Set name
-   *
-   * @param string $name
-   *
-   * @return Booking
-   */
-  public function setName($name) {
-    $this->name = $name;
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Booking
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * Get name
-   *
-   * @return string
-   */
-  public function getName() {
-    return $this->name;
-  }
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
-  /**
-   * Set mail
-   *
-   * @param string $mail
-   *
-   * @return Booking
-   */
-  public function setMail($mail) {
-    $this->mail = $mail;
+    /**
+     * Set mail
+     *
+     * @param string $mail
+     *
+     * @return Booking
+     */
+    public function setMail($mail)
+    {
+        $this->mail = $mail;
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * Get mail
-   *
-   * @return string
-   */
-  public function getMail() {
-    return $this->mail;
-  }
+    /**
+     * Get mail
+     *
+     * @return string
+     */
+    public function getMail()
+    {
+        return $this->mail;
+    }
 
-  /**
-   * Set status to pending
-   *
-   * @return Booking
-   */
-  public function setStatusPending() {
-    $this->status = 'PENDING';
+    /**
+     * Set status to pending
+     *
+     * @return Booking
+     */
+    public function setStatusPending()
+    {
+        $this->status = 'PENDING';
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * Set status to denied
-   *
-   * @return Booking
-   */
-  public function setStatusDenied() {
-    $this->status = 'DENIED';
+    /**
+     * Set status to denied
+     *
+     * @return Booking
+     */
+    public function setStatusDenied()
+    {
+        $this->status = 'DENIED';
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * Set status to accepted
-   *
-   * @return Booking
-   */
-  public function setStatusAccepted() {
-    $this->status = 'ACCEPTED';
+    /**
+     * Set status to accepted
+     *
+     * @return Booking
+     */
+    public function setStatusAccepted()
+    {
+        $this->status = 'ACCEPTED';
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * Set status to cancelled
-   *
-   * @return Booking
-   */
-  public function setStatusCancelled() {
-    $this->status = 'CANCELLED';
+    /**
+     * Set status to cancelled
+     *
+     * @return Booking
+     */
+    public function setStatusCancelled()
+    {
+        $this->status = 'CANCELLED';
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * Set status to request
-   *
-   * @return $this
-   */
-  public function setStatusRequest() {
-    $this->status = 'REQUEST';
+    /**
+     * Set status to request
+     *
+     * @return $this
+     */
+    public function setStatusRequest()
+    {
+        $this->status = 'REQUEST';
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * Set status to unconfirmed
-   *
-   * @return $this
-   */
-  public function setStatusUnconfirmed() {
-    $this->status = 'UNCONFIRMED';
+    /**
+     * Set status to unconfirmed
+     *
+     * @return $this
+     */
+    public function setStatusUnconfirmed()
+    {
+        $this->status = 'UNCONFIRMED';
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * Get status
-   *
-   * @return string
-   */
-  public function getStatus() {
-    return $this->status;
-  }
+    /**
+     * Get status
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
 
-  /**
-   * Set resource
-   *
-   * @param null|\Itk\ExchangeBundle\Entity\Resource $resource
-   *
-   * @return Booking
-   */
-  public function setResource(\Itk\ExchangeBundle\Entity\Resource $resource = NULL) {
-    $this->resource = $resource;
+    /**
+     * Set resource
+     *
+     * @param null|\Itk\ExchangeBundle\Entity\Resource $resource
+     *
+     * @return Booking
+     */
+    public function setResource(
+        \Itk\ExchangeBundle\Entity\Resource $resource = null
+    ) {
+        $this->resource = $resource;
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * Get resource
-   *
-   * @return \Itk\ExchangeBundle\Entity\Resource|null
-   */
-  public function getResource() {
-    return $this->resource;
-  }
+    /**
+     * Get resource
+     *
+     * @return \Itk\ExchangeBundle\Entity\Resource|null
+     */
+    public function getResource()
+    {
+        return $this->resource;
+    }
 }

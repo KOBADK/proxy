@@ -177,6 +177,7 @@ class BookingController extends FOSRestController
      *   The client booking id. Used for reference between client and exchange booking.
      *
      * @return Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function deleteBooking($group, $apiKey, $clientBookingId)
     {
@@ -269,6 +270,7 @@ class BookingController extends FOSRestController
      *   The client booking id. Used for reference between client and exchange booking.
      *
      * @return Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function confirmBooking($group, $apiKey, $clientBookingId)
     {

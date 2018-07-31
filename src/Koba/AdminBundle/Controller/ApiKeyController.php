@@ -47,6 +47,7 @@ class ApiKeyController extends Controller
      *
      * @return ApiKey
      *   The ApiKey.
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getApiKey($key)
     {
@@ -68,6 +69,7 @@ class ApiKeyController extends Controller
      *
      * @param Request $request
      *   The Http Request.
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function postApiKey(Request $request)
     {
@@ -113,6 +115,7 @@ class ApiKeyController extends Controller
      *
      * @return Response
      *   The Http Response.
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function putApiKey(Request $request, $key)
     {
@@ -151,6 +154,7 @@ class ApiKeyController extends Controller
      *
      * @param $key
      *   The id of the ApiKey to delete
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function deleteApiKey($key)
     {

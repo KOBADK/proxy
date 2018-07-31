@@ -14,22 +14,27 @@ use FOS\RestBundle\Controller\Annotations as FOSRest;
 /**
  * @Route("")
  */
-class IndexController extends FOSRestController {
-  /**
-   * Get index.
-   *
-   * @FOSRest\Get("")
+class IndexController extends FOSRestController
+{
+    /**
+     * Get index.
+     *
+     * @FOSRest\Get("")
+     * @param Request $request
+     *   The request object.
+     * @return \Symfony\Component\HttpFoundation\Response
+     *   The response object.
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function indexAction(Request $request)
+    {
+        // Confirm the apikey is accepted.
+        $this->get('koba.apikey_service')->getApiKey(
+            $request->query->get('apikey')
+        );
 
-   * @param Request $request
-   *   The request object.
-   * @return \Symfony\Component\HttpFoundation\Response
-   *   The response object.
-   */
-  public function indexAction(Request $request) {
-    // Confirm the apikey is accepted.
-    $this->get('koba.apikey_service')->getApiKey($request->query->get('apikey'));
+        $view = $this->view(array(), 200);
 
-    $view = $this->view(array(), 200);
-    return $this->handleView($view);
-  }
+        return $this->handleView($view);
+    }
 }

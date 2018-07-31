@@ -10,12 +10,15 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  *
  * @package Koba\AdminBundle\DependencyInjection
  */
-class Configuration implements ConfigurationInterface {
-  /**
-   * {@inheritDoc}
-   */
-  public function getConfigTreeBuilder() {
-    $treeBuilder = new TreeBuilder();
-    return $treeBuilder;
-  }
+class Configuration implements ConfigurationInterface
+{
+    /**
+     * {@inheritDoc}
+     */
+    public function getConfigTreeBuilder()
+    {
+        $treeBuilder = new TreeBuilder();
+
+        return $treeBuilder;
+    }
 }

@@ -14,14 +14,16 @@ use FOS\RestBundle\Controller\Annotations as FOSRest;
 /**
  * @Route("")
  */
-class IndexController extends FOSRestController {
-  /**
-   * Get index page.
-   *
-   * @FOSRest\Get("")
-   * @Template()
-   */
-  public function indexAction() {
-    return array();
-  }
+class IndexController extends FOSRestController
+{
+    /**
+     * Get index page.
+     *
+     * @FOSRest\Get("")
+     * @Template()
+     */
+    public function indexAction()
+    {
+        return array();
+    }
 }

@@ -13,19 +13,23 @@ use FOS\RestBundle\Controller\Annotations as FOSRest;
 /**
  * @Route("/bookings")
  */
-class BookingController extends FOSRestController {
-  /**
-   * Get xml bookings.
-   *
-   * Test function.
-   *
-   * @FOSRest\Get("/xml")
-   *
-   * @return array
-   */
-  public function getXmlBookings() {
-    $arr = $this->get('itk.exchange_xml_service')->importXmlFile('test.xml');
+class BookingController extends FOSRestController
+{
+    /**
+     * Get xml bookings.
+     *
+     * Test function.
+     *
+     * @FOSRest\Get("/xml")
+     *
+     * @return array
+     */
+    public function getXmlBookings()
+    {
+        $arr = $this->get('itk.exchange_xml_service')->importXmlFile(
+            'test.xml'
+        );
 
-    return $arr;
-  }
+        return $arr;
+    }
 }
