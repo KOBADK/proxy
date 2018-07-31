@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
   <services>
-    <service id="koba.apikey_repository" class="Koba\MainBundle\Entity\ApiKeyRepository">
-      <argument>Koba\MainBundle\Entity\ApiKeyRepository</argument>
+    <service id="koba.apikey_repository" class="Koba\MainBundle\Repository\ApiKeyRepository" public="true">
+      <argument type="service" id="Symfony\Bridge\Doctrine\RegistryInterface"></argument>
     </service>
 
-    <service id="koba.apikey_service" class="Koba\MainBundle\Service\ApiKeyService">
+    <service id="koba.apikey_service" class="Koba\MainBundle\Service\ApiKeyService" public="true">
       <argument type="service" id="koba.apikey_repository" />
     </service>
 
-    <service id="koba.cache" class="Koba\MainBundle\Service\RedisCache">
+    <service id="koba.cache" class="Koba\MainBundle\Service\RedisCache" public="true">
       <argument type="service" id="snc_redis.default" />
     </service>
 
-    <service id="koba.calendar_service" class="Koba\MainBundle\Service\CalendarService">
+    <service id="koba.calendar_service" class="Koba\MainBundle\Service\CalendarService" public="true">
       <argument type="service" id="itk.exchange_service" />
       <argument type="service" id="koba.cache" />
     </service>

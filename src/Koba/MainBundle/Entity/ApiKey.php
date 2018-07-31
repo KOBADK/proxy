@@ -12,7 +12,7 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * ApiKey.
  *
- * @ORM\Entity(repositoryClass="Koba\MainBundle\Entity\ApiKeyRepository")
+ * @ORM\Entity(repositoryClass="Koba\MainBundle\Repository\ApiKeyRepository")
  * @ORM\Table(name="koba_apikey")
  */
 class ApiKey {

@@ -34,7 +34,7 @@ class ApiKeyController extends Controller
      */
     public function getApiKeys()
     {
-        return $this->getDoctrine()->getManager()->getRepository('KobaMainBundle:ApiKey')->findAll();
+        return $this->get('koba.apikey_repository')->findAll();
     }
 
     /**
@@ -50,7 +50,7 @@ class ApiKeyController extends Controller
      */
     public function getApiKey($key)
     {
-        $apiKeyEntity = $this->getDoctrine()->getManager()->getRepository('KobaMainBundle:ApiKey')->findOneByApiKey(
+        $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey(
             $key
         );
 
@@ -79,7 +79,7 @@ class ApiKeyController extends Controller
         $postName = $content->name;
 
         // Try to get the apikey, check for duplicate.
-        $apiKeyEntity = $this->getDoctrine()->getManager()->getRepository('KobaMainBundle:ApiKey')->findOneByApiKey(
+        $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey(
             $postApiKey
         );
 
@@ -116,7 +116,7 @@ class ApiKeyController extends Controller
      */
     public function putApiKey(Request $request, $key)
     {
-        $apiKeyEntity = $this->getDoctrine()->getManager()->getRepository('KobaMainBundle:ApiKey')->findOneByApiKey(
+        $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey(
             $key
         );
 
@@ -154,7 +154,7 @@ class ApiKeyController extends Controller
      */
     public function deleteApiKey($key)
     {
-        $apiKeyEntity = $this->getDoctrine()->getManager()->getRepository('KobaMainBundle:ApiKey')->findOneByApiKey(
+        $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey(
             $key
         );
 

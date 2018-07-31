@@ -40,7 +40,7 @@
       <argument>%itk_exchange_xml_file_dss%</argument>
     </service>
 
-    <service id="itk.exchange_resource_repository" class="Itk\ExchangeBundle\Repository\ResourceRepository">
+    <service id="itk.exchange_resource_repository" class="Itk\ExchangeBundle\Repository\ResourceRepository" public="true">
       <argument type="service" id="Symfony\Bridge\Doctrine\RegistryInterface"></argument>
     </service>
   </services>
