@@ -7,7 +7,7 @@
 namespace Koba\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -66,6 +66,8 @@ class ResourceController extends FOSRestController {
    *
    * @return \Symfony\Component\HttpFoundation\Response
    *   The response object.
+   * @throws \Doctrine\ORM\NonUniqueResultException
+   * @throws \Predis\NotSupportedException
    */
   public function getResourceBookings(Request $request, $groupId, $resourceMail, $from, $to) {
     $apiKeyService = $this->get('koba.apikey_service');
@@ -104,6 +106,7 @@ class ResourceController extends FOSRestController {
    *
    * @return \Symfony\Component\HttpFoundation\Response
    *   The response object.
+   * @throws \Doctrine\ORM\NonUniqueResultException
    */
   public function getResourceFreeBusy(Request $request, $groupId, $resourceMail, $from, $to) {
     $apiKeyService = $this->get('koba.apikey_service');

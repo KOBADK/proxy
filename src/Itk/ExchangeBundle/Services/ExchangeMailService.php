@@ -11,7 +11,6 @@
 namespace Itk\ExchangeBundle\Services;
 
 use Itk\ExchangeBundle\Entity\Booking;
-use Itk\ExchangeBundle\Exceptions\ExchangeNotSupported;
 use Itk\ExchangeBundle\Exceptions\ExchangeNotSupportedException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;

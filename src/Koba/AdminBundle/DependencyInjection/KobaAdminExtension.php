@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains KobaAdminExtension.
- */
 
 namespace Koba\AdminBundle\DependencyInjection;
 

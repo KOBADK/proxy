@@ -7,12 +7,10 @@
 namespace Koba\AdminBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations\View;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @Route("/resources")

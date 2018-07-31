@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains the ItkExchangeExtension.
- */
 
 namespace Itk\ExchangeBundle\DependencyInjection;
 

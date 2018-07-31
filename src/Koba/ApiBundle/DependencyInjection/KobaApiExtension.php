@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains KobaApiExtension.
- */
 
 namespace Koba\ApiBundle\DependencyInjection;
 

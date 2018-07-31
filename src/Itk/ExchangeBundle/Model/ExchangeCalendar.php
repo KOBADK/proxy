@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- *
- */
 
 namespace Itk\ExchangeBundle\Model;
 
@@ -10,6 +6,7 @@ use Itk\ExchangeBundle\Entity\Resource;
 
 /**
  * Class ExchangeCalendar
+ *
  * @package Itk\ExchangeBundle\Model
  */
 class ExchangeCalendar {
@@ -19,7 +16,7 @@ class ExchangeCalendar {
   private $bookings;
 
   /**
-   * @param \Itk\ExchangeBundle\Entity\Resource $resource
+   * @param Resource $resource
    * @param $start
    * @param $end
    * @param array $bookings

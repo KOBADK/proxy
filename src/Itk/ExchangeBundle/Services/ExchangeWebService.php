@@ -6,8 +6,6 @@
 
 namespace Itk\ExchangeBundle\Services;
 
-use Itk\ExchangeBundle\Exceptions\ExchangeNotSupportedException;
-use Itk\ExchangeBundle\Exceptions\ExchangeSoapException;
 use Itk\ExchangeBundle\Model\ExchangeBooking;
 use Itk\ExchangeBundle\Model\ExchangeCalendar;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;

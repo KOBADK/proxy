@@ -1,8 +1,5 @@
 <?php
-/**
- * @file
- * Load bundle configuration and merge with main config file.
- */
+
 namespace Itk\ExchangeBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;

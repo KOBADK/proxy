@@ -9,7 +9,6 @@ namespace Itk\ExchangeBundle\Exceptions;
 /**
  * Class ExchangeSoapException
  *
- *
  * @package Itk\ExchangeBundle\Exceptions
  */
 class ExchangeSoapException extends \RuntimeException {

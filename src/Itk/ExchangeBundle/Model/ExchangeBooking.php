@@ -1,14 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cableman
- * Date: 16/04/15
- * Time: 11:20
- */
 
 namespace Itk\ExchangeBundle\Model;
 
-
+/**
+ * Class ExchangeBooking
+ *
+ * @package Itk\ExchangeBundle\Model
+ */
 class ExchangeBooking {
   const TYPE_KOBA = 'KOBA';
   const TYPE_FREE_BUSY = 'FREE_BUSY';

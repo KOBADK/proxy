@@ -10,7 +10,7 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: en
+    locale: da
 
 framework:
     #esi: ~
@@ -73,11 +73,8 @@ swiftmailer:
     spool: { type: memory }
 
 sensio_framework_extra:
-   router:
+    router:
         annotations: false
-
-sensio_framework_extra:
-    view: { annotations: false }
 
 fos_rest:
     param_fetcher_listener: true
@@ -89,12 +86,12 @@ fos_user:
     firewall_name: admin
     user_class: Koba\AdminBundle\Entity\User
     from_email:
-        address: %fos_user_address%
-        sender_name: %fos_user_sender_name%
+        address: '%fos_user_address%'
+        sender_name: '%fos_user_sender_name%'
 
 snc_redis:
     clients:
         default:
             type: predis
             alias: default
-            dsn: %redis_dsn%
+            dsn: '%redis_dsn%'
