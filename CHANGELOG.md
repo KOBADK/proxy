@@ -2,11 +2,15 @@
 
 # In development
 
+# v1.2.0
+
+* Changed how bookings are matched. Allow non-matching IcalUid, if both subject and clientBookingId match.
+
 # v1.1.11
 
 * Fixed ldap search.
 
-# 1.1.10
+# v1.1.10
 
 * Added follow redirect to curl.
 * Added impersonation to getItem calls.

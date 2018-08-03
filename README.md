@@ -31,18 +31,6 @@ The API accepts/returns json by default, but can also handle xml if the followin
 ?_format=xml
 </pre>
 
-## Tunnel (only for testing!)
-Append following line to vendor/jameslarmes/PhpEws/NTLMSoapClient.php after line 84:
-<pre>
-curl_setopt($this->ch, CURLOPT_PROXY, "http://127.0.0.1:8080/");
-curl_setopt($this->ch, CURLOPT_PROXYTYPE, 7);
-</pre>
-
-Run the following within the vagrant:
-<pre>
-ssh -D 8080 -f -C -q -N deploy@namor.aakb.dk
-</pre>
-
 ## Scrutinizer
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/KOBADK/backend/badges/quality-score.png?b=development)](https://scrutinizer-ci.com/g/KOBADK/backend/?branch=development)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/KOBADK/backend/badges/build.png?b=development)](https://scrutinizer-ci.com/g/KOBADK/backend/?branch=development)

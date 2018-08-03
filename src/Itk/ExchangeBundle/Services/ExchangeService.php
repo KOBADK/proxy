@@ -206,10 +206,7 @@ class ExchangeService {
     // Check that booking exists.
     $exchangeBookings = $exchangeCalendar->getBookings();
     if (!empty($exchangeBookings)) {
-      // Check if it's the right booking.
-      if ($exchangeBookings[0]->getType() === ExchangeBooking::TYPE_KOBA && $exchangeBookings[0]->getBody()->getIcalUid() === $booking->getIcalUid()) {
-        return TRUE;
-      }
+        return $this->doBookingsMatch($exchangeBookings[0], $booking);
     }
 
     return FALSE;
@@ -246,6 +243,11 @@ class ExchangeService {
    *   Whether or not the $exchangeBooking matches the $booking
    */
   public function doBookingsMatch(ExchangeBooking $exchangeBooking, Booking $booking) {
-    return $exchangeBooking->getType() === ExchangeBooking::TYPE_KOBA && $exchangeBooking->getBody()->getIcalUid() === $booking->getIcalUid();
+    return
+        $exchangeBooking->getType() === ExchangeBooking::TYPE_KOBA &&
+        ($exchangeBooking->getBody()->getIcalUid() === $booking->getIcalUid() ||
+            ($exchangeBooking->getSubject() == $booking->getSubject() &&
+            $exchangeBooking->getBody()->getClientBookingId() == $booking->getClientBookingId())
+        );
   }
 }
