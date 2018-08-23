@@ -15,7 +15,6 @@
     </service>
 
     <service id="koba.cache" class="Symfony\Component\Cache\Simple\FilesystemCache" public="true">
-      <argument type="string">'%kernel.cache_dir%'</argument>
     </service>
 
     <service id="koba.calendar_service" class="Koba\MainBundle\Service\CalendarService" public="true">

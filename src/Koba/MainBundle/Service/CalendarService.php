@@ -10,6 +10,7 @@ use Itk\ExchangeBundle\Entity\Resource;
 use Itk\ExchangeBundle\Services\ExchangeService;
 use Koba\MainBundle\Entity\ApiKey;
 use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 /**
  * Class CalendarService
@@ -18,6 +19,9 @@ use Psr\SimpleCache\CacheInterface;
  */
 class CalendarService
 {
+    const DSS = 'dss:';
+    const RC = 'rc:';
+
     protected $cache;
     protected $exchangeService;
 
@@ -33,6 +37,38 @@ class CalendarService
     ) {
         $this->exchangeService = $exchangeService;
         $this->cache = $cache;
+    }
+
+    /**
+     * Get cache key.
+     *
+     * @param $key
+     * @return bool|mixed
+     */
+    public function getCacheKey($key) {
+        try {
+            return $this->cache->get(sha1($key));
+        }
+        catch (InvalidArgumentException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Set cache key.
+     *
+     * @param $key
+     * @param $value
+     * @param null $ttl
+     * @return bool
+     */
+    private function setCacheKey($key, $value, $ttl = null) {
+        try {
+            return $this->cache->set(sha1($key), $value, $ttl);
+        }
+        catch (InvalidArgumentException $e) {
+            return false;
+        }
     }
 
     /**
@@ -65,11 +101,10 @@ class CalendarService
         $to
     ) {
         // Get cache id
-        $cacheId = $apiKey->getApiKey().':'.$groupId.':'.$resource->getMail(
-            ).':'.$from.':'.$to;
+        $cacheId = $apiKey->getApiKey().':'.$groupId.':'.$resource->getMail().':'.$from.':'.$to;
 
         // Get the bookings from the cache.
-        $bookings = $this->cache->get($cacheId);
+        $bookings = $this->getCacheKey($cacheId);
 
         // If the entry exists return it.
         if ($bookings) {
@@ -80,25 +115,13 @@ class CalendarService
             // Dependant on the resourceConfiguration['display'] we get bookings in various ways.
             //   DSS - from the dss XML file
             //   RC  - from the rc XML file
+            //   RC_FREE_BUSY - RC with free/busy
             //   FREE_BUSY - from exchange, only free/busy times
             //   BOOKED_BY - shows "Booked by [first_name]" as title
-            //   KOBA_BOOKING - all data from a booking made in KOBA
-            if ($resourceConfiguration['display'] === 'DSS') {
-                $cacheEntry = $this->cache->get('dss:'.$resource->getName());
-
-                if ($cacheEntry) {
-                    $xmlBookings = json_decode($cacheEntry);
-
-                    $bookings = $this->processXmlBookings(
-                        $xmlBookings,
-                        $from,
-                        $to,
-                        $resource
-                    );
-                }
-            } else {
-                if ($resourceConfiguration['display'] === 'RC') {
-                    $cacheEntry = $this->cache->get('rc:'.$resource->getName());
+            //   KOBA - all data from a booking made in KOBA
+            switch ($resourceConfiguration['display']) {
+                case 'DSS':
+                    $cacheEntry = $this->getCacheKey(CalendarService::DSS.$resource->getName());
 
                     if ($cacheEntry) {
                         $xmlBookings = json_decode($cacheEntry);
@@ -110,125 +133,124 @@ class CalendarService
                             $resource
                         );
                     }
-                } else {
-                    if ($resourceConfiguration['display'] === 'RC_FREE_BUSY') {
-                        $eventNames = array();
+                    break;
+                case 'RC':
+                    $cacheEntry = $this->getCacheKey(CalendarService::RC.$resource->getName());
 
-                        $cacheEntry = $this->cache->get(
-                            'rc:'.$resource->getName()
-                        );
-                        if ($cacheEntry) {
-                            $rcBookings = json_decode($cacheEntry);
+                    if ($cacheEntry) {
+                        $xmlBookings = json_decode($cacheEntry);
 
-                            // Make associative array from start/end time to event name, for quick lookups.
-                            if ($rcBookings) {
-                                foreach ($rcBookings as $rcBooking) {
-                                    $eventNames[$rcBooking->start_time."-".$rcBooking->end_time] = $rcBooking->event_name;
-                                }
-                            }
-                        }
-
-                        // Get free/busy.
-                        $exchangeCalendar = $this->exchangeService->getResourceBookings(
-                            $resource,
+                        $bookings = $this->processXmlBookings(
+                            $xmlBookings,
                             $from,
                             $to,
-                            false
+                            $resource
                         );
+                    }
+                    break;
+                case 'RC_FREE_BUSY':
+                    $eventNames = array();
 
-                        // Set event name from quick look up array.
-                        foreach ($exchangeCalendar->getBookings() as $booking) {
-                            $eventName = $booking->getStart(
-                                ).'-'.$booking->getEnd();
+                    $cacheEntry = $this->getCacheKey(
+                        CalendarService::RC.$resource->getName()
+                    );
+                    if ($cacheEntry) {
+                        $rcBookings = json_decode($cacheEntry);
 
-                            $obj = (object)array(
-                                'start_time' => $booking->getStart(),
-                                'end_time' => $booking->getEnd(),
-                                'event_name' => isset($eventNames[$eventName]) ? $eventNames[$eventName] : null,
-                                'resource_id' => $resource->getName(),
-                                'resource_alias' => $resource->getAlias(),
-                            );
-
-                            $bookings[] = $obj;
-                        }
-                    } else {
-                        if ($resourceConfiguration['display'] === 'FREE_BUSY') {
-                            $exchangeCalendar = $this->exchangeService->getResourceBookings(
-                                $resource,
-                                $from,
-                                $to,
-                                false
-                            );
-
-                            foreach ($exchangeCalendar->getBookings(
-                            ) as $booking) {
-                                $bookings[] = (object)array(
-                                    'start_time' => $booking->getStart(),
-                                    'end_time' => $booking->getEnd(),
-                                    'resource_id' => $resource->getName(),
-                                    'resource_alias' => $resource->getAlias(),
-                                );
-                            }
-                        } else {
-                            if ($resourceConfiguration['display'] === 'BOOKED_BY') {
-                                $exchangeCalendar = $this->exchangeService->getResourceBookings(
-                                    $resource,
-                                    $from,
-                                    $to,
-                                    true
-                                );
-
-                                foreach ($exchangeCalendar->getBookings(
-                                ) as $booking) {
-                                    $bookings[] = (object)array(
-                                        'start_time' => $booking->getStart(),
-                                        'end_time' => $booking->getEnd(),
-                                        'name' => $booking->getBody()->getName(
-                                        ),
-                                        'resource_id' => $resource->getName(),
-                                        'resource_alias' => $resource->getAlias(
-                                        ),
-                                    );
-                                }
-                            } else {
-                                if ($resourceConfiguration['display'] === 'KOBA') {
-                                    $exchangeCalendar = $this->exchangeService->getResourceBookings(
-                                        $resource,
-                                        $from,
-                                        $to,
-                                        true
-                                    );
-
-                                    // @TODO: Merge with free/busy or other source.
-
-                                    foreach ($exchangeCalendar->getBookings(
-                                    ) as $booking) {
-                                        $bookings[] = (object)array(
-                                            'start_time' => $booking->getStartTime(
-                                            ),
-                                            'end_time' => $booking->getEndTime(
-                                            ),
-                                            'event_name' => $booking->getBody()
-                                                ->getSubject(),
-                                            'event_description' => $booking->getBody(
-                                            )->getDescription(),
-                                            'name' => $booking->getBody()
-                                                ->getName(),
-                                            'resource_id' => $resource->getName(
-                                            ),
-                                            'resource_alias' => $resource->getAlias(
-                                            ),
-                                        );
-                                    }
-                                }
+                        // Make associative array from start/end time to event name, for quick lookups.
+                        if ($rcBookings) {
+                            foreach ($rcBookings as $rcBooking) {
+                                $eventNames[$rcBooking->start_time."-".$rcBooking->end_time] = $rcBooking->event_name;
                             }
                         }
                     }
-                }
+
+                    // Get free/busy.
+                    $exchangeCalendar = $this->exchangeService->getResourceBookings(
+                        $resource,
+                        $from,
+                        $to,
+                        false
+                    );
+
+                    // Set event name from quick look up array.
+                    foreach ($exchangeCalendar->getBookings() as $booking) {
+                        $eventName = $booking->getStart().'-'.$booking->getEnd();
+
+                        $obj = (object)array(
+                            'start_time' => $booking->getStart(),
+                            'end_time' => $booking->getEnd(),
+                            'event_name' => isset($eventNames[$eventName]) ? $eventNames[$eventName] : null,
+                            'resource_id' => $resource->getName(),
+                            'resource_alias' => $resource->getAlias(),
+                        );
+
+                        $bookings[] = $obj;
+                    }
+                    break;
+                case 'FREE_BUSY':
+                    $exchangeCalendar = $this->exchangeService->getResourceBookings(
+                        $resource,
+                        $from,
+                        $to,
+                        false
+                    );
+
+                    foreach ($exchangeCalendar->getBookings() as $booking) {
+                        $bookings[] = (object)array(
+                            'start_time' => $booking->getStart(),
+                            'end_time' => $booking->getEnd(),
+                            'resource_id' => $resource->getName(),
+                            'resource_alias' => $resource->getAlias(),
+                        );
+                    }
+                    break;
+                case 'BOOKED_BY':
+                    $exchangeCalendar = $this->exchangeService->getResourceBookings(
+                        $resource,
+                        $from,
+                        $to,
+                        true
+                    );
+
+                    foreach ($exchangeCalendar->getBookings() as $booking) {
+                        $bookings[] = (object)array(
+                            'start_time' => $booking->getStart(),
+                            'end_time' => $booking->getEnd(),
+                            'name' => $booking->getBody()->getName(
+                            ),
+                            'resource_id' => $resource->getName(),
+                            'resource_alias' => $resource->getAlias(
+                            ),
+                        );
+                    }
+                    break;
+                case 'KOBA':
+                    $exchangeCalendar = $this->exchangeService->getResourceBookings(
+                        $resource,
+                        $from,
+                        $to,
+                        true
+                    );
+
+                    // @TODO: Merge with free/busy or other source.
+
+                    foreach ($exchangeCalendar->getBookings() as $booking) {
+                        $bookings[] = (object)array(
+                            'start_time' => $booking->getStartTime(),
+                            'end_time' => $booking->getEndTime(),
+                            'event_name' => $booking->getBody()->getSubject(),
+                            'event_description' => $booking->getBody()->getDescription(),
+                            'name' => $booking->getBody()->getName(),
+                            'resource_id' => $resource->getName(),
+                            'resource_alias' => $resource->getAlias(),
+                        );
+                    }
+                    break;
             }
 
             // Save bookings in the cache.
-            $this->cache->set($cacheId, json_encode($bookings), 300);
+            $this->setCacheKey($cacheId, json_encode($bookings), 300);
 
             return $bookings;
         }
@@ -301,14 +323,14 @@ class CalendarService
         $xmlData = $this->exchangeService->getExchangeDssXmlData();
         foreach ($xmlData as $key => $value) {
             // Cache and expire after 1 day
-            $this->cache->set('dss:'.$key, json_encode($value), 86400);
+            $this->setCacheKey(CalendarService::DSS.$key, json_encode($value), 86400);
         }
 
         // Get RC XML data and add to cache.
         $xmlData = $this->exchangeService->getExchangeRcXmlData();
         foreach ($xmlData as $key => $value) {
             // Cache and expire after 1 day
-            $this->cache->set('rc:'.$key, json_encode($value), 86400);
+            $this->setCacheKey(CalendarService::RC.$key, json_encode($value), 86400);
         }
     }
 }
