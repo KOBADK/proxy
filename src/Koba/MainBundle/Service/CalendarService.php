@@ -9,7 +9,7 @@ namespace Koba\MainBundle\Service;
 use Itk\ExchangeBundle\Entity\Resource;
 use Itk\ExchangeBundle\Services\ExchangeService;
 use Koba\MainBundle\Entity\ApiKey;
-use Predis\NotSupportedException;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * Class CalendarService
@@ -51,7 +51,7 @@ class CalendarService
      * @param integer $to
      *   End interest time. Unix timestamp.
      *
-     * @throws NotSupportedException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      *
      * @return array
      *   The bookings for the resource.
@@ -84,10 +84,10 @@ class CalendarService
             //   BOOKED_BY - shows "Booked by [first_name]" as title
             //   KOBA_BOOKING - all data from a booking made in KOBA
             if ($resourceConfiguration['display'] === 'DSS') {
-                $redisEntry = $this->cache->get('dss:'.$resource->getName());
+                $cacheEntry = $this->cache->get('dss:'.$resource->getName());
 
-                if ($redisEntry) {
-                    $xmlBookings = json_decode($redisEntry);
+                if ($cacheEntry) {
+                    $xmlBookings = json_decode($cacheEntry);
 
                     $bookings = $this->processXmlBookings(
                         $xmlBookings,
@@ -98,10 +98,10 @@ class CalendarService
                 }
             } else {
                 if ($resourceConfiguration['display'] === 'RC') {
-                    $redisEntry = $this->cache->get('rc:'.$resource->getName());
+                    $cacheEntry = $this->cache->get('rc:'.$resource->getName());
 
-                    if ($redisEntry) {
-                        $xmlBookings = json_decode($redisEntry);
+                    if ($cacheEntry) {
+                        $xmlBookings = json_decode($cacheEntry);
 
                         $bookings = $this->processXmlBookings(
                             $xmlBookings,
@@ -114,11 +114,11 @@ class CalendarService
                     if ($resourceConfiguration['display'] === 'RC_FREE_BUSY') {
                         $eventNames = array();
 
-                        $redisEntry = $this->cache->get(
+                        $cacheEntry = $this->cache->get(
                             'rc:'.$resource->getName()
                         );
-                        if ($redisEntry) {
-                            $rcBookings = json_decode($redisEntry);
+                        if ($cacheEntry) {
+                            $rcBookings = json_decode($cacheEntry);
 
                             // Make associative array from start/end time to event name, for quick lookups.
                             if ($rcBookings) {
@@ -220,8 +220,6 @@ class CalendarService
                                             ),
                                         );
                                     }
-                                } else {
-                                    throw new NotSupportedException();
                                 }
                             }
                         }
@@ -294,6 +292,8 @@ class CalendarService
      * Update the xml data.
      *
      * Used by cron process to cache data from the xml files.
+     *
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function updateXmlData()
     {

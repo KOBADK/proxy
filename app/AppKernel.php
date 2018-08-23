@@ -18,7 +18,6 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new BOMO\IcalBundle\BOMOIcalBundle(),
             new FOS\UserBundle\FOSUserBundle(),
-            new Snc\RedisBundle\SncRedisBundle(),
             new JMS\JobQueueBundle\JMSJobQueueBundle(),
             new JMS\DiExtraBundle\JMSDiExtraBundle(),
             new JMS\AopBundle\JMSAopBundle(),

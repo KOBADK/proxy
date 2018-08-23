@@ -35,7 +35,5 @@ parameters:
     itk_exchange_xml_file_rc: web/test.xml
     itk_exchange_xml_file_dss: web/test2.xml
 
-    redis_dsn: redis://localhost
-
     fos_user_address: admin@etek.dk
     fos_user_sender_name: KOBA

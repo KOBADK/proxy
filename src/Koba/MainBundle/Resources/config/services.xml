@@ -14,8 +14,8 @@
       <argument type="service" id="koba.apikey_repository" />
     </service>
 
-    <service id="koba.cache" class="Koba\MainBundle\Service\RedisCache" public="true">
-      <argument type="service" id="snc_redis.default" />
+    <service id="koba.cache" class="Symfony\Component\Cache\Simple\FilesystemCache" public="true">
+      <argument type="string">'%kernel.cache_dir%'</argument>
     </service>
 
     <service id="koba.calendar_service" class="Koba\MainBundle\Service\CalendarService" public="true">
