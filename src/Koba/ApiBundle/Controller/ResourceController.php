@@ -94,9 +94,7 @@ class ResourceController extends FOSRestController
         );
 
         // Get the resource. We get it here to avoid more injections in the service.
-        $resource = $this->get('doctrine')->getRepository(
-            'ItkExchangeBundle:Resource'
-        )->findOneByMail($resourceMail);
+        $resource = $this->get('itk.exchange_resource_repository')->findOneByMail($resourceMail);
 
         $calendarService = $this->get('koba.calendar_service');
 
