@@ -7,6 +7,7 @@
       <argument type="service" id="itk.exchange_mail_service" />
       <argument type="service" id="itk.exchange_xml_service" />
       <argument type="service" id="itk.exchange_web_service" />
+      <argument type="service" id="doctrine.orm.entity_manager" />
     </service>
 
     <!-- Private service for the bundle -->
@@ -41,7 +42,7 @@
     </service>
 
     <service id="itk.exchange_resource_repository" class="Itk\ExchangeBundle\Repository\ResourceRepository" public="true">
-      <argument type="service" id="Symfony\Bridge\Doctrine\RegistryInterface"></argument>
+      <argument type="service" id="Symfony\Bridge\Doctrine\RegistryInterface" />
     </service>
   </services>
 </container>

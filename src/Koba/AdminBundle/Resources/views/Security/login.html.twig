@@ -11,24 +11,24 @@
         action="{{ path("fos_user_security_check") }}" method="post">
     <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
 
-    <h2 class="form-signin-heading">Please sign in</h2>
+    <h2 class="form-signin-heading">{{ 'security.login.request'|trans({}, 'KobaAdminBundle') }}</h2>
 
     <div class="form-group">
       <label for="username"
-             class="col-sm-2 control-label">{{ 'security.login.username'|trans }}</label>
+             class="col-sm-2 control-label">{{ 'security.login.username'|trans({}, 'KobaAdminBundle') }}</label>
 
       <div class="col-sm-10">
-        <input type="text" placeholder="Username" class="form-control"
+        <input type="text" placeholder="{{ 'security.login.username'|trans({}, 'KobaAdminBundle') }}" class="form-control"
                id="username" name="_username" value="{{ last_username }}"
                required="required"/>
       </div>
     </div>
     <div class="form-group">
       <label for="password"
-             class="col-sm-2 control-label">{{ 'security.login.password'|trans }}</label>
+             class="col-sm-2 control-label">{{ 'security.login.password'|trans({}, 'KobaAdminBundle') }}</label>
 
       <div class="col-sm-10">
-        <input type="password" placeholder="Password" class="form-control"
+        <input type="password" placeholder="{{ 'security.login.password'|trans({}, 'KobaAdminBundle') }}" class="form-control"
                id="password" name="_password" required="required"/>
       </div>
     </div>

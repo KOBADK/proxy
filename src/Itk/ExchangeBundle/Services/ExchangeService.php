@@ -10,6 +10,7 @@
 
 namespace Itk\ExchangeBundle\Services;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Itk\ExchangeBundle\Entity\Resource;
 use Itk\ExchangeBundle\Repository\ResourceRepository;
 use Itk\ExchangeBundle\Entity\Booking;
@@ -35,13 +36,15 @@ class ExchangeService
         ResourceRepository $resourceRepository,
         ExchangeMailService $exchangeMailService,
         ExchangeXMLService $exchangeXMLService,
-        ExchangeWebService $exchangeWebService
+        ExchangeWebService $exchangeWebService,
+        EntityManagerInterface $entityManager
     ) {
         $this->exchangeADService = $exchangeADService;
         $this->resourceRepository = $resourceRepository;
         $this->exchangeMailService = $exchangeMailService;
         $this->exchangeXMLService = $exchangeXMLService;
         $this->exchangeWebService = $exchangeWebService;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -74,7 +77,6 @@ class ExchangeService
     public function refreshResources()
     {
         $resources = $this->exchangeADService->getResources();
-        $em = $this->resourceRepository->getEntityManager();
 
         // @TODO: Remove resources that are not in the list from AD.
 
@@ -89,7 +91,7 @@ class ExchangeService
             }
         }
 
-        $em->flush();
+        $this->entityManager->flush();
     }
 
     /**
@@ -100,13 +102,12 @@ class ExchangeService
      * @param $alias
      *   Alias
      * @throws \Doctrine\ORM\NonUniqueResultException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function setResourceAlias($resourceMail, $alias)
     {
         $resource = $this->resourceRepository->findOneByMail($resourceMail);
         $resource->setAlias($alias);
-        $this->resourceRepository->getEntityManager()->flush();
+        $this->entityManager->flush();
     }
 
     /**
