@@ -85,7 +85,7 @@ class ExchangeService
 
             if (!$resource) {
                 $resource = new Resource($key, $value);
-                $em->persist($resource);
+                $this->entityManager->persist($resource);
             } else {
                 $resource->setName($value);
             }
