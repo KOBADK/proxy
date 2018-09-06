@@ -48,6 +48,9 @@ angular.module('KobaAdminApp').config(['$routeProvider', '$locationProvider', '$
         templateUrl: 'app/pages/resources/resources.html',
         controller: 'ResourceController'
       })
+      .when('/jobs', {
+        templateUrl: 'app/pages/jobs/jobs.html'
+      })
       .otherwise({
         redirectTo: '/apikeys'
       });
