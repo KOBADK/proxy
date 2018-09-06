@@ -55,6 +55,8 @@ angular.module('KobaAdminApp').config(['$routeProvider', '$locationProvider', '$
         redirectTo: '/apikeys'
       });
 
+    $locationProvider.hashPrefix('');
+
     $httpProvider.interceptors.push('authInterceptor');
   }
 ]);
