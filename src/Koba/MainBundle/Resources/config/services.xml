@@ -6,8 +6,7 @@
       <argument type="string" id="interval">'+10 minutes'</argument>
     </service>
 
-    <service id="koba.apikey_repository" class="Koba\MainBundle\Repository\ApiKeyRepository" public="true">
-      <argument type="service" id="Symfony\Bridge\Doctrine\RegistryInterface"></argument>
+    <service id="koba.apikey_repository" class="Koba\MainBundle\Repository\ApiKeyRepository" public="true" autowire="true">
     </service>
 
     <service id="koba.apikey_service" class="Koba\MainBundle\Service\ApiKeyService" public="true">
