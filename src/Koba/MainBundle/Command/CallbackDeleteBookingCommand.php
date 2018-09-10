@@ -75,13 +75,8 @@ class CallbackDeleteBookingCommand extends ContainerAwareCommand
         }
 
         $request = $client->post(
-            $callback.'?_format=json',
-            [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                ],
-                'form_params' => [
+            $callback.'?_format=json', [
+                'json' => [
                     'action' => 'DELETE',
                     'koba_job_id' => $input->getOption('jms-job-id'),
                     'status' => $status,
