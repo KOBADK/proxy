@@ -68,22 +68,22 @@ class CallbackBookingCommand extends ContainerAwareCommand
 
         $client = new Client();
 
-        $request = $client->post(
-            $callback, [
-                'query' => [
-                    '_format' => 'json'
-                ],
-                'json' => [
-                    'action' => 'REQUEST',
-                    'koba_job_id' => $input->getOption('jms-job-id'),
-                    'status' => $booking->getStatus(),
-                    'client_booking_id' => $booking->getClientBookingId(),
-                ]
-            ]
-        );
-
         try {
-            $request->send();
+          $response = $client->post(
+            $callback, [
+              'query' => [
+                '_format' => 'json'
+              ],
+              'json' => [
+                'action' => 'REQUEST',
+                'koba_job_id' => $input->getOption('jms-job-id'),
+                'status' => $booking->getStatus(),
+                'client_booking_id' => $booking->getClientBookingId(),
+              ]
+            ]
+          );
+
+          $output->writeln($response->getStatusCode());
         } catch (\Exception $e) {
             $output->writeln($e->getMessage().' ('.$e->getCode().')');
             throw $e;

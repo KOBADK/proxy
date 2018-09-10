@@ -74,22 +74,22 @@ class CallbackDeleteBookingCommand extends ContainerAwareCommand
             $status = 'NOT CANCELLED';
         }
 
-        $request = $client->post(
-            $callback, [
-                'query' => [
-                    '_format' => 'json'
-                ],
-                'json' => [
-                    'action' => 'DELETE',
-                    'koba_job_id' => $input->getOption('jms-job-id'),
-                    'status' => $status,
-                    'client_booking_id' => $booking->getClientBookingId(),
-                ],
-            ]
-        );
-
         try {
-            $request->send();
+          $response = $client->post(
+            $callback, [
+              'query' => [
+                '_format' => 'json'
+              ],
+              'json' => [
+                'action' => 'DELETE',
+                'koba_job_id' => $input->getOption('jms-job-id'),
+                'status' => $status,
+                'client_booking_id' => $booking->getClientBookingId(),
+              ],
+            ]
+          );
+
+          $output->writeln($response->getStatusCode());
         } catch (\Exception $e) {
             $output->writeln($e->getMessage().' ('.$e->getCode().')');
             throw $e;
