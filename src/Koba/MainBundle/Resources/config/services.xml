@@ -3,7 +3,7 @@
   <services>
     <!-- Override JMS job queue retry scheduler -->
     <service id="jms_job_queue.retry_scheduler" class="Koba\MainBundle\Retry\FixedIntervalRetryScheduler">
-      <argument type="string" id="interval">'+10 minutes'</argument>
+      <argument type="string" id="interval">+10 minutes</argument>
     </service>
 
     <service id="koba.apikey_service" class="Koba\MainBundle\Service\ApiKeyService" public="true">
