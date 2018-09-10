@@ -20,6 +20,9 @@ class FixedIntervalRetryScheduler implements RetryScheduler
 
     public function scheduleNextRetry(Job $originalJob)
     {
-        return new \DateTime($this->interval);
+        $nextTime = new \DateTime();
+        $nextTime->modify($this->interval);
+
+        return $nextTime;
     }
 }
