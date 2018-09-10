@@ -75,7 +75,7 @@ class CallbackBookingCommand extends ContainerAwareCommand
                     'Content-Type' => 'application/json',
                     'Accept' => 'application/json',
                 ],
-                'body' => [
+                'form_params' => [
                     'action' => 'REQUEST',
                     'koba_job_id' => $input->getOption('jms-job-id'),
                     'status' => $booking->getStatus(),
