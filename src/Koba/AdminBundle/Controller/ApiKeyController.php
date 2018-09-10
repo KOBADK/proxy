@@ -24,7 +24,7 @@ use FOS\RestBundle\Controller\Annotations as FOSRest;
  */
 class ApiKeyController extends Controller
 {
-    /**
+  /**
      * Get all ApiKeys.
      *
      * @FOSRest\Get("")
@@ -34,7 +34,7 @@ class ApiKeyController extends Controller
      */
     public function getApiKeys()
     {
-        return $this->get('Koba\MainBundle\Repository\ApiKeyRepository')->findAll();
+        return $this->container->get('doctrine')->getRepository(ApiKey::class)->findAll();
     }
 
     /**
@@ -47,11 +47,10 @@ class ApiKeyController extends Controller
      *
      * @return ApiKey
      *   The ApiKey.
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getApiKey($key)
     {
-        $apiKeyEntity = $this->get('Koba\MainBundle\Repository\ApiKeyRepository')->findOneByApiKey(
+        $apiKeyEntity = $this->container->get('doctrine')->getRepository(ApiKey::class)->findOneByApiKey(
             $key
         );
 
@@ -69,7 +68,6 @@ class ApiKeyController extends Controller
      *
      * @param Request $request
      *   The Http Request.
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function postApiKey(Request $request)
     {
@@ -81,7 +79,7 @@ class ApiKeyController extends Controller
         $postName = $content->name;
 
         // Try to get the apikey, check for duplicate.
-        $apiKeyEntity = $this->get('Koba\MainBundle\Repository\ApiKeyRepository')->findOneByApiKey(
+        $apiKeyEntity = $this->container->get('doctrine')->getRepository(ApiKey::class)->findOneByApiKey(
             $postApiKey
         );
 
@@ -115,11 +113,10 @@ class ApiKeyController extends Controller
      *
      * @return Response
      *   The Http Response.
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function putApiKey(Request $request, $key)
     {
-        $apiKeyEntity = $this->get('Koba\MainBundle\Repository\ApiKeyRepository')->findOneByApiKey(
+        $apiKeyEntity = $this->container->get('doctrine')->getRepository(ApiKey::class)->findOneByApiKey(
             $key
         );
 
@@ -154,11 +151,10 @@ class ApiKeyController extends Controller
      *
      * @param $key
      *   The id of the ApiKey to delete
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function deleteApiKey($key)
     {
-        $apiKeyEntity = $this->get('Koba\MainBundle\Repository\ApiKeyRepository')->findOneByApiKey(
+        $apiKeyEntity = $this->container->get('doctrine')->getRepository(ApiKey::class)->findOneByApiKey(
             $key
         );
 

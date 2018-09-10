@@ -6,11 +6,8 @@
       <argument type="string" id="interval">'+10 minutes'</argument>
     </service>
 
-    <service id="Koba\MainBundle\Repository\ApiKeyRepository" class="Koba\MainBundle\Repository\ApiKeyRepository" public="true" autowire="true">
-    </service>
-
     <service id="koba.apikey_service" class="Koba\MainBundle\Service\ApiKeyService" public="true">
-      <argument type="service" id="Koba\MainBundle\Repository\ApiKeyRepository" />
+      <argument type="service" id="doctrine.orm.entity_manager" />
     </service>
 
     <service id="koba.cache" class="Symfony\Component\Cache\Simple\FilesystemCache" public="true">

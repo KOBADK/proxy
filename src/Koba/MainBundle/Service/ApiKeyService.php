@@ -6,7 +6,7 @@
 
 namespace Koba\MainBundle\Service;
 
-use Koba\MainBundle\Repository\ApiKeyRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Koba\MainBundle\Entity\ApiKey;
 
@@ -21,13 +21,10 @@ class ApiKeyService
 
     /**
      * Constructor.
-     *
-     * @param ApiKeyRepository $apiKeyRepository
-     *   The EntityManager.
      */
-    public function __construct(ApiKeyRepository $apiKeyRepository)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->apiKeyRepository = $apiKeyRepository;
+        $this->apiKeyRepository = $entityManager->getRepository(ApiKey::class);
     }
 
     /**
@@ -38,7 +35,6 @@ class ApiKeyService
      *
      * @return mixed|ApiKey
      *   The found ApiKey.
-     * @throws \Doctrine\ORM\NonUniqueResultException
      * @throws AccessDeniedException
      */
     public function getApiKey($apiKey)
