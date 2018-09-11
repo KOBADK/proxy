@@ -196,13 +196,8 @@ class ExchangeMailService
      */
     private function createCalendar($method)
     {
-        // Create timezone.
-        $tz = $this->ics->createTimezone();
-        $tz->setTzid('UTC')
-            ->setProperty('X-LIC-LOCATION', $tz->getTzid());
-
         // Create calender.
-        $calendar = $this->ics->createCalendar($tz);
+        $calendar = $this->ics->createCalendar(null, true);
 
         // Set request method.
         $calendar->setMethod(strtoupper($method));
