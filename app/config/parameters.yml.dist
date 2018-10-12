@@ -37,3 +37,5 @@ parameters:
 
     fos_user_address: admin@etek.dk
     fos_user_sender_name: KOBA
+
+    jms_job_queue_retry_scheduler_interval: '+10 minutes'
