@@ -101,6 +101,7 @@ class ExchangeMailService {
     // Set event information.
     $event->setStartDate($startDate)
       ->setEndDate($endDate)
+      ->setAttendee($booking->getResource()->getMail())
       ->setName($booking->getSubject())
       ->setDescription($description)
       ->setLocation($booking->getResource()->getName());
