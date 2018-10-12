@@ -5,6 +5,7 @@
 * Upgrade to Symfony 3.4 and php 7.2.
 * Switch from fork of jms job queue bundle back to master.
 * Added Doctrine Migrations.
+* Added attendee to booking to fix issue with outlook365 stmp.
 
 ## v1.1.11
 
