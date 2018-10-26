@@ -2,6 +2,10 @@
 
 # In development
 
+# 1.2.1
+
+* Fixed issue with bookings not being sent via outlook smtp server, due to missing Attendee.
+
 # v1.2.0
 
 * Changed how bookings are matched. Allow non-matching IcalUid, if both subject and clientBookingId match.

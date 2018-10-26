@@ -145,6 +145,7 @@ class ExchangeMailService {
     $event = $calendar->newEvent();
     $event->setStartDate($startDate)
       ->setEndDate($endDate)
+      ->setAttendee($booking->getResource()->getMail())
       ->setStatus('CANCELLED');
 
     // Set event information.
