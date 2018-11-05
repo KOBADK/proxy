@@ -6,269 +6,283 @@
 
 namespace Koba\ApiBundle\Controller;
 
-use Koba\MainBundle\Exceptions\NotImplementedException;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use Itk\ExchangeBundle\Entity\Booking;
 use JMS\JobQueueBundle\Entity\Job;
 
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
-use Symfony\Component\Serializer\Serializer;
-
 /**
  * @Route("/bookings")
  */
-class BookingController extends FOSRestController {
-  /**
-   * Post a booking.
-   *
-   * @FOSRest\Post("")
-   *
-   * @param Request $request
-   *   The request object.
-   *
-   *   The body should consist of
-   *       {
-   *         "subject": -,
-   *         "description": -,
-   *         "name": -,
-   *         "mail": -,
-   *         "phone": -,
-   *         "start_time": -,
-   *         "end_time: -,
-   *         "resource": -,
-   *         "client_booking_id": -,
-   *         "group_id"; -,
-   *         "apikey": -
-   *       }
-   *
-   * @return \Symfony\Component\HttpFoundation\Response
-   *   The response object.
-   */
-  public function postBooking(Request $request) {
-    $body = $request->getContent();
+class BookingController extends FOSRestController
+{
+    /**
+     * Post a booking.
+     *
+     * @FOSRest\Post("")
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *   The request object.
+     *
+     *   The body should consist of
+     *       {
+     *         "subject": -,
+     *         "description": -,
+     *         "name": -,
+     *         "mail": -,
+     *         "phone": -,
+     *         "start_time": -,
+     *         "end_time: -,
+     *         "resource": -,
+     *         "client_booking_id": -,
+     *         "group_id"; -,
+     *         "apikey": -
+     *       }
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *   The response object.
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function postBooking(Request $request)
+    {
+        $body = $request->getContent();
 
-    if (!isset($body)) {
-      throw new NotFoundHttpException('resource not set');
-    }
-    $bodyObj = json_decode($body);
+        if (!isset($body)) {
+            throw new NotFoundHttpException('resource not set');
+        }
+        $bodyObj = json_decode($body);
 
-    $apiKeyService = $this->get('koba.apikey_service');
+        $apiKeyService = $this->get('koba.apikey_service');
 
-    // Confirm the apikey is accepted.
-    $apiKey = $apiKeyService->getApiKey($bodyObj->apikey);
+        // Confirm the apikey is accepted.
+        $apiKey = $apiKeyService->getApiKey($bodyObj->apikey);
 
-    // Get the resource. We get it here to avoid more injections in the service.
-    $resource = $this->get('doctrine')->getRepository('ItkExchangeBundle:Resource')->findOneByMail($bodyObj->resource);
+        // Get the resource. We get it here to avoid more injections in the service.
+        $resource = $this->get('itk.exchange_resource_repository')->findOneByMail($bodyObj->resource);
 
-    if (!isset($resource)) {
-      throw new NotFoundHttpException('resource not found');
-    }
+        if (!isset($resource)) {
+            throw new NotFoundHttpException('resource not found');
+        }
 
-    // Check Access.
-    // @TODO: Split into two functions. checkAccess() & getConfiguration()
-    $apiKeyService->getResourceConfiguration($apiKey, $bodyObj->group_id, $resource->getMail());
+        // Check Access.
+        // @TODO: Split into two functions. checkAccess() & getConfiguration()
+        $apiKeyService->getResourceConfiguration(
+            $apiKey,
+            $bodyObj->group_id,
+            $resource->getMail()
+        );
 
-    // Create a test booking.
-    $booking = new Booking();
-    $booking->setSubject($bodyObj->subject);
-    $booking->setDescription($bodyObj->description);
-    $booking->setName($bodyObj->name);
-    $booking->setMail($bodyObj->mail);
-    $booking->setPhone($bodyObj->phone);
-    $booking->setStartTime($bodyObj->start_time);
-    $booking->setEndTime($bodyObj->end_time);
-    $booking->setResource($resource);
-    $booking->setApiKey($apiKey->getApiKey());
-    $booking->setClientBookingId($bodyObj->client_booking_id);
-    $booking->setStatusRequest();
+        // Create a test booking.
+        $booking = new Booking();
+        $booking->setSubject($bodyObj->subject);
+        $booking->setDescription($bodyObj->description);
+        $booking->setName($bodyObj->name);
+        $booking->setMail($bodyObj->mail);
+        $booking->setPhone($bodyObj->phone);
+        $booking->setStartTime($bodyObj->start_time);
+        $booking->setEndTime($bodyObj->end_time);
+        $booking->setResource($resource);
+        $booking->setApiKey($apiKey->getApiKey());
+        $booking->setClientBookingId($bodyObj->client_booking_id);
+        $booking->setStatusRequest();
 
-    $em = $this->container->get('doctrine')->getManager();
+        $em = $this->container->get('doctrine')->getManager();
 
-    $em->persist($booking);
-    $em->flush();
+        $em->persist($booking);
+        $em->flush();
 
-    // Create job queue items.
-    // 1. send booking
-    // 2. confirm booking
-    // 3. send reply to callback
-    $sendJob = new Job('koba:booking:send', array('id' => $booking->getId()));
-    $sendJob->addRelatedEntity($booking);
-    $sendJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\ExponentialIntervalStrategy');
-    $sendJob->setRetryStrategyConfig(
-      array(
-        'base' => 2,
-        'unit' => 'minute',
-      )
-    );
-    $sendJob->setMaxRetries(5);
+        // Create job queue items.
+        // 1. send booking
+        // 2. confirm booking
+        // 3. send reply to callback
+        $sendJob = new Job(
+            'koba:booking:send', array('id' => $booking->getId())
+        );
+        $sendJob->addRelatedEntity($booking);
+        $sendJob->setMaxRetries(5);
 
-    $confirmJob = new Job('koba:booking:confirm', array('id' => $booking->getId()));
-    $confirmJob->addRelatedEntity($booking);
-    $confirmJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\ExponentialIntervalStrategy');
-    $confirmJob->setRetryStrategyConfig(
-      array(
-        'base' => 2,
-        'unit' => 'minute',
-      )
-    );
-    // Max retries for the confirm jobs should be 2 or more, since the last
-    // attempt always results in the confirm job concluding that the request
-    // was not accepted.
-    $confirmJob->setMaxRetries(6);
+        $confirmJob = new Job(
+            'koba:booking:confirm',
+            array('id' => $booking->getId())
+        );
+        $confirmJob->addRelatedEntity($booking);
+        // Max retries for the confirm jobs should be 2 or more, since the last
+        // attempt always results in the confirm job concluding that the request
+        // was not accepted.
+        $confirmJob->setMaxRetries(6);
 
-    $callbackJob = new Job('koba:booking:callback', array('id' => $booking->getId()));
-    $callbackJob->addRelatedEntity($booking);
-    $callbackJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\ExponentialIntervalStrategy');
-    $callbackJob->setRetryStrategyConfig(
-      array(
-        'base' => 2,
-        'unit' => 'minute',
-      )
-    );
-    $callbackJob->setMaxRetries(5);
+        $callbackJob = new Job(
+            'koba:booking:callback',
+            array('id' => $booking->getId())
+        );
+        $callbackJob->addRelatedEntity($booking);
 
-    $confirmJob->addDependency($sendJob);
-    $callbackJob->addDependency($confirmJob);
+        $callbackJob->setMaxRetries(5);
 
-    $em->persist($sendJob);
-    $em->persist($confirmJob);
-    $em->persist($callbackJob);
+        $confirmJob->addDependency($sendJob);
+        $callbackJob->addDependency($confirmJob);
 
-    $em->flush();
+        $em->persist($sendJob);
+        $em->persist($confirmJob);
+        $em->persist($callbackJob);
 
-    // Return response to the request (created).
-    return new Response('Request received.', 201);
-  }
+        $em->flush();
 
-  /**
-   * Delete a booking.
-   *
-   * @FOSRest\Delete("/group/{group}/apikey/{apiKey}/booking/{clientBookingId}")
-   *
-   * @param $group
-   *   Group.
-   * @param $apiKey
-   *   ApiKey.
-   * @param $clientBookingId
-   *   The client booking id. Used for reference between client and exchange booking.
-   *
-   * @return Response
-   */
-  public function deleteBooking($group, $apiKey, $clientBookingId) {
-    $apiKeyService = $this->get('koba.apikey_service');
-
-    // Confirm the apikey is accepted.
-    $apiKey = $apiKeyService->getApiKey($apiKey);
-
-    // Get the resource. We get it here to avoid more injections in the service.
-    $booking = $this->get('doctrine')->getRepository('ItkExchangeBundle:Booking')->findOneByClientBookingId($clientBookingId);
-
-    if (!isset($booking)) {
-      throw new NotFoundHttpException('booking not found');
+        // Return response to the request (created).
+        return new Response('Request received.', 201);
     }
 
-    // Check Access.
-    // @TODO: Split into two functions. checkAccess() & getConfiguration()
-    $apiKeyService->getResourceConfiguration($apiKey, $group, $booking->getResource()->getMail());
+    /**
+     * Delete a booking.
+     *
+     * @FOSRest\Delete("/group/{group}/apikey/{apiKey}/booking/{clientBookingId}")
+     *
+     * @param $group
+     *   Group.
+     * @param $apiKey
+     *   ApiKey.
+     * @param $clientBookingId
+     *   The client booking id. Used for reference between client and exchange booking.
+     *
+     * @return Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function deleteBooking($group, $apiKey, $clientBookingId)
+    {
+        $apiKeyService = $this->get('koba.apikey_service');
 
-    $doctrine = $this->get('doctrine');
-    $em = $doctrine->getManager();
+        // Confirm the apikey is accepted.
+        $apiKey = $apiKeyService->getApiKey($apiKey);
 
-    // Create job queue items.
-    // 1. delete booking
-    // 2. confirm delete
-    // 3. callback
-    $deleteJob = new Job('koba:booking:delete', array('id' => $booking->getId()));
-    $deleteJob->addRelatedEntity($booking);
-    $deleteJob->setMaxRetries(5);
+        // Get the resource. We get it here to avoid more injections in the service.
+        $booking = $this->get('doctrine')->getRepository(
+            'ItkExchangeBundle:Booking'
+        )->findOneByClientBookingId($clientBookingId);
 
-    $confirmJob = new Job('koba:booking:delete:confirm', array('id' => $booking->getId()));
-    $confirmJob->addRelatedEntity($booking);
-    $confirmJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\FixedIntervalStrategy');
-    $confirmJob->setRetryStrategyConfig(array('interval' => '+15 seconds'));
-    // Max retries for the confirm jobs should be 2 or more, since the last
-    // attempt always results in the confirm job concluding that the request
-    // was not accepted.
-    $confirmJob->setMaxRetries(6);
+        if (!isset($booking)) {
+            throw new NotFoundHttpException('booking not found');
+        }
 
-    $callbackJob = new Job('koba:booking:delete:callback', array('id' => $booking->getId()));
-    $callbackJob->addRelatedEntity($booking);
-    $callbackJob->setRetryStrategy('JMS\\JobQueueBundle\\Entity\\Retry\\FixedIntervalStrategy');
-    $callbackJob->setRetryStrategyConfig(array('interval' => '+15 seconds'));
-    $callbackJob->setMaxRetries(5);
+        // Check Access.
+        // @TODO: Split into two functions. checkAccess() & getConfiguration()
+        $apiKeyService->getResourceConfiguration(
+            $apiKey,
+            $group,
+            $booking->getResource()->getMail()
+        );
 
-    $confirmJob->addDependency($deleteJob);
-    $callbackJob->addDependency($confirmJob);
+        $doctrine = $this->get('doctrine');
+        $em = $doctrine->getManager();
 
-    $em->persist($deleteJob);
-    $em->persist($confirmJob);
-    $em->persist($callbackJob);
+        // Create job queue items.
+        // 1. delete booking
+        // 2. confirm delete
+        // 3. callback
+        $deleteJob = new Job(
+            'koba:booking:delete',
+            array('id' => $booking->getId())
+        );
+        $deleteJob->addRelatedEntity($booking);
+        $deleteJob->setMaxRetries(5);
 
-    $em->flush();
+        $confirmJob = new Job(
+            'koba:booking:delete:confirm',
+            array('id' => $booking->getId())
+        );
+        $confirmJob->addRelatedEntity($booking);
 
-    // Return response to the request (accepted).
-    return new Response('Request received.', 202);
-  }
+        // Max retries for the confirm jobs should be 2 or more, since the last
+        // attempt always results in the confirm job concluding that the request
+        // was not accepted.
+        $confirmJob->setMaxRetries(6);
 
-  /**
-   * Confirm a booking.
-   *
-   * @FOSRest\Get("/confirm/group/{group}/apikey/{apiKey}/booking/{clientBookingId}")
-   *
-   * @param $group
-   *   Group.
-   * @param $apiKey
-   *   ApiKey.
-   * @param $clientBookingId
-   *   The client booking id. Used for reference between client and exchange booking.
-   *
-   * @return Response
-   */
-  public function confirmBooking($group, $apiKey, $clientBookingId) {
-    $em = $this->container->get('doctrine')->getManager();
-    $apiKeyService = $this->get('koba.apikey_service');
+        $callbackJob = new Job(
+            'koba:booking:delete:callback',
+            array('id' => $booking->getId())
+        );
+        $callbackJob->addRelatedEntity($booking);
 
-    // Confirm the apikey is accepted.
-    $apiKey = $apiKeyService->getApiKey($apiKey);
+        $callbackJob->setMaxRetries(5);
 
-    // Get the resource. We get it here to avoid more injections in the service.
-    $booking = $this->get('doctrine')->getRepository('ItkExchangeBundle:Booking')->findOneByClientBookingId($clientBookingId);
+        $confirmJob->addDependency($deleteJob);
+        $callbackJob->addDependency($confirmJob);
 
-    if (!isset($booking)) {
-      throw new NotFoundHttpException('booking not found');
+        $em->persist($deleteJob);
+        $em->persist($confirmJob);
+        $em->persist($callbackJob);
+
+        $em->flush();
+
+        // Return response to the request (accepted).
+        return new Response('Request received.', 202);
     }
 
-    // Check Access.
-    // @TODO: Split into two functions. checkAccess() & getConfiguration()
-    $apiKeyService->getResourceConfiguration($apiKey, $group, $booking->getResource()->getMail());
+    /**
+     * Confirm a booking.
+     *
+     * @FOSRest\Get("/confirm/group/{group}/apikey/{apiKey}/booking/{clientBookingId}")
+     *
+     * @param $group
+     *   Group.
+     * @param $apiKey
+     *   ApiKey.
+     * @param $clientBookingId
+     *   The client booking id. Used for reference between client and exchange booking.
+     *
+     * @return Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function confirmBooking($group, $apiKey, $clientBookingId)
+    {
+        $em = $this->container->get('doctrine')->getManager();
+        $apiKeyService = $this->get('koba.apikey_service');
 
-    // Try to confirm booking.
-    $confirmJob = new Job('koba:booking:confirm', array('id' => $booking->getId()));
-    $confirmJob->addRelatedEntity($booking);
+        // Confirm the apikey is accepted.
+        $apiKey = $apiKeyService->getApiKey($apiKey);
 
-    // Perform callback with result.
-    $callbackJob = new Job('koba:booking:callback', array('id' => $booking->getId()));
-    $callbackJob->addRelatedEntity($booking);
+        // Get the resource. We get it here to avoid more injections in the service.
+        $booking = $this->get('doctrine')->getRepository(
+            'ItkExchangeBundle:Booking'
+        )->findOneByClientBookingId($clientBookingId);
 
-    $callbackJob->addDependency($confirmJob);
+        if (!isset($booking)) {
+            throw new NotFoundHttpException('booking not found');
+        }
 
-    $em->persist($confirmJob);
-    $em->persist($callbackJob);
+        // Check Access.
+        // @TODO: Split into two functions. checkAccess() & getConfiguration()
+        $apiKeyService->getResourceConfiguration(
+            $apiKey,
+            $group,
+            $booking->getResource()->getMail()
+        );
 
-    $em->flush();
+        // Try to confirm booking.
+        $confirmJob = new Job(
+            'koba:booking:confirm',
+            array('id' => $booking->getId())
+        );
+        $confirmJob->addRelatedEntity($booking);
 
-    // Return response to the request (accepted).
-    return new Response('Request received.', 202);
-  }
+        // Perform callback with result.
+        $callbackJob = new Job(
+            'koba:booking:callback',
+            array('id' => $booking->getId())
+        );
+        $callbackJob->addRelatedEntity($booking);
+
+        $callbackJob->addDependency($confirmJob);
+
+        $em->persist($confirmJob);
+        $em->persist($callbackJob);
+
+        $em->flush();
+
+        // Return response to the request (accepted).
+        return new Response('Request received.', 202);
+    }
 }

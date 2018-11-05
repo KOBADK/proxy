@@ -1,0 +1,5 @@
+security:
+    login:
+        request: Log venligst ind
+        username: Brugernavn
+        password: Kodeord

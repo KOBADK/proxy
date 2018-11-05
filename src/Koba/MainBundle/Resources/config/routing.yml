@@ -1,3 +1,3 @@
 controllers:
-  resource: "@KobaMainBundle/Controller"
-  type: annotation
+    resource: "@KobaMainBundle/Controller"
+    type: annotation

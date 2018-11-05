@@ -19,18 +19,25 @@ security:
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
+            logout_on_user_change: true
 
         api:
             pattern: ^/api
             anonymous: true
+            logout_on_user_change: true
 
         admin:
             pattern: ^/
             form_login:
                 provider: fos_userbundle
-                csrf_provider: form.csrf_provider
             logout:       true
             anonymous:    true
+            logout_on_user_change: true
+            remember_me:
+                secret: '%secret%'
+                lifetime: 604800 # 1 week in seconds
+                path: /
+                user_provider: fos_userbundle
 
     access_control:
         - { path: ^/api, role: IS_AUTHENTICATED_ANONYMOUSLY }

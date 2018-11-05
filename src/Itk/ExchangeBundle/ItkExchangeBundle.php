@@ -12,6 +12,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  * Class ItkExchangeBundle
  * @package Itk\ExchangeBundle
  */
-class ItkExchangeBundle extends Bundle {
-
+class ItkExchangeBundle extends Bundle
+{
 }

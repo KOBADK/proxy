@@ -12,6 +12,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  * Class KobaMainBundle
  * @package Koba\MainBundle
  */
-class KobaMainBundle extends Bundle {
-
+class KobaMainBundle extends Bundle
+{
 }

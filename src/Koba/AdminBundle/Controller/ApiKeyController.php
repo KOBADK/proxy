@@ -7,7 +7,7 @@
 namespace Koba\AdminBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Koba\MainBundle\Entity\ApiKey;
@@ -22,131 +22,148 @@ use FOS\RestBundle\Controller\Annotations as FOSRest;
  *
  * @package Koba\AdminBundle\Controller
  */
-class ApiKeyController extends Controller {
+class ApiKeyController extends Controller
+{
   /**
-   * Get all ApiKeys.
-   *
-   * @FOSRest\Get("")
-   *
-   * @return array
-   *   Array of ApiKeys.
-   */
-  public function getApiKeys() {
-    return $this->get('koba.apikey_repository')->findAll();
-  }
-
-  /**
-   * Get ApiKey by $key.
-   *
-   * @FOSRest\Get("/{key}")
-   *
-   * @param string $key
-   *   The apikey string.
-   *
-   * @return ApiKey
-   *   The ApiKey.
-   */
-  public function getApiKey($key) {
-    $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey($key);
-
-    if ($apiKeyEntity === null) {
-      throw new NotFoundHttpException('apikey not found', null, 404);
+     * Get all ApiKeys.
+     *
+     * @FOSRest\Get("")
+     *
+     * @return array
+     *   Array of ApiKeys.
+     */
+    public function getApiKeys()
+    {
+        return $this->container->get('doctrine')->getRepository(ApiKey::class)->findAll();
     }
 
-    return $apiKeyEntity;
-  }
+    /**
+     * Get ApiKey by $key.
+     *
+     * @FOSRest\Get("/{key}")
+     *
+     * @param string $key
+     *   The apikey string.
+     *
+     * @return ApiKey
+     *   The ApiKey.
+     */
+    public function getApiKey($key)
+    {
+        $apiKeyEntity = $this->container->get('doctrine')->getRepository(ApiKey::class)->findOneByApiKey(
+            $key
+        );
 
-  /**
-   * Save a new ApiKey.
-   *
-   * @FOSRest\Post("")
-   *
-   * @param Request $request
-   *   The Http Request.
-   */
-  public function postApiKey(Request $request) {
-    $content = json_decode($request->getContent());
+        if ($apiKeyEntity === null) {
+            throw new NotFoundHttpException('apikey not found', null, 404);
+        }
 
-    // Get POST parameters.
-    $postApiKey = $content->api_key;
-    $postConfiguration = $content->configuration;
-    $postName = $content->name;
-
-    // Try to get the apikey, check for duplicate.
-    $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey($postApiKey);
-
-    if ($apiKeyEntity) {
-      throw new ConflictHttpException('api key already exists', null, 409);
+        return $apiKeyEntity;
     }
 
-    $manager = $this->getDoctrine()->getManager();
+    /**
+     * Save a new ApiKey.
+     *
+     * @FOSRest\Post("")
+     *
+     * @param Request $request
+     *   The Http Request.
+     */
+    public function postApiKey(Request $request)
+    {
+        $content = json_decode($request->getContent());
 
-    // Save the ApiKey entity.
-    $apiKey = new ApiKey();
-    $apiKey->setApiKey($postApiKey);
-    $apiKey->setName($postName);
-    $apiKey->setConfiguration($postConfiguration);
-    $manager->persist($apiKey);
+        // Get POST parameters.
+        $postApiKey = $content->api_key;
+        $postConfiguration = $content->configuration;
+        $postName = $content->name;
 
-    $manager->flush();
-  }
+        // Try to get the apikey, check for duplicate.
+        $apiKeyEntity = $this->container->get('doctrine')->getRepository(ApiKey::class)->findOneByApiKey(
+            $postApiKey
+        );
 
-  /**
-   * Update an ApiKey.
-   *
-   * @FOSRest\Put("/{key}")
-   *
-   * @param Request $request
-   *   The Http Request.
-   * @param $key
-   *   Key of the ApiKey to update.
-   *
-   * @return Response
-   *   The Http Response.
-   */
-  public function putApiKey(Request $request, $key) {
-    $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey($key);
+        if ($apiKeyEntity) {
+            throw new ConflictHttpException(
+                'api key already exists', null, 409
+            );
+        }
 
-    if (!$apiKeyEntity) {
-      throw new NotFoundHttpException('api key not found', null, 404);
+        $manager = $this->getDoctrine()->getManager();
+
+        // Save the ApiKey entity.
+        $apiKey = new ApiKey();
+        $apiKey->setApiKey($postApiKey);
+        $apiKey->setName($postName);
+        $apiKey->setConfiguration($postConfiguration);
+        $manager->persist($apiKey);
+
+        $manager->flush();
     }
 
-    $content = json_decode($request->getContent());
+    /**
+     * Update an ApiKey.
+     *
+     * @FOSRest\Put("/{key}")
+     *
+     * @param Request $request
+     *   The Http Request.
+     * @param $key
+     *   Key of the ApiKey to update.
+     *
+     * @return Response
+     *   The Http Response.
+     */
+    public function putApiKey(Request $request, $key)
+    {
+        $apiKeyEntity = $this->container->get('doctrine')->getRepository(ApiKey::class)->findOneByApiKey(
+            $key
+        );
 
-    $postConfiguration = $content->configuration;
-    $postName = $content->name;
-    $postCallback = $content->callback;
+        if (!$apiKeyEntity) {
+            throw new NotFoundHttpException('api key not found', null, 404);
+        }
 
-    $manager = $this->getDoctrine()->getManager();
+        $content = json_decode($request->getContent());
 
-    $apiKeyEntity->setConfiguration($postConfiguration);
-    $apiKeyEntity->setName($postName);
-    $apiKeyEntity->setCallback($postCallback);
+        $postConfiguration = $content->configuration;
+        $postName = $content->name;
+        $postCallback = $content->callback;
 
-    $manager->flush();
+        $manager = $this->getDoctrine()->getManager();
 
-    $resp = new Response();
-    $resp->setStatusCode(201);
-    return $resp;
-  }
+        $apiKeyEntity->setConfiguration($postConfiguration);
+        $apiKeyEntity->setName($postName);
+        $apiKeyEntity->setCallback($postCallback);
 
-  /**
-   * Delete an ApiKey.
-   *
-   * @FOSRest\Delete("/{key}")
-   *
-   * @param $key
-   *   The id of the ApiKey to delete
-   */
-  public function deleteApiKey($key) {
-    $apiKeyEntity = $this->get('koba.apikey_repository')->findOneByApiKey($key);
+        $manager->flush();
 
-    if (!$apiKeyEntity) {
-      throw new NotFoundHttpException('api key not found', null, 404);
+        $resp = new Response();
+        $resp->setStatusCode(201);
+
+        return $resp;
     }
 
-    $manager = $this->getDoctrine()->getManager();
-    $manager->remove($apiKeyEntity);
-    $manager->flush();
-  }
+    /**
+     * Delete an ApiKey.
+     *
+     * @FOSRest\Delete("/{key}")
+     *
+     * @param $key
+     *   The id of the ApiKey to delete
+     */
+    public function deleteApiKey($key)
+    {
+        $apiKeyEntity = $this->container->get('doctrine')->getRepository(ApiKey::class)->findOneByApiKey(
+            $key
+        );
+
+        if (!$apiKeyEntity) {
+            throw new NotFoundHttpException('api key not found', null, 404);
+        }
+
+        $manager = $this->getDoctrine()->getManager();
+        $manager->remove($apiKeyEntity);
+        $manager->flush();
+    }
 }

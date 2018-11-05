@@ -1,132 +1,133 @@
 <?php
-/**
- * @file
- * Test controller to debug the services during development.
- *
- * THIS FILE HAVE TO BE REMOVED BEFORE PRODUCTION.
- */
 
 namespace Itk\ExchangeBundle\Controller;
 
+use Doctrine\ORM\NonUniqueResultException;
 use Itk\ExchangeBundle\Entity\Booking;
-use Itk\ExchangeBundle\Entity\Resource;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Route("")
  */
-class IndexController extends Controller {
-  /**
-   * indexAction.
-   *
-   * @Route("/book/{offset}")
-   */
-  public function indexAction($offset = 0) {
-    // Build resource for our test resource.
-    $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
+class IndexController extends Controller
+{
+    /**
+     * indexAction.
+     *
+     * @Route("/book/{offset}")
+     */
+    public function indexAction($offset = 0)
+    {
+        try {
+            // Build resource for our test resource.
+            $resource = $this->get('itk.exchange_resource_repository')
+                ->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
 
-    $userName = $this->container->getParameter('itk_exchange_user_name');
-    $mail = $this->container->getParameter('itk_exchange_user_mail');
+            $userName = $this->container->getParameter(
+                'itk_exchange_user_name'
+            );
+            $mail = $this->container->getParameter('itk_exchange_user_mail');
 
-    // Create a test booking.
-    $booking = new Booking();
-    $booking->setSubject('Møde om nogle vigtige ting.');
-    $booking->setDescription('Her beskriver vi hvad det er vi skal mødes om.');
-    $booking->setName($userName);
-    $booking->setMail($mail);
-    $booking->setStartTime(time() + ($offset * 1800));
-    $booking->setEndTime(time() + 1800 + ($offset  * 1800));
-    $booking->setResource($resource);
-    $booking->setStatusPending();
-    $booking->setClientBookingId('test-client-booking-id');
+            // Create a test booking.
+            $booking = new Booking();
+            $booking->setSubject('Møde om nogle vigtige ting.');
+            $booking->setDescription(
+                'Her beskriver vi hvad det er vi skal mødes om.'
+            );
+            $booking->setName($userName);
+            $booking->setMail($mail);
+            $booking->setStartTime(time() + ($offset * 1800));
+            $booking->setEndTime(time() + 1800 + ($offset * 1800));
+            $booking->setResource($resource);
+            $booking->setStatusPending();
 
-    $provider = $this->get('itk.exchange_mail_service');
-    $provider->createBooking($booking);
+            $provider = $this->get('itk.exchange_mail_service');
+            $provider->createBooking($booking);
 
-    return new JsonResponse(array('msg' => 'booking mail sent'));
-  }
+            return new JsonResponse(array('msg' => 'booking mail sent'));
+        } catch (NonUniqueResultException $e) {
+            return new JsonResponse($e->getMessage(), $e->getCode());
+        }
+    }
 
-  /**
-   * @Route("/cancel")
-   */
-  public function cancelBooking(Request $request) {
+    /**
+     * @Route("/cancel/{uid}")
+     */
+    public function cancelBooking(Request $request, $uid)
+    {
+        try {
+            $resource = $this->get('itk.exchange_resource_repository')
+                ->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
 
-    $uid = $request->query->get('uid');
+            // Create a test booking.
+            $booking = new Booking();
+            $booking->setIcalUid($uid);
+            $booking->setResource($resource);
 
-    $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
+            $provider = $this->get('itk.exchange_mail_service');
+            $provider->cancelBooking($booking);
 
-    // Create a test booking.
-    $booking = new Booking();
-    $booking->setIcalUid($uid);
-    $booking->setResource($resource);
+            return new JsonResponse(array('msg' => 'cancel booking mail sent'));
+        } catch (NonUniqueResultException $e) {
+            return new JsonResponse($e->getMessage(), $e->getCode());
+        }
+    }
 
-    $provider = $this->get('itk.exchange_mail_service');
-    $provider->cancelBooking($booking);
+    /**
+     * @Route("/ad_resources")
+     */
+    public function listResources()
+    {
+        $ad = $this->get('itk.exchange_ad');
 
-    return new JsonResponse(array('msg' => 'booking cancel mail sent'));
-  }
+        return new JsonResponse(array('ad_resources' => $ad->getResources()));
+    }
 
-  /**
-   * @Route("/list_resources")
-   */
-  public function listResources() {
-    $ad = $this->get('itk.exchange_ad');
+    /**
+     * @Route("/bookings")
+     */
+    public function getResources()
+    {
+        try {
+            $resource = $this->get('itk.exchange_resource_repository')
+                ->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
+            $exchange = $this->get('itk.exchange_service');
+            $calendar = $exchange->getResourceBookings(
+                $resource,
+                mktime(0, 0, 0),
+                mktime(23, 59, 29),
+                true
+            );
 
-    return new JsonResponse(array('resources' => $ad->getResources()));
-  }
+            return new JsonResponse(
+                array('bookings' => $calendar->getBookings())
+            );
+        } catch (NonUniqueResultException $e) {
+            return new JsonResponse($e->getMessage(), $e->getCode());
+        }
+    }
 
-  /**
-   * @Route("/list_bookings")
-   */
-  public function getResources() {
-    $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
-    $exchange = $this->get('itk.exchange_service');
-    $calendar = $exchange->getResourceBookings($resource, mktime(0, 0, 0), mktime(23, 59, 29), TRUE);
+    /**
+     * @Route("/get_booking")
+     */
+    public function getResource(Request $request)
+    {
+        try {
+            $resource = $this->get('itk.exchange_resource_repository')
+                ->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
+            $exchange = $this->get('itk.exchange_service');
 
-    return new JsonResponse(array('bookings' => $calendar->getBookings()));
-  }
+            $id = $request->query->get('id');
+            $key = $request->query->get('key');
 
-  /**
-   * @Route("/get_booking")
-   */
-  public function getResource(Request $request) {
-    $exchange = $this->get('itk.exchange_service');
+            $booking = $exchange->getBooking($resource, $id, $key);
 
-    $id = $request->query->get('id');
-    $key = $request->query->get('key');
-
-    $booking = $exchange->getBooking($id, $key);
-
-    return new JsonResponse(array('booking' => $booking));
-  }
-
-  /**
-   * @Route("/test_booking_accepted")
-   */
-  public function testBooking() {
-    // Build resource for our test resource.
-    $resource = $this->get('itk.exchange_resource_repository')->findOneByMail('DOKK1-lokale-test1@aarhus.dk');
-
-    $userName = $this->container->getParameter('itk_exchange_user_name');
-    $mail = $this->container->getParameter('itk_exchange_user_mail');
-
-    // Create a test booking.
-    $booking = new Booking();
-    $booking->setIcalUid('20150420T131807CEST-44328UjGLM@10.215.16.26');
-    $booking->setSubject('Møde om nogle vigtige ting.');
-    $booking->setDescription('Her beskriver vi hvad det er vi skal mødes om.');
-    $booking->setName($userName);
-    $booking->setMail($mail);
-    $booking->setStartTime('1429532287');
-    $booking->setEndTime('1429534087');
-    $booking->setResource($resource);
-
-    $exchange = $this->get('itk.exchange_service');
-
-    return new JsonResponse(array('booking accepted' => $exchange->isBookingAccepted($booking)));
-  }
+            return new JsonResponse(array('booking' => $booking));
+        } catch (NonUniqueResultException $e) {
+            return new JsonResponse($e->getMessage(), $e->getCode());
+        }
+    }
 }

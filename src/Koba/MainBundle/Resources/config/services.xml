@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
   <services>
-    <service id="koba.apikey_repository" class="Koba\MainBundle\Entity\ApiKeyRepository" factory-service="doctrine.orm.default_entity_manager" factory-method="getRepository">
-      <argument>Koba\MainBundle\Entity\ApiKey</argument>
+    <!-- Override JMS job queue retry scheduler -->
+    <service id="jms_job_queue.retry_scheduler" class="Koba\MainBundle\Retry\FixedIntervalRetryScheduler">
+      <argument type="string" id="interval">%jms_job_queue_retry_scheduler_interval%</argument>
     </service>
 
-    <service id="koba.apikey_service" class="Koba\MainBundle\Service\ApiKeyService">
-      <argument type="service" id="koba.apikey_repository" />
+    <service id="koba.apikey_service" class="Koba\MainBundle\Service\ApiKeyService" public="true">
+      <argument type="service" id="doctrine.orm.entity_manager" />
     </service>
 
-    <service id="koba.cache" class="Koba\MainBundle\Service\RedisCache">
-      <argument type="service" id="snc_redis.default" />
+    <service id="koba.cache" class="Symfony\Component\Cache\Simple\FilesystemCache" public="true">
     </service>
 
-    <service id="koba.calendar_service" class="Koba\MainBundle\Service\CalendarService">
+    <service id="koba.calendar_service" class="Koba\MainBundle\Service\CalendarService" public="true">
       <argument type="service" id="itk.exchange_service" />
       <argument type="service" id="koba.cache" />
     </service>

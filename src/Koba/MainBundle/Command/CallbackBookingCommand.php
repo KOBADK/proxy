@@ -3,86 +3,92 @@
  * @file
  * Contains the command for CallbackBookingCommand.
  */
+
 namespace Koba\MainBundle\Command;
 
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Guzzle\Http\Exception\RequestException;
 
 /**
  * Class CallbackBookingCommand command.
  *
  * @package Koba\MainBundle\Command
  */
-class CallbackBookingCommand extends ContainerAwareCommand {
-  /**
-   * Configure the command
-   */
-  protected function configure() {
-    $this->setName('koba:booking:callback')
-      ->addArgument(
-        'id',
-        InputArgument::REQUIRED,
-        'Which booking entity to confirm?'
-      )
-      ->setDescription('Send booking to Exchange');
-  }
-
-  /**
-   * Executes the command
-   *
-   * @param InputInterface $input
-   * @param OutputInterface $output
-   *
-   * @throw NotFoundHttpException
-   *
-   * @return void
-   */
-  protected function execute(InputInterface $input, OutputInterface $output) {
-    $container = $this->getContainer();
-    $doctrine = $container->get('doctrine');
-
-    $id = $input->getArgument('id');
-    $booking = $doctrine->getRepository('ItkExchangeBundle:Booking')->findOneBy(array('id' => $id));
-    if (!$booking) {
-      throw new NotFoundHttpException('booking with id:' . $id . ' not found');
+class CallbackBookingCommand extends ContainerAwareCommand
+{
+    /**
+     * Configure the command
+     */
+    protected function configure()
+    {
+        $this->setName('koba:booking:callback')
+            ->addArgument(
+                'id',
+                InputArgument::REQUIRED,
+                'Which booking entity to confirm?'
+            )
+            ->setDescription('Send booking to Exchange');
     }
 
-    $apiKey = $booking->getApiKey();
-    $apiKey = $doctrine->getRepository('KobaMainBundle:ApiKey')->findOneBy(array('apiKey' => $apiKey));
-    if (!$apiKey) {
-      throw new NotFoundHttpException('api key not found');
+    /**
+     * Executes the command
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return int|null|void
+     * @throws \Exception
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $container = $this->getContainer();
+        $doctrine = $container->get('doctrine');
+
+        $id = $input->getArgument('id');
+        $booking = $doctrine->getRepository('ItkExchangeBundle:Booking')
+            ->findOneBy(array('id' => $id));
+        if (!$booking) {
+            throw new NotFoundHttpException(
+                'booking with id:'.$id.' not found'
+            );
+        }
+
+        $apiKey = $booking->getApiKey();
+        $apiKey = $doctrine->getRepository('KobaMainBundle:ApiKey')->findOneBy(
+            array('apiKey' => $apiKey)
+        );
+        if (!$apiKey) {
+            throw new NotFoundHttpException('api key not found');
+        }
+
+        $callback = $apiKey->getCallback();
+
+        $client = new Client();
+
+        try {
+          $response = $client->post(
+            $callback, [
+              'query' => [
+                '_format' => 'json'
+              ],
+              'json' => [
+                'action' => 'REQUEST',
+                'koba_job_id' => $input->getOption('jms-job-id'),
+                'status' => $booking->getStatus(),
+                'client_booking_id' => $booking->getClientBookingId(),
+              ]
+            ]
+          );
+
+          $output->writeln($response->getStatusCode());
+        } catch (\Exception $e) {
+            $output->writeln($e->getMessage().' ('.$e->getCode().')');
+            throw $e;
+        }
+
+        $output->writeln('Callback success');
     }
-
-    $callback = $apiKey->getCallback();
-
-    $client = new Client();
-
-    $request = $client->post($callback . '?_format=json', array(
-      'Content-Type' => 'application/json',
-      'Accept' => 'application/json',
-    ), array());
-    $request->setBody(json_encode(
-      array(
-        'action' => 'REQUEST',
-        'koba_job_id' => $input->getOption('jms-job-id'),
-        'status' => $booking->getStatus(),
-        'client_booking_id' => $booking->getClientBookingId(),
-      )
-    ));
-    try {
-      $request->send();
-    }
-    catch (RequestException $e) {
-      $output->writeln($e->getMessage() . '(' . $e->getCode() . ')');
-      throw $e;
-    }
-
-    $output->writeln('Callback success');
-  }
 }
