@@ -299,13 +299,17 @@ class ExchangeService
         ExchangeBooking $exchangeBooking,
         Booking $booking
     ) {
+        // The bookings match if:
+        // 1. The IcalUids match
+        // OR
+        // 2. The subject and client booking ids match.
         return
             $exchangeBooking->getType() === ExchangeBooking::TYPE_KOBA &&
-            ($exchangeBooking->getBody()->getIcalUid() === $booking->getIcalUid(
-                ) ||
+            (
+                $exchangeBooking->getBody()->getIcalUid() === $booking->getIcalUid() ||
                 ($exchangeBooking->getSubject() == $booking->getSubject() &&
-                    $exchangeBooking->getBody()->getClientBookingId(
-                    ) == $booking->getClientBookingId())
+                    $exchangeBooking->getBody()->getClientBookingId() == $booking->getClientBookingId()
+                )
             );
     }
 }
