@@ -299,8 +299,13 @@ class ExchangeService
         ExchangeBooking $exchangeBooking,
         Booking $booking
     ) {
-        return $exchangeBooking->getType(
-            ) === ExchangeBooking::TYPE_KOBA && $exchangeBooking->getBody()
-                ->getIcalUid() === $booking->getIcalUid();
+        return
+            $exchangeBooking->getType() === ExchangeBooking::TYPE_KOBA &&
+            ($exchangeBooking->getBody()->getIcalUid() === $booking->getIcalUid(
+                ) ||
+                ($exchangeBooking->getSubject() == $booking->getSubject() &&
+                    $exchangeBooking->getBody()->getClientBookingId(
+                    ) == $booking->getClientBookingId())
+            );
     }
 }

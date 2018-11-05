@@ -1,17 +1,21 @@
 # KOBA CHANGELOG
 
-## 2.0.0 (in development)
+## 2.0.0
 
 * Upgrade to Symfony 3.4 and php 7.2.
 * Switch from fork of jms job queue bundle back to master.
 * Added Doctrine Migrations.
 * Added attendee to booking to fix issue with outlook365 stmp.
 
-## v1.1.11
+# v1.2.0
+
+* Changed how bookings are matched. Allow non-matching IcalUid, if both subject and clientBookingId match.
+
+# v1.1.11
 
 * Fixed ldap search.
 
-## v1.1.10
+# v1.1.10
 
 * Added follow redirect to curl.
 * Added impersonation to getItem calls.
