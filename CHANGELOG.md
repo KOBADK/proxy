@@ -1,5 +1,9 @@
 # KOBA CHANGELOG
 
+## 2.0.1
+
+* Updated bundles.
+
 ## 2.0.0
 
 * Upgrade to Symfony 3.4 and php 7.2.
