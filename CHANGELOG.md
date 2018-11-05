@@ -1,5 +1,9 @@
 # KOBA CHANGELOG
 
+## 2.0.2
+
+* Removed uncaught exception cluttering the logs.
+
 ## 2.0.1
 
 * Updated bundles.
