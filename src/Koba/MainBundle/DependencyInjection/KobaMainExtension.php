@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains KobaMainExtension.
- */
 
 namespace Koba\MainBundle\DependencyInjection;
 
@@ -14,13 +10,18 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 /**
  * This is the class that loads and manages your bundle configuration.
  */
-class KobaMainExtension extends Extension {
-  /**
-   * {@inheritDoc}
-   */
-  public function load(array $configs, ContainerBuilder $container) {
-    // Load the bundles service configurations.
-    $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-    $loader->load('services.xml');
-  }
+class KobaMainExtension extends Extension
+{
+    /**
+     * {@inheritDoc}
+     */
+    public function load(array $configs, ContainerBuilder $container)
+    {
+        // Load the bundles service configurations.
+        $loader = new Loader\XmlFileLoader(
+            $container,
+            new FileLocator(__DIR__.'/../Resources/config')
+        );
+        $loader->load('services.xml');
+    }
 }

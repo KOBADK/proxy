@@ -12,5 +12,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  * Class KobaApiBundle
  * @package Koba\ApiBundle
  */
-class KobaApiBundle extends Bundle {
+class KobaApiBundle extends Bundle
+{
 }

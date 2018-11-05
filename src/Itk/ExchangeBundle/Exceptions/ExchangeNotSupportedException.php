@@ -9,8 +9,8 @@ namespace Itk\ExchangeBundle\Exceptions;
 /**
  * Class ExchangeNotSupportedException
  *
- *
  * @package Itk\ExchangeBundle\Exceptions
  */
-class ExchangeNotSupportedException extends \RuntimeException {
+class ExchangeNotSupportedException extends \RuntimeException
+{
 }

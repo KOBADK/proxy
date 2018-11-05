@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
   <services>
-    <service id="itk.exchange_service" class="Itk\ExchangeBundle\Services\ExchangeService">
+    <service id="itk.exchange_service" class="Itk\ExchangeBundle\Services\ExchangeService" public="true">
       <argument type="service" id="itk.exchange_ad" />
       <argument type="service" id="itk.exchange_resource_repository" />
       <argument type="service" id="itk.exchange_mail_service" />
       <argument type="service" id="itk.exchange_xml_service" />
       <argument type="service" id="itk.exchange_web_service" />
+      <argument type="service" id="doctrine.orm.entity_manager" />
     </service>
 
     <!-- Private service for the bundle -->
@@ -40,8 +41,8 @@
       <argument>%itk_exchange_xml_file_dss%</argument>
     </service>
 
-    <service id="itk.exchange_resource_repository" class="Itk\ExchangeBundle\Entity\ResourceRepository" factory-service="doctrine.orm.default_entity_manager" factory-method="getRepository">
-      <argument>Itk\ExchangeBundle\Entity\Resource</argument>
+    <service id="itk.exchange_resource_repository" class="Itk\ExchangeBundle\Repository\ResourceRepository" public="true">
+      <argument type="service" id="Symfony\Bridge\Doctrine\RegistryInterface" />
     </service>
   </services>
 </container>

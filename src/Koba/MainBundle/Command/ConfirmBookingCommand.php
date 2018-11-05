@@ -3,6 +3,7 @@
  * @file
  * Contains the command for ConfirmBookingCommand.
  */
+
 namespace Koba\MainBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;

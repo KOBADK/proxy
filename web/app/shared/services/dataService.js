@@ -22,23 +22,23 @@ angular.module('KobaAdminApp').factory('dataService', ['$http', '$q', function($
   function fetch(method, uri) {
     var deferred = $q.defer();
 
-    $http({method: method, url: uri}).
-      success(function(data) {
-        if (data.code && (data.code < 200 || data.code >= 300)) {
+    $http({method: method, url: uri}).then(
+      function(response) {
+        if (response.status && (response.status < 200 || response.status >= 300)) {
           deferred.reject({
-            'status': data.status,
-            'message': data.message
+            'status': response.status,
+            'message': response.message
           });
           return;
         }
 
         // Resolve promise an return data.
-        deferred.resolve(data);
-      }).
-      error(function(data, status) {
+        deferred.resolve(response.data);
+      },
+      function(response) {
         deferred.reject({
-          'status': status,
-          'message': data
+          'status': response.status,
+          'message': response.data
         });
       }
     );
@@ -61,23 +61,23 @@ angular.module('KobaAdminApp').factory('dataService', ['$http', '$q', function($
   function send(method, uri, data) {
     var deferred = $q.defer();
 
-    $http({method: method, url: uri, data: data }).
-      success(function(data) {
-        if (data.code && (data.code < 200 || data.code >= 300)) {
+    $http({method: method, url: uri, data: data }).then(
+      function(response) {
+        if (response.status && (response.status < 200 || response.status >= 300)) {
           deferred.reject({
-            'status': data.status,
-            'message': data.message
+            'status': response.status,
+            'message': response.message
           });
           return;
         }
 
         // Resolve promise.
-        deferred.resolve(data);
-      }).
-      error(function(data, status) {
+        deferred.resolve(response.data);
+      },
+      function(response) {
         deferred.reject({
-          'status': status,
-          'message': data
+          'status': response.status,
+          'message': response.data
         });
       }
     );
