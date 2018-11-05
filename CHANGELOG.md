@@ -1,5 +1,9 @@
 # KOBA CHANGELOG
 
+## 2.0.3
+
+* Fixed error logging.
+
 ## 2.0.2
 
 * Removed uncaught exception cluttering the logs.
