@@ -54,12 +54,8 @@ class ResourceController extends FOSRestController
             }
 
             return $resources;
-        } catch (\Exception $e) {
-            if ($e instanceof AccessDeniedException) {
-                return new JsonResponse(['msg' => 'Access Denied'], 403);
-            }
-
-            return new JsonResponse(['msg' => 'Error'], 500);
+        } catch (AccessDeniedException $e) {
+            return new JsonResponse(['msg' => 'Access Denied'], 403);
         }
     }
 
@@ -79,6 +75,7 @@ class ResourceController extends FOSRestController
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      *   The response object.
+     * @throws \Doctrine\ORM\NonUniqueResultException
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function getResourceBookings(
@@ -118,15 +115,10 @@ class ResourceController extends FOSRestController
             );
 
             return new JsonResponse($content);
-        } catch (\Exception $e) {
-            if ($e instanceof AccessDeniedException) {
-                return new JsonResponse(['msg' => 'Access Denied'], 403);
-            }
-
-            return new JsonResponse(['msg' => 'Error'], 500);
+        } catch (AccessDeniedException $e) {
+            return new JsonResponse(['msg' => 'Access Denied'], 403);
         }
     }
-
 
     /**
      * @FOSRest\Get("/{resourceMail}/group/{groupId}/freebusy/from/{from}/to/{to}")
@@ -144,6 +136,7 @@ class ResourceController extends FOSRestController
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      *   The response object.
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getResourceFreeBusy(
         Request $request,
@@ -188,12 +181,8 @@ class ResourceController extends FOSRestController
             }
 
             return new JsonResponse($bookings);
-        } catch (\Exception $e) {
-            if ($e instanceof AccessDeniedException) {
-                return new JsonResponse(['msg' => 'Access Denied'], 403);
-            }
-
-            return new JsonResponse(['msg' => 'Error'], 500);
+        } catch (AccessDeniedException $e) {
+            return new JsonResponse(['msg' => 'Access Denied'], 403);
         }
     }
 }
