@@ -178,13 +178,74 @@ class ExchangeMailService
     }
 
     /**
-     * Update or edit and existing booking.
+     * Update an existing booking.
      *
-     * @throws \Itk\ExchangeBundle\Exceptions\ExchangeNotSupportedException
+     * @param \Itk\ExchangeBundle\Entity\Booking $booking
      */
-    public function editBooking()
+    public function updateBooking(Booking $booking)
     {
-        throw new ExchangeNotSupportedException();
+        // Get a new ICal calender object.
+        $calendar = $this->createCalendar('REQUEST');
+
+        // Create new event in the calender.
+        $event = $calendar->newEvent();
+
+        // Encode booking information in the vevent description.
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new GetSetMethodNormalizer());
+        $normalizers[0]->setIgnoredAttributes(
+            array(
+                'resource',
+                'exchangeId',
+                'apiKey',
+                'status',
+            )
+        );
+        $serializer = new Serializer($normalizers, $encoders);
+        $description = '<!-- KOBA '.base64_encode(
+                $serializer->serialize($booking, 'json')
+            ).' KOBA -->';
+
+        // Set start date with correct timezone.
+        $startDate = \DateTime::createFromFormat('U', $booking->getStartTime());
+        $startDate->setTimeZone(new \DateTimeZone('UTC'));
+
+        // Set end date with correct timezone.
+        $endDate = \DateTime::createFromFormat('U', $booking->getEndTime());
+        $endDate->setTimeZone(new \DateTimeZone('UTC'));
+
+        // Set event information.
+        $event->setStartDate($startDate)
+            ->setEndDate($endDate)
+            ->setAttendee($booking->getResource()->getMail())
+            ->setName($booking->getSubject())
+            ->setDescription($description)
+            ->setLocation($booking->getResource()->getName());
+
+        // Get the raw iCalCreator event.
+        $rawEvent = $event->getEvent();
+        $rawEvent->setOrganizer(
+            $this->account['mail'],
+            array('CN' => $this->account['username'])
+        );
+        $rawEvent->setClass('PUBLIC');
+
+        // Set event mode.
+        $rawEvent->setProperty('transp', 'OPAQUE');
+
+        // Set description that will make Exchange pick-up the other description.
+        $rawEvent->setProperty('X-ALT-DESC;FMTTYPE=text/plain', $description);
+
+        // Set UID to update the event.
+        $rawEvent->setProperty('UID', $booking->getIcalUid());
+
+        // Get the calendar as an formatted string and send mail.
+        $this->sendMail(
+            $booking->getResource()->getMail(),
+            $booking->getSubject(),
+            $calendar->returnCalendar(),
+            'REQUEST'
+        );
     }
 
     /**
@@ -193,12 +254,13 @@ class ExchangeMailService
      * @param string $method
      *   The method to set in the calender (REQUEST, CANCELLED).
      *
-     * @return mixed
+     * @return \BOMO\IcalBundle\Model\Calendar
      *   The calender object.
      */
     private function createCalendar($method)
     {
         // Create calender.
+        /* @var \BOMO\IcalBundle\Model\Calendar $calendar */
         $calendar = $this->ics->createCalendar(null, true);
 
         // Set request method.
