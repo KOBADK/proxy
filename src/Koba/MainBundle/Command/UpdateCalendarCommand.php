@@ -34,6 +34,7 @@ class UpdateCalendarCommand extends ContainerAwareCommand
      * @param OutputInterface $output
      *
      * @return void
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

@@ -209,6 +209,17 @@ class ExchangeService
     }
 
     /**
+     * Update an existing booking.
+     *
+     * @param \Itk\ExchangeBundle\Entity\Booking $booking
+     *   Booking entity to send to Exchange.
+     */
+    public function updateBooking(Booking $booking)
+    {
+        $this->exchangeMailService->createBooking($booking);
+    }
+
+    /**
      * Cancel a booking.
      *
      * @param \Itk\ExchangeBundle\Entity\Booking $booking

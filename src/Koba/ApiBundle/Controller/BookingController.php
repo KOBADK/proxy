@@ -137,6 +137,96 @@ class BookingController extends FOSRestController
     }
 
     /**
+     * Update a booking.
+     *
+     * @FOSRest\Put("/{clientBookingId}")
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *   The request object.
+     *
+     *   The body should consist of
+     *       {
+     *         "subject": -,
+     *         "description": -,
+     *         "name": -,
+     *         "mail": -,
+     *         "phone": -,
+     *         "start_time": -,
+     *         "end_time: -,
+     *         "resource": -,
+     *         "client_booking_id": -,
+     *         "group_id"; -,
+     *         "apikey": -
+     *       }
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *   The response object.
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function updateBooking(Request $request, $clientBookingId)
+    {
+        $body = $request->getContent();
+
+        if (!isset($body)) {
+            throw new NotFoundHttpException('resource not set');
+        }
+        $bodyObj = json_decode($body);
+
+        $apiKeyService = $this->get('koba.apikey_service');
+
+        // Confirm the apikey is accepted.
+        $apiKey = $apiKeyService->getApiKey($bodyObj->apikey);
+
+        // Get the resource. We get it here to avoid more injections in the service.
+        $resource = $this->get('itk.exchange_resource_repository')->findOneByMail($bodyObj->resource);
+
+        if (!isset($resource)) {
+            throw new NotFoundHttpException('resource not found');
+        }
+
+        // Check Access.
+        $apiKeyService->getResourceConfiguration(
+            $apiKey,
+            $bodyObj->group_id,
+            $resource->getMail()
+        );
+
+        // Find the booking.
+        /* @var Booking $booking */
+        $booking = $this->get('doctrine')->getRepository(
+            'ItkExchangeBundle:Booking'
+        )->findOneByClientBookingId($clientBookingId);
+
+        if (!isset($booking)) {
+            throw new NotFoundHttpException('booking not found');
+        }
+
+        $exchangeService = $this->container->get('itk.exchange_service');
+        if (!$exchangeService->isBookingAccepted($booking)) {
+            return new Response('Booking not found.', 404);
+        }
+
+        $booking->setSubject($bodyObj->subject);
+        $booking->setDescription($bodyObj->description);
+        $booking->setName($bodyObj->name);
+        $booking->setMail($bodyObj->mail);
+        $booking->setPhone($bodyObj->phone);
+        $booking->setStartTime($bodyObj->start_time);
+        $booking->setEndTime($bodyObj->end_time);
+        $booking->setResource($resource);
+        $booking->setApiKey($apiKey->getApiKey());
+        $booking->setClientBookingId($bodyObj->client_booking_id);
+        $booking->setStatusUpdateRequest();
+
+        $em = $this->container->get('doctrine')->getManager();
+        $em->flush();
+
+        $exchangeService->updateBooking($booking);
+
+        return new Response('Update request sent to Exchange.', 201);
+    }
+
+    /**
      * Delete a booking.
      *
      * @FOSRest\Delete("/group/{group}/apikey/{apiKey}/booking/{clientBookingId}")
