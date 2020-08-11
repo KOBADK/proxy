@@ -15,8 +15,7 @@ Add the following line:
 ## Initial Installation
 <pre>
  $ composer install
- $ php app/console doctrine:database:create
- $ php app/console doctrine:schema:update --force
+ $ php app/console doctrine:migrations:migrate
 </pre>
 
 ## Setup JMS/JobQueueBundle
