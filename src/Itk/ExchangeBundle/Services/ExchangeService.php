@@ -216,7 +216,7 @@ class ExchangeService
      */
     public function updateBooking(Booking $booking)
     {
-        $this->exchangeMailService->createBooking($booking);
+        $this->exchangeMailService->updateBooking($booking);
     }
 
     /**
