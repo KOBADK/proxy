@@ -23,7 +23,7 @@ class TestUpdateCommand extends ContainerAwareCommand
     {
         $this
             ->setName('exchange:booking:test_update')
-            ->addOption('resource', null, InputOption::VALUE_REQUIRED)
+            ->addArgument('resource', InputArgument::REQUIRED)
             ->setDescription('Creates a test booking, changes the title and deletes the booking again. Confirms that each step is successful.');
     }
 
@@ -40,7 +40,7 @@ class TestUpdateCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
 
-        $resourceName = $input->getOption('resource');
+        $resourceName = $input->getArgument('resource');
 
         if (!filter_var($resourceName, FILTER_VALIDATE_EMAIL)) {
             $output->writeln("Invalid resource format. Should be an email.");
@@ -175,9 +175,14 @@ class TestUpdateCommand extends ContainerAwareCommand
         return 0;
     }
 
+    /**
+     * Wait for 10 seconds.
+     *
+     * @param $output
+     */
     private function wait($output) {
         $output->writeln('Waiting 10 secs');
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             sleep(1);
             $output->write('.');
         }

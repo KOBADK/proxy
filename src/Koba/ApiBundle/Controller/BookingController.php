@@ -206,6 +206,7 @@ class BookingController extends FOSRestController
             return new Response('Booking not found.', 404);
         }
 
+        // Update fields.
         $booking->setSubject($bodyObj->subject);
         $booking->setDescription($bodyObj->description);
         $booking->setName($bodyObj->name);
@@ -221,7 +222,44 @@ class BookingController extends FOSRestController
         $em = $this->container->get('doctrine')->getManager();
         $em->flush();
 
-        $exchangeService->updateBooking($booking);
+        //        $exchangeService->updateBooking($booking);
+
+        // Create job queue items.
+        // 1. update booking
+        // 2. confirm booking update
+        // 3. send reply to callback
+        $sendJob = new Job(
+            'koba:booking:update:send', array('id' => $booking->getId())
+        );
+        $sendJob->addRelatedEntity($booking);
+        $sendJob->setMaxRetries(5);
+
+        $confirmJob = new Job(
+            'koba:booking:update:confirm',
+            array('id' => $booking->getId())
+        );
+        $confirmJob->addRelatedEntity($booking);
+        // Max retries for the confirm jobs should be 2 or more, since the last
+        // attempt always results in the confirm job concluding that the request
+        // was not accepted.
+        $confirmJob->setMaxRetries(6);
+
+        $callbackJob = new Job(
+            'koba:booking:update:callback',
+            array('id' => $booking->getId())
+        );
+        $callbackJob->addRelatedEntity($booking);
+
+        $callbackJob->setMaxRetries(5);
+
+        $confirmJob->addDependency($sendJob);
+        $callbackJob->addDependency($confirmJob);
+
+        $em->persist($sendJob);
+        $em->persist($confirmJob);
+        $em->persist($callbackJob);
+
+        $em->flush();
 
         return new Response('Update request sent to Exchange.', 201);
     }
