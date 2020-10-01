@@ -222,8 +222,6 @@ class BookingController extends FOSRestController
         $em = $this->container->get('doctrine')->getManager();
         $em->flush();
 
-        //        $exchangeService->updateBooking($booking);
-
         // Create job queue items.
         // 1. update booking
         // 2. confirm booking update
