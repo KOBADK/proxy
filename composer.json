@@ -1,5 +1,5 @@
 {
-    "name": "koba",
+    "name": "itk-dev/koba",
     "license": "proprietary",
     "type": "project",
     "autoload": {
@@ -43,7 +43,8 @@
         "symfony/symfony": "3.4.*",
         "symfony/templating": "^3.4",
         "sensio/generator-bundle": "^3.0",
-        "twig/twig": "^1.0||^2.0"
+        "twig/twig": "^1.0||^2.0",
+        "ext-json": "*"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^3.0"

@@ -398,6 +398,18 @@ class Booking
     }
 
     /**
+     * Set status to update pending
+     *
+     * @return Booking
+     */
+    public function setStatusUpdatePending()
+    {
+        $this->status = 'UPDATE_PENDING';
+
+        return $this;
+    }
+
+    /**
      * Set status to denied
      *
      * @return Booking
@@ -441,6 +453,18 @@ class Booking
     public function setStatusRequest()
     {
         $this->status = 'REQUEST';
+
+        return $this;
+    }
+
+    /**
+     * Set status to request
+     *
+     * @return $this
+     */
+    public function setStatusUpdateRequest()
+    {
+        $this->status = 'UPDATE_REQUEST';
 
         return $this;
     }
