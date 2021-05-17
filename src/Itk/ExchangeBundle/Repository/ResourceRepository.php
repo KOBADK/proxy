@@ -2,8 +2,7 @@
 
 namespace Itk\ExchangeBundle\Repository;
 
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 use Itk\ExchangeBundle\Entity\Resource;
 
 /**
@@ -12,21 +11,19 @@ use Itk\ExchangeBundle\Entity\Resource;
  * @method Resource[]    findAll()
  * @method Resource[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ResourceRepository extends ServiceEntityRepository
+class ResourceRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, Resource::class);
-    }
-
     /**
      * Get one resource by mail.
      *
      * @param string $mail
-     * @return mixed
+     *   Resource mail-address.
+     *
+     * @return int|mixed|string|null
+     *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function findOneByMail($mail)
+    public function findOneByMail(string $mail)
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.mail = :val')

@@ -159,7 +159,7 @@ class ExchangeSoapClientService
         if ($code !== 200 || $response === false) {
             $erroNo = curl_errno($ch);
             if (!$erroNo) {
-                throw new ExchangeSoapException('HTTP error - '.$code . ': ' . $response, $code);
+                throw new ExchangeSoapException('HTTP error - '.$code . ': ' . $response . ' ==> ' . $requestBody, $code);
             }
             throw new ExchangeSoapException(curl_error($ch), $erroNo);
         }

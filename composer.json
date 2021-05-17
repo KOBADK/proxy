@@ -1,5 +1,6 @@
 {
-    "name": "koba",
+    "name": "itkdev/koba",
+    "description": "Exchange booking proxy",
     "license": "proprietary",
     "type": "project",
     "autoload": {
@@ -24,6 +25,9 @@
     },
     "require": {
         "php": ">=7",
+        "ext-dom": "*",
+        "ext-curl": "*",
+        "ext-ldap": "*",
         "bomo/ical-bundle": "^1.0",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/doctrine-migrations-bundle": "^1.3",
