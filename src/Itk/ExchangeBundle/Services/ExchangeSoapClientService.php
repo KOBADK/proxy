@@ -106,8 +106,15 @@ class ExchangeSoapClientService
         // Render and store the final request string.
         $requestBodyString = $doc->saveXML();
 
+        $headers = [];
+        if ($impersonationId !== null) {
+            $headers = [
+                'X-AnchorMailbox: '.$impersonationId,
+            ];
+        }
+
         // Send the SOAP request to the server via CURL.
-        return $this->curlRequest($action, $requestBodyString, $options);
+        return $this->curlRequest($action, $requestBodyString, $options, $headers);
     }
 
     /**
@@ -119,20 +126,22 @@ class ExchangeSoapClientService
      *   The request XML message.
      * @param array $options
      *   Extra options for the transport client.
+     * @param array $headers
+     *   Headers to sent with the request.
      *
      * @return mixed
      *   The RAW XML response.
      */
-    private function curlRequest($action, $requestBody, $options)
+    private function curlRequest($action, $requestBody, $options, $headers = [])
     {
         // Set headers.
-        $headers = array(
+        $headers = array_merge($headers, [
             'Method: POST',
             'Connection: Keep-Alive',
             'User-Agent: Symfony-Exchange-Soap-Client',
             'Content-Type: text/xml; charset=utf-8',
             'SOAPAction: "'.$action.'"',
-        );
+        ]);
         $options[CURLOPT_HTTPHEADER] = $headers;
 
         // Set request content.
@@ -150,7 +159,7 @@ class ExchangeSoapClientService
         if ($code !== 200 || $response === false) {
             $erroNo = curl_errno($ch);
             if (!$erroNo) {
-                throw new ExchangeSoapException('HTTP error - '.$code . ': ' . $response, $code);
+                throw new ExchangeSoapException('HTTP error - '.$code . ': ' . $response . ' ==> ' . $requestBody, $code);
             }
             throw new ExchangeSoapException(curl_error($ch), $erroNo);
         }
