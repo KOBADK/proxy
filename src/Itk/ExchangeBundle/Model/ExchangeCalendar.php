@@ -35,6 +35,24 @@ class ExchangeCalendar
     }
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        $length = 120;
+        $str = [];
+        $str[] = str_repeat('-', $length);
+        $str[] = '| From: '. date('c'.$this->getStart()).' To: '.date('c', $this->getEnd());
+        $str[] = str_repeat('-', $length);
+        foreach ($this->getBookings() as $booking) {
+            $str[] = '| '.date('c', $booking->getStart()).' -> '.$booking->getSubject();
+        }
+        $str[] = str_repeat('-', $length);
+
+        return implode("\n", $str);
+    }
+
+    /**
      * @return mixed
      */
     public function getStart()
