@@ -2,6 +2,7 @@
 
 namespace Itk\ExchangeBundle\Command;
 
+use Itk\ExchangeBundle\Repository\ResourceRepository;
 use Itk\ExchangeBundle\Services\ExchangeWebService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,6 +17,15 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class GetBookingsCommand extends ContainerAwareCommand
 {
+    private $resourceRepository;
+
+    public function __construct(ResourceRepository $resourceRepository, $name = null)
+    {
+        $this->resourceRepository = $resourceRepository;
+
+        parent::__construct($name);
+    }
+
     /**
      * Configure the command
      */
@@ -37,12 +47,8 @@ class GetBookingsCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $container = $this->getContainer();
-        $doctrine = $container->get('doctrine');
-
         $resource = $input->getArgument('resource');
-        $resourceEntity = $doctrine->getRepository('ItkExchangeBundle:Resource')
-            ->findOneBy(array('name' => $resource));
+        $resourceEntity = $this->resourceRepository->findOneBy(array('name' => $resource));
         if (!$resourceEntity) {
             throw new NotFoundHttpException(
                 'Resource with name:'.$resource.' not found'
