@@ -17,15 +17,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class GetBookingsCommand extends ContainerAwareCommand
 {
-    private $resourceRepository;
-
-    public function __construct(ResourceRepository $resourceRepository, $name = null)
-    {
-        $this->resourceRepository = $resourceRepository;
-
-        parent::__construct($name);
-    }
-
     /**
      * Configure the command
      */
@@ -48,7 +39,11 @@ class GetBookingsCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $resource = $input->getArgument('resource');
-        $resourceEntity = $this->resourceRepository->findOneBy(array('name' => $resource));
+
+        $container = $this->getContainer();
+        $repo = $container->get('itk.exchange_resource_repository');
+
+        $resourceEntity = $repo->findOneBy(array('name' => $resource));
         if (!$resourceEntity) {
             throw new NotFoundHttpException(
                 'Resource with name:'.$resource.' not found'
