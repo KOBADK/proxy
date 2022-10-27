@@ -52,7 +52,7 @@ class GetBookingsCommand extends ContainerAwareCommand
 
         /** @var ExchangeWebService $webService */
         $webService = $this->getContainer()->get('itk.exchange_web_service');
-        $calender = $webService->getRessourceBookings($resourceEntity, strtotime('-1 day'), time());
+        $calender = $webService->getRessourceBookings($resourceEntity, time(), strtotime('+1 day'));
 
         $output->writeln($calender->__toString());
     }

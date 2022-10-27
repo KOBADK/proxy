@@ -33,6 +33,9 @@
       <argument>%itk_exchange_ws_host%</argument>
       <argument>%itk_exchange_ws_user%</argument>
       <argument>%itk_exchange_ws_password%</argument>
+      <argument>%itk_exchange_ws_client_id%</argument>
+      <argument>%itk_exchange_ws_client_secret%</argument>
+      <argument>%itk_exchange_ws_tenant_id%</argument>
       <argument>%itk_exchange_ws_version%</argument>
     </service>
 
