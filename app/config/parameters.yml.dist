@@ -23,6 +23,9 @@ parameters:
     itk_exchange_ws_user: user
     itk_exchange_ws_password: pass
     itk_exchange_ws_version: Exchange2010
+    itk_exchange_ws_tenant_id: ''
+    itk_exchange_ws_client_id: ''
+    itk_exchange_ws_client_secret: ''
 
     itk_exchange_ad_host: host
     itk_exchange_ad_user: user

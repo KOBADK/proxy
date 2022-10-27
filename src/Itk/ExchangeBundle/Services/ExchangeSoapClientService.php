@@ -6,6 +6,8 @@
 
 namespace Itk\ExchangeBundle\Services;
 
+use Exception;
+use GuzzleHttp\Client;
 use Itk\ExchangeBundle\Exceptions\ExchangeSoapException;
 
 /**
@@ -27,6 +29,15 @@ class ExchangeSoapClientService
     private $namespaces;
     private $curlOptions = array();
 
+    private $clientId;
+    private $clientSecret;
+    private $tenantId;
+    private $username;
+    private $password;
+
+    private $token = null;
+    private $tokenExpire = null;
+
     /**
      * Construct the SOAP client.
      *
@@ -43,6 +54,9 @@ class ExchangeSoapClientService
         $host,
         $username,
         $password,
+        $clientId,
+        $clientSecret,
+        $tenantId,
         $version = 'Exchange2010'
     ) {
         // Set account information to the Exchange EWS.
@@ -53,6 +67,12 @@ class ExchangeSoapClientService
             'password' => $password,
         );
 
+        $this->username = $username;
+        $this->password = $password;
+        $this->tenantId = $tenantId;
+        $this->clientId = $clientId;
+        $this->clientSecret = $clientSecret;
+
         // Set default options.
         $this->curlOptions = array(
             CURLOPT_SSL_VERIFYPEER => false,
@@ -60,8 +80,6 @@ class ExchangeSoapClientService
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_HTTPAUTH => CURLAUTH_BASIC | CURLAUTH_NTLM,
-            CURLOPT_USERPWD => $this->exchange['username'].':'.$this->exchange['password'],
             CURLOPT_CONNECTTIMEOUT => 10,
             CURLOPT_FOLLOWLOCATION => 1,
         );
@@ -73,6 +91,39 @@ class ExchangeSoapClientService
             't' => 'http://schemas.microsoft.com/exchange/services/2006/types',
             'm' => 'http://schemas.microsoft.com/exchange/services/2006/messages',
         );
+    }
+
+    public function getAuthenticationToken() {
+        if ($this->token !== null && $this->tokenExpire !== null) {
+            $now = time();
+
+            if ($now < $this->tokenExpire) {
+                return $this->token;
+            }
+        }
+
+        $client = new Client();
+
+        $url = 'https://login.microsoftonline.com/'.$this->tenantId.'/oauth2/v2.0/token';
+
+        $response = $client->post($url, [
+                'form_params' => [
+                    'client_id' => $this->clientId,
+                    'client_secret' => $this->clientSecret,
+                    'scope' => 'https://outlook.office365.com/EWS.AccessAsUser.All',
+                    'username' => $this->username,
+                    'password' => $this->password,
+                    'grant_type' => 'password',
+                ],
+            ]
+        );
+
+        $contents = json_decode($response->getBody()->getContents(), true);
+
+        $this->token = $contents['access_token'];
+        $this->tokenExpire = time() + $contents['expires_in'];
+
+        return $this->token;
     }
 
     /**
@@ -134,6 +185,8 @@ class ExchangeSoapClientService
      */
     private function curlRequest($action, $requestBody, $options, $headers = [])
     {
+        $token = $this->getAuthenticationToken();
+
         // Set headers.
         $headers = array_merge($headers, [
             'Method: POST',
@@ -141,6 +194,7 @@ class ExchangeSoapClientService
             'User-Agent: Symfony-Exchange-Soap-Client',
             'Content-Type: text/xml; charset=utf-8',
             'SOAPAction: "'.$action.'"',
+            'Authorization: Bearer '.$token,
         ]);
         $options[CURLOPT_HTTPHEADER] = $headers;
 

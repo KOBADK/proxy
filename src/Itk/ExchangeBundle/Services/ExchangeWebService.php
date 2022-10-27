@@ -92,7 +92,7 @@ class ExchangeWebService
      *   Unix timestamp for the end date to query Exchange.
      *
      * @return ExchangeCalendar
-     *   Exchange calender with all bookings in the interval.
+     *   Exchange calendar with all bookings in the interval.
      */
     public function getRessourceBookings($resource, $from, $to)
     {
