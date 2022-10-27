@@ -9,14 +9,13 @@ $ crontab -e
 
 Add the following line:
 <pre>
-*/1 * * * * path_to_php/php path_to_backend/app/console koba:calendar:update
+*/1 * * * * path_to_php/php path_to_backend/bin/console koba:calendar:update
 </pre>
 
 ## Initial Installation
 <pre>
  $ composer install
- $ php app/console doctrine:database:create
- $ php app/console doctrine:schema:update --force
+ $ php app/console doctrine:migrations:migrate
 </pre>
 
 ## Setup JMS/JobQueueBundle
