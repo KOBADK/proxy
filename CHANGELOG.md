@@ -1,5 +1,9 @@
 # KOBA CHANGELOG
 
+## 2.1.0
+
+* Changed to oauth2 authentication.
+
 ## 2.0.3
 
 * Fixed error logging.
