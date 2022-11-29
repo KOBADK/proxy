@@ -117,10 +117,14 @@ class ExchangeSoapClientService
                 ]
             );
 
+            if (200 != $response->getStatusCode()) {
+                throw new Exception("Error authenticating through oauth.");
+            }
+
             $contents = json_decode($response->getBody()->getContents(), true);
 
             if ($contents == null) {
-                throw new Exception("JSON response could not be decoded");
+                throw new Exception("JSON response could not be decoded.");
             }
 
             $token = $contents['access_token'];
