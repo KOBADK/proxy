@@ -9,6 +9,8 @@ namespace Itk\ExchangeBundle\Services;
 use Exception;
 use GuzzleHttp\Client;
 use Itk\ExchangeBundle\Exceptions\ExchangeSoapException;
+use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * Class ExchangeSoapClientService.
@@ -18,6 +20,7 @@ use Itk\ExchangeBundle\Exceptions\ExchangeSoapException;
 class ExchangeSoapClientService
 {
     const USER_AGENT = 'ExchangeWebService KOBA';
+    const CACHE_KEY_TOKEN = 'exchange-token';
 
     /**
      * Connection information about Exchange EWS.
@@ -35,8 +38,8 @@ class ExchangeSoapClientService
     private $username;
     private $password;
 
-    private $token = null;
-    private $tokenExpire = null;
+    private $cache;
+    private $logger;
 
     /**
      * Construct the SOAP client.
@@ -51,6 +54,8 @@ class ExchangeSoapClientService
      *   The Exchange version.
      */
     public function __construct(
+        CacheInterface $cache,
+        LoggerInterface $logger,
         $host,
         $username,
         $password,
@@ -73,6 +78,9 @@ class ExchangeSoapClientService
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
 
+        $this->cache = $cache;
+        $this->logger = $logger;
+
         // Set default options.
         $this->curlOptions = array(
             CURLOPT_SSL_VERIFYPEER => false,
@@ -94,36 +102,45 @@ class ExchangeSoapClientService
     }
 
     public function getAuthenticationToken() {
-        if ($this->token !== null && $this->tokenExpire !== null) {
-            $now = time();
+        $token = $this->cache->get(self::CACHE_KEY_TOKEN);
 
-            if ($now < $this->tokenExpire) {
-                return $this->token;
+        if ($token === null) {
+            $client = new Client();
+
+            $url = 'https://login.microsoftonline.com/'.$this->tenantId.'/oauth2/v2.0/token';
+
+            $response = $client->post($url, [
+                    'form_params' => [
+                        'client_id' => $this->clientId,
+                        'client_secret' => $this->clientSecret,
+                        'scope' => 'https://outlook.office365.com/EWS.AccessAsUser.All',
+                        'username' => $this->username,
+                        'password' => $this->password,
+                        'grant_type' => 'password',
+                    ],
+                ]
+            );
+
+            if (200 != $response->getStatusCode()) {
+                $this->logger->error("Oauth authentication failed for service account. (".$response->getStatusCode()."): " . $response->getBody());
+
+                throw new \HttpException("Error authenticating.", 403);
             }
+
+            $contents = json_decode($response->getBody()->getContents(), true);
+
+            if ($contents == null) {
+                $this->logger->error("Could not decode oauth response: " . $response->getBody());
+
+                throw new \HttpException("Error authenticating", 403);
+            }
+
+            $token = $contents['access_token'];
+
+            $this->cache->set(self::CACHE_KEY_TOKEN, $token, $contents['expires_in']);
         }
 
-        $client = new Client();
-
-        $url = 'https://login.microsoftonline.com/'.$this->tenantId.'/oauth2/v2.0/token';
-
-        $response = $client->post($url, [
-                'form_params' => [
-                    'client_id' => $this->clientId,
-                    'client_secret' => $this->clientSecret,
-                    'scope' => 'https://outlook.office365.com/EWS.AccessAsUser.All',
-                    'username' => $this->username,
-                    'password' => $this->password,
-                    'grant_type' => 'password',
-                ],
-            ]
-        );
-
-        $contents = json_decode($response->getBody()->getContents(), true);
-
-        $this->token = $contents['access_token'];
-        $this->tokenExpire = time() + $contents['expires_in'];
-
-        return $this->token;
+        return $token;
     }
 
     /**
