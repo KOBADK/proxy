@@ -31,6 +31,7 @@
 
     <service id="itk.exchange_soap_client" class="Itk\ExchangeBundle\Services\ExchangeSoapClientService" public="true">
       <argument type="service" id="exchange.cache" />
+      <argument type="service" id="monolog.logger" />
       <argument>%itk_exchange_ws_host%</argument>
       <argument>%itk_exchange_ws_user%</argument>
       <argument>%itk_exchange_ws_password%</argument>

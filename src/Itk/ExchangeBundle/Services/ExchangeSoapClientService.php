@@ -9,6 +9,7 @@ namespace Itk\ExchangeBundle\Services;
 use Exception;
 use GuzzleHttp\Client;
 use Itk\ExchangeBundle\Exceptions\ExchangeSoapException;
+use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 
 /**
@@ -38,6 +39,7 @@ class ExchangeSoapClientService
     private $password;
 
     private $cache;
+    private $logger;
 
     /**
      * Construct the SOAP client.
@@ -53,6 +55,7 @@ class ExchangeSoapClientService
      */
     public function __construct(
         CacheInterface $cache,
+        LoggerInterface $logger,
         $host,
         $username,
         $password,
@@ -76,6 +79,7 @@ class ExchangeSoapClientService
         $this->clientSecret = $clientSecret;
 
         $this->cache = $cache;
+        $this->logger = $logger;
 
         // Set default options.
         $this->curlOptions = array(
@@ -118,13 +122,17 @@ class ExchangeSoapClientService
             );
 
             if (200 != $response->getStatusCode()) {
-                throw new Exception("Error authenticating through oauth.");
+                $this->logger->error("Oauth authentication failed for service account. (".$response->getStatusCode()."): " . $response->getBody());
+
+                throw new \HttpException("Error authenticating.", 403);
             }
 
             $contents = json_decode($response->getBody()->getContents(), true);
 
             if ($contents == null) {
-                throw new Exception("JSON response could not be decoded.");
+                $this->logger->error("Could not decode oauth response: " . $response->getBody());
+
+                throw new \HttpException("Error authenticating", 403);
             }
 
             $token = $contents['access_token'];
