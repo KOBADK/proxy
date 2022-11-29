@@ -119,6 +119,10 @@ class ExchangeSoapClientService
 
             $contents = json_decode($response->getBody()->getContents(), true);
 
+            if ($contents == null) {
+                throw new Exception("JSON response could not be decoded");
+            }
+
             $token = $contents['access_token'];
 
             $this->cache->set(self::CACHE_KEY_TOKEN, $token, $contents['expires_in']);
