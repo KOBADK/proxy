@@ -1,5 +1,9 @@
 # KOBA CHANGELOG
 
+## 2.1.1
+
+* Fixed oauth caching.
+
 ## 2.1.0
 
 * Changed to oauth2 authentication.
